@@ -13,6 +13,12 @@ import Metal
 /// - <doc:running-on-ios>
 /// - ``Memory``
 public enum GPU {
+    /// Bookreader lifecycle gate. Call before GPU use and synchronously on resign-active.
+    /// Disabled workers wait until re-enabled; already submitted work is scheduled.
+    public static func setSubmissionAllowed(_ allowed: Bool) {
+        mlx_metal_set_submission_allowed(allowed)
+    }
+
 
     public typealias Snapshot = Memory.Snapshot
 

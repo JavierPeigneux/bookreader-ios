@@ -7,7 +7,7 @@ import MLX
 import MLXUtilsLibrary
 #endif
 
-enum SynthesisPhase: Sendable { case loading, synthesizing, saving }
+enum SynthesisPhase: Sendable { case loading, synthesizing, saving, segment(completed: Int, total: Int) }
 
 protocol SpeechGenerating: Sendable {
     func generate(text: String, voice: ReaderVoice, destination: URL,
@@ -16,6 +16,12 @@ protocol SpeechGenerating: Sendable {
 
 /// All model access is serialized; MLX arrays never leave this actor.
 actor KokoroService: SpeechGenerating {
+    nonisolated static func setGPUAllowed(_ allowed: Bool) {
+        #if !targetEnvironment(simulator)
+        GPU.setSubmissionAllowed(allowed)
+        #endif
+    }
+
     /// This is an inference bound, independent of persisted reading blocks.
     static let inferenceCharacterLimit = 96
     static func inferenceSegments(_ text: String) -> [String] {
@@ -123,6 +129,7 @@ actor KokoroService: SpeechGenerating {
                     samples.withUnsafeBufferPointer { channel.update(from: $0.baseAddress!, count: samples.count) }
                     try file.write(from: buffer)
                 }
+                progress(.segment(completed: index + 1, total: segments.count))
                 Memory.clearCache()
                 logger.info("segment=\(index + 1)/\(segments.count) active=\(Memory.activeMemory) cache=\(Memory.cacheMemory) peak=\(Memory.peakMemory)")
             }
@@ -136,4 +143,37 @@ actor KokoroService: SpeechGenerating {
         return destination
         #endif
     }
+}
+
+/// Expiration can run off-main: revoke the native gate before dispatching UI work.
+final class GPUExecutionPolicy: @unchecked Sendable {
+    static let shared = GPUExecutionPolicy { allowed in KokoroService.setGPUAllowed(allowed) }
+    private let lock = NSLock()
+    private var active = false
+    private var pending = Set<UUID>()
+    private var grants = Set<UUID>()
+    private let setAllowed: @Sendable (Bool) -> Void
+
+    init(setAllowed: @escaping @Sendable (Bool) -> Void) {
+        self.setAllowed = setAllowed
+        setAllowed(false)
+    }
+    func setActive(_ value: Bool) {
+        lock.withLock { active = value; update() }
+    }
+    func register(_ id: UUID) {
+        lock.withLock { _ = pending.insert(id) }
+    }
+    @discardableResult func grant(_ id: UUID) -> Bool {
+        lock.withLock {
+            guard pending.contains(id) else { return false }
+            grants.insert(id)
+            update()
+            return true
+        }
+    }
+    func revoke(_ id: UUID) {
+        lock.withLock { pending.remove(id); grants.remove(id); update() }
+    }
+    private func update() { setAllowed(active || !grants.isEmpty) }
 }

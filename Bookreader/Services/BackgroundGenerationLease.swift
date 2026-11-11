@@ -13,6 +13,7 @@ protocol BackgroundGenerationManaging: AnyObject {
 @MainActor
 final class BackgroundGenerationLease: BackgroundGenerationManaging {
     private(set) var canRunInBackground = false
+    private let permissionID = UUID()
     private var identifier: String?
     private var task: BGContinuedProcessingTask?
     private var finished = false
@@ -27,32 +28,38 @@ final class BackgroundGenerationLease: BackgroundGenerationManaging {
               BGTaskScheduler.supportedResources.contains(.gpu) else { onChange(); return }
         let id = "com.javierpeigneux.Bookreader.audio.\(UUID().uuidString)"
         identifier = id
+        let permissionID = self.permissionID
+        GPUExecutionPolicy.shared.register(permissionID)
         let registered = BGTaskScheduler.shared.register(forTaskWithIdentifier: id, using: nil) { [weak self] received in
             guard let task = received as? BGContinuedProcessingTask else { received.setTaskCompleted(success: false); return }
             task.expirationHandler = { [weak self] in
+                GPUExecutionPolicy.shared.revoke(permissionID)
                 Task { @MainActor in
                     guard let self, !self.finished else { return }
                     self.expired = true
                     self.canRunInBackground = false
-                    onExpiration() // Cancels generation; completion waits for its current unit to stop.
+                    onExpiration()
+                    // The native gate is already closed; a worker may now wait for
+                    // foreground. Complete the expired system task without waiting.
+                    self.finish(success: false)
                 }
             }
             Task { @MainActor in
                 guard let self, !self.finished else { task.setTaskCompleted(success: false); return }
                 self.task = task
-                guard !self.expired else { return }
+                guard !self.expired, GPUExecutionPolicy.shared.grant(permissionID) else { return }
                 self.canRunInBackground = true
                 self.report(completed: self.completed, total: self.total)
                 onChange()
             }
         }
-        guard registered else { identifier = nil; onChange(); return }
+        guard registered else { GPUExecutionPolicy.shared.revoke(permissionID); identifier = nil; onChange(); return }
         let request = BGContinuedProcessingTaskRequest(identifier: id, title: title, subtitle: String(localized: "preparation.system.subtitle"))
         request.requiredResources = .gpu
         // Do not leave an orphaned request waiting after the user stops the job.
         request.strategy = .fail
         do { try BGTaskScheduler.shared.submit(request) }
-        catch { onChange() } // Foreground preparation remains available.
+        catch { GPUExecutionPolicy.shared.revoke(permissionID); onChange() } // Foreground preparation remains available.
         #else
         onChange()
         #endif
@@ -65,6 +72,7 @@ final class BackgroundGenerationLease: BackgroundGenerationManaging {
     }
     func finish(success: Bool) {
         guard !finished else { return }
+        GPUExecutionPolicy.shared.revoke(permissionID)
         finished = true
         canRunInBackground = false
         if let task { task.setTaskCompleted(success: success) }

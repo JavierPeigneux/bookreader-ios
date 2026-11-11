@@ -14,6 +14,33 @@ struct Book: Codable, Hashable, Identifiable {
     var blocks: [ReadingBlock]
     var position = 0
     var importedAt = Date()
+    // Optional for backwards-compatible decoding of existing libraries.
+    var listeningSessions: [ListeningSession]? = nil
+}
+
+struct ListeningSession: Codable, Hashable, Identifiable {
+    var id = UUID()
+    let startedAt: Date
+    var blocks: [Int: Date] = [:]
+}
+
+extension Book {
+    mutating func recordListening(block: Int, sessionID: UUID, at date: Date) {
+        guard blocks.indices.contains(block) else { return }
+        var sessions = listeningSessions ?? []
+        if let index = sessions.firstIndex(where: { $0.id == sessionID }) {
+            // Keep the start time, rather than replacing it on pause/resume.
+            if sessions[index].blocks[block] == nil { sessions[index].blocks[block] = date }
+        } else {
+            sessions.append(ListeningSession(id: sessionID, startedAt: date, blocks: [block: date]))
+        }
+        listeningSessions = Array(sessions.suffix(30))
+    }
+
+    func lastListenedAt(block: Int, sessionID: UUID? = nil) -> Date? {
+        (listeningSessions ?? []).reversed()
+            .first { (sessionID == nil || $0.id == sessionID) && $0.blocks[block] != nil }?.blocks[block]
+    }
 }
 
 struct ReadingChapter: Identifiable, Hashable {

@@ -45,3 +45,22 @@ struct PreparedAudioStore {
         if FileManager.default.fileExists(atPath: directory(book).path) { try FileManager.default.removeItem(at: directory(book)) }
     }
 }
+
+/// Counts cached work in the bar, but excludes it when measuring generation speed.
+struct PreparationProgress {
+    var total = 0
+    var initiallyCached = 0
+    var completed = 0
+    var partial = 0.0
+    var fraction: Double {
+        guard total > 0 else { return 0 }
+        return min(1, max(0, (Double(completed) + partial) / Double(total)))
+    }
+    func remainingSeconds(elapsed: TimeInterval) -> TimeInterval? {
+        let produced = Double(completed - initiallyCached) + partial
+        let remaining = max(0, Double(total - completed) - partial)
+        guard remaining > 0 else { return 0 }
+        guard elapsed >= 1, produced >= 0.1 else { return nil }
+        return elapsed / produced * remaining
+    }
+}

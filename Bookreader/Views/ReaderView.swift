@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ReaderView: View {
     @Bindable var model: ReaderViewModel
+    @AppStorage("reader.showListeningTimes") private var showListeningTimes = false
+    @State private var listeningSessionID: UUID?
     @State private var showChapters = false
     @State private var hasPresentedChapters = false
     private var currentChapter: ReadingChapter? { model.chapters.first { $0.range.contains(model.book.position) } }
@@ -9,6 +11,24 @@ struct ReaderView: View {
         guard let chapter = currentChapter else { return model.book.blocks }
         return Array(model.book.blocks[chapter.range])
     }
+    private func resumeFromHistory(_ index: Int) {
+        // Freeze the historical session before replay creates a new timestamp.
+        if listeningSessionID == nil {
+            listeningSessionID = (model.book.listeningSessions ?? []).reversed().first { $0.blocks[index] != nil }?.id
+        }
+        model.resumeFromHistory(index)
+    }
+
+    private var preparationTimeLabel: String {
+        guard let seconds = model.preparationRemainingSeconds else { return String(localized: "preparation.time.calculating") }
+        if seconds < 60 { return String(localized: "preparation.time.less_than_minute") }
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .abbreviated
+        let duration = formatter.string(from: ceil(seconds / 60) * 60) ?? ""
+        return String.localizedStringWithFormat(String(localized: "preparation.time.remaining"), duration)
+    }
+
     @Environment(\.scenePhase) private var scenePhase
     var body: some View {
         ScrollViewReader { proxy in
@@ -20,6 +40,24 @@ struct ReaderView: View {
                             if block.id == currentChapter?.start {
                                 Text(block.heading).font(.caption.weight(.semibold)).foregroundStyle(.secondary)
                             }
+                            if showListeningTimes, let date = model.book.lastListenedAt(block: block.id, sessionID: listeningSessionID) {
+                                Button {
+                                    resumeFromHistory(block.id)
+                                } label: {
+                                    HStack(spacing: 3) {
+                                        Image(systemName: "clock")
+                                        Text(date, format: .dateTime.day().month(.abbreviated).hour().minute())
+                                    }
+                                    .font(.caption2).monospacedDigit()
+                                    .foregroundStyle(.secondary)
+                                    .padding(.horizontal, 6).padding(.vertical, 3)
+                                    .background(.quaternary, in: Capsule())
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel(String.localizedStringWithFormat(String(localized: "reader.history.heard_at"), date.formatted(date: .complete, time: .shortened)))
+                                .accessibilityHint(String(localized: "reader.history.resume_hint"))
+                                .accessibilityIdentifier("reader.listened.\(block.id)")
+                            }
                             Text(block.text).font(.system(.title3, design: .serif)).lineSpacing(8)
                                 .textSelection(.enabled)
                         }
@@ -27,7 +65,10 @@ struct ReaderView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(block.id == model.book.position ? Color.accentColor.opacity(0.10) : Color.clear, in: RoundedRectangle(cornerRadius: 12))
                         .id(block.id)
-                        .onTapGesture { model.select(block.id) }
+                        .onTapGesture {
+                            if showListeningTimes { resumeFromHistory(block.id) }
+                            else { model.select(block.id) }
+                        }
                     }
                 }.padding(20).frame(maxWidth: 720).frame(maxWidth: .infinity)
             }
@@ -38,6 +79,27 @@ struct ReaderView: View {
         .navigationBarTitleDisplayMode(.inline)
         .navigationTitle(model.book.format)
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Toggle(String(localized: "reader.history.show"), isOn: $showListeningTimes)
+                    if !(model.book.listeningSessions ?? []).isEmpty {
+                        Picker(String(localized: "reader.history.session"), selection: $listeningSessionID) {
+                            Text(String(localized: "reader.history.latest")).tag(UUID?.none)
+                            ForEach((model.book.listeningSessions ?? []).reversed()) { session in
+                                Text(session.startedAt, format: .dateTime.day().month(.abbreviated).hour().minute().second())
+                                    .tag(Optional(session.id))
+                            }
+                        }
+                    } else {
+                        Text(String(localized: "reader.history.empty"))
+                    }
+                    if model.positionBeforeHistoryJump != nil {
+                        Button(String(localized: "reader.history.return")) { model.returnFromHistory() }
+                    }
+                } label: {
+                    Label(String(localized: "reader.history.title"), systemImage: showListeningTimes ? "clock.fill" : "clock")
+                }.accessibilityIdentifier("reader.history")
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     if let currentChapter {
@@ -109,7 +171,19 @@ struct ReaderView: View {
                     Text(verbatim: "\(model.book.position + 1) / \(model.book.blocks.count)").font(.caption.monospacedDigit()).foregroundStyle(.secondary)
                 }
                 if model.isGenerating {
-                    ProgressView(value: Double(model.preparationCompleted), total: Double(max(1, model.preparationTotal)))
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text(String(localized: "preparation.progress.title")).font(.caption.weight(.semibold))
+                            Spacer()
+                            Text(model.preparationProgress.fraction, format: .percent.precision(.fractionLength(0)))
+                                .font(.caption.monospacedDigit())
+                        }
+                        ProgressView(value: model.preparationProgress.fraction)
+                            .accessibilityLabel(String(localized: "preparation.progress.title"))
+                            .accessibilityValue(model.preparationProgress.fraction.formatted(.percent.precision(.fractionLength(0))))
+                            .accessibilityIdentifier("reader.preparation.progress")
+                        Text(preparationTimeLabel).font(.caption2).foregroundStyle(.secondary)
+                    }
                     Text(String.localizedStringWithFormat(String(localized: "reader.chapters.cached"), Int64(model.preparationCompleted), Int64(model.preparationTotal))).font(.caption)
                     HStack {
                         ProgressView()
@@ -145,7 +219,7 @@ struct ReaderView: View {
             }.padding().frame(maxWidth: 720).frame(maxWidth: .infinity).background(.regularMaterial)
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { model.didBecomeActive() } else if phase == .background { model.willResignActive() }
+            if phase == .active { model.didBecomeActive() } else { model.willResignActive() }
         }
         .alert(String(localized: "reader.audio.title"), isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
             Button(String(localized: "common.ok")) { model.error = nil }

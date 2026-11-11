@@ -7,6 +7,22 @@ import MLX
 struct Harness {
     static func main() async {
         do {
+            GPU.setSubmissionAllowed(true)
+            let warmup = (MLXArray([Float(2), 3]) * 4).asArray(Float.self)
+            guard warmup == [8, 12] else { throw ReaderError.message("GPU warmup failed") }
+            // Exercise the actual C++ submission boundary, not a mocked service.
+            GPU.setSubmissionAllowed(false)
+            let submitted = DispatchSemaphore(value: 0)
+            let worker = Task.detached {
+                let result = (MLXArray([Float(2), 3]) * 4).asArray(Float.self)
+                submitted.signal()
+                return result
+            }
+            let blocked = submitted.wait(timeout: .now() + 0.25) == .timedOut
+            GPU.setSubmissionAllowed(true)
+            let result = await worker.value
+            guard blocked, result == [8, 12] else { throw ReaderError.message("GPU submission gate regression failed") }
+            print("METAL_SUBMISSION_GATE_OK")
             let destination = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? "/tmp/bookreader-castellano.wav")
             let matrix = MLXArray(Array(0..<12)).reshaped(3, 4)
             let selected = take(matrix, MLXArray(2), axis: 1, stream: .gpu).asArray(Int32.self)

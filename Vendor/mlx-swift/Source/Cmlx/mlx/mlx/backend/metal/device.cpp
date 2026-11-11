@@ -1,6 +1,8 @@
 // Copyright © 2023-2024 Apple Inc.
 
 #include <cstdlib>
+#include <condition_variable>
+#include <mutex>
 #include <sstream>
 
 #define NS_PRIVATE_IMPLEMENTATION
@@ -12,6 +14,30 @@
 #include "mlx/backend/metal/metal.h"
 #include "mlx/backend/metal/utils.h"
 #include "mlx/utils.h"
+
+// Bookreader: serialize lifecycle changes with submission, not whole inference.
+// Waiting workers retain their pending buffer until foreground/permission returns.
+namespace {
+struct SubmissionGate {
+  std::mutex mutex;
+  std::condition_variable changed;
+  bool allowed = true;
+  bool managed = false;
+};
+SubmissionGate& submission_gate() {
+  static SubmissionGate gate;
+  return gate;
+}
+}
+extern "C" void mlx_metal_set_submission_allowed(bool allowed) {
+  auto& gate = submission_gate();
+  {
+    std::lock_guard<std::mutex> lock(gate.mutex);
+    gate.managed = true;
+    gate.allowed = allowed;
+  }
+  if (allowed) { gate.changed.notify_all(); }
+}
 
 namespace mlx::core::metal {
 
@@ -402,7 +428,14 @@ MTL::CommandBuffer* Device::get_command_buffer(int index) {
 
 void Device::commit_command_buffer(int index) {
   auto& stream = get_stream_(index);
+  auto& gate = submission_gate();
+  std::unique_lock<std::mutex> lock(gate.mutex);
+  gate.changed.wait(lock, [&gate] { return gate.allowed; });
   stream.buffer->commit();
+  // Previous submissions must be scheduled before backgrounding. Closing the
+  // gate waits only for this submission, never the complete inference.
+  if (gate.managed) { stream.buffer->waitUntilScheduled(); }
+  lock.unlock();
   stream.buffer->release();
   stream.buffer = nullptr;
   stream.buffer_ops = 0;

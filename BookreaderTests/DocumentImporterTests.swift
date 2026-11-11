@@ -17,6 +17,72 @@ final class DocumentImporterTests: XCTestCase {
         try data.write(to: url)
         return url
     }
+    func testListeningHistoryPersistsAndKeepsPreviousSessions() throws {
+        var book = Book(title: "Horas", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Hola")])
+        // Simulate a library written before listening history existed.
+        var legacy = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(book)) as? [String: Any])
+        legacy.removeValue(forKey: "listeningSessions")
+        book = try JSONDecoder().decode(Book.self, from: JSONSerialization.data(withJSONObject: legacy))
+        XCTAssertNil(book.listeningSessions)
+        let first = UUID(), second = UUID()
+        let night = Date(timeIntervalSince1970: 1_800_000_000)
+        book.recordListening(block: 0, sessionID: first, at: night)
+        book.recordListening(block: 0, sessionID: first, at: night.addingTimeInterval(60))
+        XCTAssertEqual(book.lastListenedAt(block: 0), night, "Resuming must preserve the original start")
+        book.recordListening(block: 0, sessionID: second, at: night.addingTimeInterval(86_400))
+        let restored = try JSONDecoder().decode(Book.self, from: JSONEncoder().encode(book))
+        XCTAssertEqual(restored.lastListenedAt(block: 0), night.addingTimeInterval(86_400))
+        XCTAssertEqual(restored.lastListenedAt(block: 0, sessionID: first), night)
+        XCTAssertNil(restored.lastListenedAt(block: 1))
+        for offset in 0..<40 { book.recordListening(block: 0, sessionID: UUID(), at: night.addingTimeInterval(Double(offset))) }
+        XCTAssertEqual(book.listeningSessions?.count, 30)
+    }
+
+    @MainActor
+    func testGPULifecycleClosesSynchronouslyAndRejectsExpiredGrant() {
+        let state = TestGPUState()
+        let policy = GPUExecutionPolicy { state.set($0) }
+        let center = NotificationCenter()
+        let lifecycle = GPUApplicationLifecycle(policy: policy, center: center)
+        withExtendedLifetime(lifecycle) {
+            XCTAssertFalse(state.allowed)
+            center.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+            XCTAssertTrue(state.allowed)
+            center.post(name: UIApplication.willResignActiveNotification, object: nil)
+            XCTAssertFalse(state.allowed, "Must close before notification delivery returns")
+            let expired = UUID()
+            policy.register(expired)
+            policy.revoke(expired)
+            XCTAssertFalse(policy.grant(expired), "A late task callback must not resurrect expired permission")
+            XCTAssertFalse(state.allowed)
+            let granted = UUID()
+            policy.register(granted)
+            XCTAssertTrue(policy.grant(granted))
+            XCTAssertTrue(state.allowed)
+            center.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+            XCTAssertTrue(state.allowed, "A real grant allows background submission")
+            policy.revoke(granted)
+            XCTAssertFalse(state.allowed)
+            center.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+            XCTAssertTrue(state.allowed)
+        }
+    }
+
+    func testPreparationProgressExcludesCachedWorkFromEstimate() {
+        var progress = PreparationProgress(total: 10, initiallyCached: 8, completed: 8)
+        XCTAssertEqual(progress.fraction, 0.8)
+        XCTAssertNil(progress.remainingSeconds(elapsed: 20), "Cached audio gives no speed measurement")
+        progress.partial = 0.5
+        XCTAssertEqual(progress.fraction, 0.85)
+        XCTAssertEqual(progress.remainingSeconds(elapsed: 10), 30)
+        progress.completed = 9
+        progress.partial = 0
+        XCTAssertEqual(progress.remainingSeconds(elapsed: 20), 20)
+        progress.completed = 10
+        XCTAssertEqual(progress.fraction, 1)
+        XCTAssertEqual(progress.remainingSeconds(elapsed: 30), 0)
+    }
+
     func testTXTAccentsAndMarkdown() throws {
         let txt = try DocumentImporter().read(write("cuento.txt", Data("¡Buenos días! El pingüino tomó café en España.".utf8)))
         XCTAssertEqual(txt.blocks.first?.text, "¡Buenos días! El pingüino tomó café en España.")
@@ -108,12 +174,20 @@ final class DocumentImporterTests: XCTestCase {
         }
         XCTAssertTrue(model.isPlaying, "Must play the first block while the second is still generating")
         XCTAssertTrue(model.isGenerating)
+        XCTAssertNotNil(model.book.lastListenedAt(block: 0))
+        XCTAssertNil(model.book.lastListenedAt(block: 1), "Generation is not listening")
         XCTAssertEqual(model.cachedBlocks, [0])
         while await service.requests.count < 2 && Date() < deadline {
             try await Task.sleep(for: .milliseconds(25))
         }
         let requests = await service.requests
         XCTAssertEqual(requests, ["Primero", "Segundo"], "Must not generate the entire book")
+        model.select(2)
+        model.resumeFromHistory(0)
+        XCTAssertEqual(model.positionBeforeHistoryJump, 2)
+        model.returnFromHistory()
+        XCTAssertEqual(model.book.position, 2)
+        XCTAssertNil(model.positionBeforeHistoryJump)
         model.select(2)
         XCTAssertFalse(model.isPlaying)
         XCTAssertFalse(model.isGenerating)
@@ -210,6 +284,7 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertFalse(model.isPlaying)
         XCTAssertEqual(model.book.position, 0)
         XCTAssertEqual(model.cachedBlocks, [1])
+        XCTAssertNil(model.book.listeningSessions, "Offline preparation must not create listening tags")
         XCTAssertTrue(FileManager.default.fileExists(atPath: store.destination(book: book.id, voice: .dora, index: 1).path))
         XCTAssertNil(store.pending(book: book.id))
         let restored = ReaderViewModel(book: book, service: service, audioStore: store, save: { _ in })
@@ -375,4 +450,11 @@ private final class TestBackgroundLease: BackgroundGenerationManaging {
     func report(completed: Int, total: Int) {}
     func finish(success: Bool) { canRunInBackground = false }
     func expire() { canRunInBackground = false; onExpiration?() }
+}
+
+private final class TestGPUState: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value = false
+    var allowed: Bool { lock.withLock { value } }
+    func set(_ value: Bool) { lock.withLock { self.value = value } }
 }

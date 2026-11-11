@@ -73,6 +73,10 @@ final class ReaderUITests: XCTestCase {
             XCTAssertTrue(book.label.contains("1 section"), book.label)
             book.tap()
         }
+        app.buttons["reader.history"].tap()
+        XCTAssertTrue(app.switches["Show listening times"].exists || app.buttons["Show listening times"].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["Times will appear once you listen to the book."].exists)
+        app.buttons["Show listening times"].tap()
         app.buttons["reader.chapters"].tap()
         XCTAssertTrue(app.navigationBars["Chapter playlist"].waitForExistence(timeout: 5))
         app.buttons["chapter.0"].tap()

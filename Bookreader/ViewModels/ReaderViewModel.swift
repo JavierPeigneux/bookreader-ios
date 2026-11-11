@@ -18,12 +18,21 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     private(set) var cachedBlocks: Set<Int> = []
     private(set) var preparationCompleted = 0
     private(set) var preparationTotal = 0
+    private(set) var preparationProgress = PreparationProgress()
+    private(set) var preparationRemainingSeconds: TimeInterval?
+    private var preparationStartUptime = 0.0
+    private func updatePreparationEstimate() {
+        preparationRemainingSeconds = preparationProgress.remainingSeconds(elapsed: ProcessInfo.processInfo.systemUptime - preparationStartUptime)
+    }
     private(set) var pendingPreparation: AudioPreparation?
     private(set) var backgroundGenerationAllowed = false
     private let audioStore: PreparedAudioStore
     private let isAppActive: @MainActor () -> Bool
     private let makeLease: @MainActor () -> any BackgroundGenerationManaging
     private var lease: (any BackgroundGenerationManaging)?
+    private var listeningSessionID = UUID()
+    private var lastPlaybackStartedAt: Date?
+    private(set) var positionBeforeHistoryJump: Int?
     private var wantsPlayback = false
     private var generationID = UUID()
     private let service: any SpeechGenerating
@@ -94,6 +103,9 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         refreshCache()
         preparationTotal = range.count
         preparationCompleted = range.filter(cachedBlocks.contains).count
+        preparationProgress = PreparationProgress(total: range.count, initiallyCached: preparationCompleted, completed: preparationCompleted)
+        preparationRemainingSeconds = nil
+        preparationStartUptime = ProcessInfo.processInfo.systemUptime
         let ticket = UUID()
         generationID = ticket
         let session = makeLease()
@@ -137,6 +149,11 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                                 case .loading: self.generationPhase = String(localized: "reader.generation.loading")
                                 case .synthesizing: self.generationPhase = String(localized: "reader.generation.synthesizing")
                                 case .saving: self.generationPhase = String(localized: "reader.generation.saving")
+                                case let .segment(completed, total):
+                                    // A delayed callback must not count an already saved block twice.
+                                    guard !self.cachedBlocks.contains(needed), total > 0 else { return }
+                                    self.preparationProgress.partial = min(1, max(self.preparationProgress.partial, Double(completed) / Double(total)))
+                                    self.updatePreparationEstimate()
                                 }
                             }
                         }
@@ -145,6 +162,9 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                     guard self.generationID == ticket else { return }
                     self.cachedBlocks.insert(needed)
                     self.preparationCompleted = range.filter(self.cachedBlocks.contains).count
+                    self.preparationProgress.completed = self.preparationCompleted
+                    self.preparationProgress.partial = 0
+                    self.updatePreparationEstimate()
                     session.report(completed: self.preparationCompleted, total: self.preparationTotal)
                     self.ensureAudio()
                 }
@@ -258,6 +278,13 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                 self.player?.delegate = self
                 guard self.player?.play() == true else { throw ReaderError.message(String(localized: "error.audio.play")) }
                 self.isPlaying = true
+                let startedAt = Date()
+                if let previous = self.lastPlaybackStartedAt, startedAt.timeIntervalSince(previous) > 30 * 60 {
+                    self.listeningSessionID = UUID()
+                }
+                self.lastPlaybackStartedAt = startedAt
+                self.book.recordListening(block: self.book.position, sessionID: self.listeningSessionID, at: startedAt)
+                self.save(self.book)
                 self.status = String.localizedStringWithFormat(String(localized: "reader.status.playing"), self.playbackVoice.title)
                 self.registerRemoteCommands()
                 self.updateNowPlaying()
@@ -280,12 +307,27 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         status = String(localized: "reader.status.paused")
         updateNowPlaying()
     }
+    func resumeFromHistory(_ index: Int) {
+        guard book.blocks.indices.contains(index) else { return }
+        if positionBeforeHistoryJump == nil { positionBeforeHistoryJump = book.position }
+        select(index)
+        prepareAndPlay()
+    }
+
+    func returnFromHistory() {
+        guard let previous = positionBeforeHistoryJump else { return }
+        positionBeforeHistoryJump = nil
+        select(previous)
+        prepareAndPlay()
+    }
+
     func select(_ index: Int) {
         guard book.blocks.indices.contains(index) else { return }
         cancelGeneration()
         wantsPlayback = false
         cancelPlaybackStart()
         player?.stop(); player = nil; isPlaying = false
+        listeningSessionID = UUID()
         book.position = index
         save(book)
         status = String.localizedStringWithFormat(String(localized: "reader.status.section"), Int64(index + 1), Int64(book.blocks.count))

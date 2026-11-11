@@ -85,3 +85,25 @@ Texto de la prueba: «¡Buenos días! El niño lee un libro en castellano. Maña
 
 - La firma automática con GPU fue rechazada: el equipo personal «Javier Peigneux» no admite Background GPU Access y su perfil no incluye el entitlement. La capacidad queda optativa mediante `BOOKREADER_GPU_ENTITLEMENTS`; por defecto no se solicita en la firma para permitir instalar con ese equipo.
 - Compilación Release final con firma automática del equipo personal y GPU optativa desactivada: **BUILD SUCCEEDED**. Incluye la corrección de cancelación cuando la tarea expira antes de comunicar su concesión. No se ha instalado ni probado esta compilación en el iPhone.
+
+## Etiquetas de horas de escucha · 11 de noviembre de 2026
+
+- Historial persistente de las últimas 30 sesiones, compatible con bibliotecas anteriores. Las marcas se guardan después de iniciar correctamente la reproducción, nunca durante la preparación del audio.
+- 19 pruebas funcionales pasadas y una de Kokoro físico omitida (`.build/Listening-History.xcresult`). Incluyen preservación y serialización de sesiones, ausencia de marcas al preparar sin escuchar y recuperación de la posición anterior.
+- Las dos pruebas de interfaz pasan: castellano en el resultado anterior e inglés en `.build/Listening-History-UI-Final.xcresult`. Se corrigió la prueba para reconocer el texto del menú como elemento accesible y cerrarlo mediante su opción visible.
+- Compilación Release firmada para iPhone correcta. Revisión visual manual en Duo cerrado: etiquetas caption2 compactas, junto al texto y ocultables desde el reloj, con una muestra de historial sintética eliminada tras la comprobación. No equivale a una prueba de síntesis en el dispositivo físico.
+
+## Metal al pasar a segundo plano · 11 de noviembre de 2026
+
+- Causa identificada: cancelar la tarea Swift entre fragmentos no detiene los envíos de una llamada síncrona de Kokoro ya en curso. La reacción previa a `scenePhase.background` llegaba después de perder acceso a la GPU.
+- Bloqueo nativo en el único punto de envío de command buffers del backend Metal vendorizado. Al cerrar el bloqueo no se admiten nuevos envíos y los previos ya están programados (`waitUntilScheduled`). El worker espera hasta volver a disponer de permiso; no se descartan buffers ni se silencian excepciones de Metal.
+- Observadores síncronos de `UIApplication.willResignActiveNotification` y `didBecomeActiveNotification`, instalados antes de la primera escena. El permiso GPU válido permite seguir en segundo plano; la expiración revoca el acceso antes de despachar cambios a MainActor, rechaza concesiones tardías y completa la tarea del sistema sin esperar a un worker bloqueado.
+- Suite Duo: 20 pruebas funcionales y 2 de interfaz pasadas, 1 de Kokoro físico omitida (`.build/GPU-Lifecycle.xcresult`). Dos pruebas focalizadas repetidas tras el ajuste final de expiración: correctas (`.build/GPU-Lifecycle-Final.xcresult`).
+- Harness Mac con validación Metal activada: `METAL_SUBMISSION_GATE_OK`, evaluación detenida con el bloqueo cerrado y resultado correcto al reabrirlo; regresión de scalar gather correcta. Kokoro real: WAV de 5,35 s, 24 kHz mono, RMS 1377,91; generación 0,823 s y liberación de memoria MLX hasta 76 bytes activos. Esto valida el mecanismo nativo, no los permisos de segundo plano del iPhone.
+- Compilación Release firmada final para iPhone: correcta. La confirmación del fallo original requiere bloquear la pantalla durante síntesis en un dispositivo físico.
+- Intento de instalación física con CoreDevice: agotó el timeout de 60 segundos. No se afirma instalación ni validación de bloqueo de pantalla en el iPhone.
+
+## Progreso de preparación · 11 de noviembre de 2026
+
+- Barra con porcentaje y avance por unidad de síntesis dentro de cada fragmento. Estimación restante basada en tiempo monotónico y trabajo nuevo; el audio precargado se cuenta en el progreso pero se excluye de la medición de velocidad. Las estimaciones se actualizan con cada avance y son aproximadas: los fragmentos pueden tener costes diferentes.
+- 21 pruebas funcionales pasadas y 1 de síntesis física omitida. Incluye la exclusión de caché del cálculo, progreso parcial, finalización y ausencia de estimaciones sin muestras nuevas.

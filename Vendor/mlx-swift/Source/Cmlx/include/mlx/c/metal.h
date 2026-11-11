@@ -36,6 +36,9 @@ typedef struct mlx_metal_device_info_t_ {
 } mlx_metal_device_info_t;
 mlx_metal_device_info_t mlx_metal_device_info(void);
 
+// Bookreader lifecycle extension; blocks future submissions, never drops work.
+void mlx_metal_set_submission_allowed(bool allowed);
+
 int mlx_metal_is_available(bool* res);
 int mlx_metal_start_capture(const char* path);
 int mlx_metal_stop_capture(void);

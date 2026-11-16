@@ -1,3 +1,10 @@
+# Campos obligatorios de revisión · 16 noviembre 2026
+
+- Ejecutado `scripts/store_submission_setup.py` sobre la build asociada 1.0 (3), VALID. `usesNonExemptEncryption=false` guardado y releído: CryptoKit se usa para SHA256 de identificadores; no hay implementación criptográfica propia ni de terceros. Añadida `ITSAppUsesNonExemptEncryption=false` al Info.plist para futuras builds; no es necesario reconstruir la build 3 para resolver su declaración remota.
+- App Information: categoría primaria BOOKS y `contentRightsDeclaration=USES_THIRD_PARTY_CONTENT` guardadas y releídas. La app muestra archivos importados por el usuario, sin catálogo remoto ni redistribución de libros; recursos de bienvenida originales, voces mediante APIs de Apple y dependencias MIT con avisos completos. El análisis antiguo de licencias de build 2 no describe el binario 3.
+- Precio gratuito configurado en la base existente USA, sin fechas de finalización. Comprobados precios manuales y automáticos: 175 entradas territoriales con precio 0. Informe privado local `Release/submission-setup-result.json` excluido de Git.
+- Readback con espera por consistencia eventual de Apple; la declaración de exportación ya fijada no se vuelve a escribir (Apple devuelve 409). Info.plist validado con plutil. No se ha intentado enviar a revisión ni se afirma que no puedan aparecer otros requisitos al hacerlo.
+
 # Nueva release con voces de Apple · 16 noviembre 2026
 
 - Carga API final: 45 capturas COMPLETE en es-ES/en-US/en-GB, orden y textos releídos; build 1.0 (3) VALID asociada y verificada en la ficha. Informe local `Release/store-upload-result.json`. No enviado a revisión.

@@ -1,3 +1,7 @@
+# Campos de revisión de 1.0 (3)
+
+` .build/publish-venv/bin/python scripts/store_submission_setup.py ` configura y verifica export compliance, derechos de contenido, categoría Libros y precio gratuito. Está restringido a la build 3 auditada y no envía a revisión. Revisa las declaraciones si cambia el contenido o la criptografía antes de adaptarlo a otra build. La clave Info.plist mantiene `ITSAppUsesNonExemptEncryption=false` para futuras builds con el mismo comportamiento.
+
 # Firma y selección de build
 
 Para usar la cuenta de Xcode al firmar mientras la clave API gestiona la ficha, configurar `FOLISONA_USE_XCODE_ACCOUNT: true` en `Release/local.json`, o ejecutar con `FOLISONA_USE_XCODE_ACCOUNT=1`. Es necesario si la clave de metadatos carece de permiso de certificados de distribución gestionados en la nube. Reutilizar `--archive` tras un fallo de exportación evita incrementar la build otra vez.

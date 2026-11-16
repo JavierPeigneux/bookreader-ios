@@ -22,3 +22,5 @@ Release/Exports/
 Release/Logs/
 Release/store-upload-result.json
 Release/header-upload-result.json
+
+Release/submission-setup-result.json

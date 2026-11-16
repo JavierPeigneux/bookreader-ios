@@ -8,10 +8,30 @@ protocol SpeechGenerating: Sendable {
                   progress: @escaping @Sendable (SynthesisPhase) -> Void) async throws -> URL
 }
 
-/// Uses installed system voices. Each request owns its synthesizer and temporary
-/// file, so a cancelled reader cannot stop or overwrite a newer request.
+/// Uses installed system voices. Requests lease stable engines and own temporary
+/// files, so a cancelled reader cannot stop or overwrite a newer request.
 @MainActor
 final class AppleSpeechService: SpeechGenerating {
+    // Stable delegates and engines outlive buffer callbacks. A cancelled engine
+    // is unavailable until Apple acknowledges termination; it is never recycled early.
+    private var engines: [SpeechEngine] = []
+    private func acquireEngine() async throws -> SpeechEngine {
+        let deadline = Date().addingTimeInterval(5)
+        repeat {
+            try Task.checkCancellation()
+            if let engine = engines.first(where: { $0.isAvailable }) { engine.leased = true; return engine }
+            if engines.count < 2 {
+                let engine = SpeechEngine()
+                engine.leased = true
+                engines.append(engine)
+                return engine
+            }
+            // A cancelled short utterance may still be delivering its final
+            // callbacks. Yield to them instead of destroying the audio unit.
+            try await Task.sleep(for: .milliseconds(20))
+        } while Date() < deadline
+        throw ReaderError.message(String(localized: "error.speech.busy"))
+    }
     nonisolated static let segmentCharacterLimit = 500
     nonisolated static func segments(_ text: String) -> [String] {
         var remaining = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -45,13 +65,14 @@ final class AppleSpeechService: SpeechGenerating {
         guard !segments.isEmpty else { throw ReaderError.message(String(localized: "error.document.empty")) }
         try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
         let temporary = destination.deletingLastPathComponent().appendingPathComponent("\(UUID().uuidString).partial.wav")
+        let engine = try await acquireEngine()
+        defer { engine.leased = false }
         let writer = SpeechAudioWriter(url: temporary)
         defer { writer.close(); try? FileManager.default.removeItem(at: temporary) }
         for (index, segment) in segments.enumerated() {
             try Task.checkCancellation()
             progress(.synthesizing)
-            let request = SpeechUtteranceWriter(writer: writer)
-            try await request.run(text: segment, voice: systemVoice)
+            try await engine.run(text: segment, voice: systemVoice, writer: writer)
             progress(.segment(completed: index + 1, total: segments.count))
         }
         try Task.checkCancellation()
@@ -120,62 +141,120 @@ private final class SpeechAudioWriter: @unchecked Sendable {
     func close() { lock.withLock { closed = true; file = nil } }
 }
 
+/// An empty PCM buffer ends the buffer stream, NOT the synthesizer's lifecycle.
+/// Wait for both the buffer terminator and didFinish before reusing this engine.
 @MainActor
-private final class SpeechUtteranceWriter: NSObject, AVSpeechSynthesizerDelegate {
+private final class SpeechEngine: NSObject, AVSpeechSynthesizerDelegate {
     private let synthesizer = AVSpeechSynthesizer()
-    private let writer: SpeechAudioWriter
+    var leased = false
+    var isAvailable: Bool { !leased && utterance == nil }
+    private var utterance: AVSpeechUtterance?
+    private var writer: SpeechAudioWriter?
     private var continuation: CheckedContinuation<Void, Error>?
     private var timeout: Task<Void, Never>?
-    init(writer: SpeechAudioWriter) {
-        self.writer = writer
+    private var ticket = UUID()
+    private var buffersEnded = false
+    private var synthesisEnded = false
+    // Keep callbacks' owner alive even if its caller cancels/releases the service.
+    // Cleared only by Apple's terminal delegate event, never by a guessed delay.
+    private var callbackLifetime: SpeechEngine?
+
+    override init() {
         super.init()
         synthesizer.delegate = self
     }
-    func run(text: String, voice: AVSpeechSynthesisVoice) async throws {
+    func run(text: String, voice: AVSpeechSynthesisVoice, writer: SpeechAudioWriter) async throws {
+        let requestID = UUID()
         try await withTaskCancellationHandler {
             try Task.checkCancellation()
             try await withCheckedThrowingContinuation { continuation in
+                precondition(self.utterance == nil)
+                self.ticket = requestID
                 self.continuation = continuation
+                self.writer = writer
+                self.buffersEnded = false
+                self.synthesisEnded = false
+                self.callbackLifetime = self
                 let utterance = AVSpeechUtterance(string: text)
                 utterance.voice = voice
                 utterance.rate = AVSpeechUtteranceDefaultSpeechRate
+                self.utterance = utterance
                 timeout = Task { [weak self] in
-                    do { try await Task.sleep(for: .seconds(60)) } catch { return }
-                    self?.complete(.failure(ReaderError.message(String(localized: "error.speech.timeout"))))
+                    do { try await Task.sleep(for: .seconds(30)) } catch { return }
+                    self?.abort(ReaderError.message(String(localized: "error.speech.timeout")), ticket: requestID)
                 }
-                let writer = self.writer
                 synthesizer.write(utterance) { [weak self] buffer in
                     do {
                         guard let pcm = buffer as? AVAudioPCMBuffer else {
                             throw ReaderError.message(String(localized: "error.audio.prepare"))
                         }
                         if pcm.frameLength == 0 {
-                            Task { @MainActor in self?.complete(.success(())) }
+                            Task { @MainActor in self?.buffersDidEnd(ticket: requestID) }
                         } else {
                             try writer.append(pcm)
                         }
                     } catch {
                         writer.fail(error)
-                        Task { @MainActor in self?.complete(.failure(error)) }
+                        Task { @MainActor in self?.abort(error, ticket: requestID) }
                     }
                 }
             }
         } onCancel: {
-            Task { @MainActor [weak self] in self?.complete(.failure(CancellationError())) }
+            Task { @MainActor [weak self] in self?.abort(CancellationError(), ticket: requestID) }
         }
     }
-    private func complete(_ result: Result<Void, Error>) {
-        guard let continuation else { return }
-        self.continuation = nil
+    private func buffersDidEnd(ticket: UUID) {
+        guard self.ticket == ticket, utterance != nil else { return }
+        buffersEnded = true
+        finishIfReady()
+    }
+    private func finishIfReady() {
+        guard synthesisEnded && buffersEnded else { return }
+        let pending = continuation
+        continuation = nil
+        releaseCallbacks()
+        pending?.resume()
+    }
+    private func abort(_ error: Error, ticket: UUID) {
+        guard self.ticket == ticket, let pending = continuation else { return }
+        continuation = nil
         timeout?.cancel()
         timeout = nil
-        if case .failure = result {
-            writer.close()
-            synthesizer.stopSpeaking(at: .immediate)
-        }
-        continuation.resume(with: result)
+        writer?.close()
+        // Return cancellation/error promptly. Keep the engine, delegate and
+        // utterance alive and unavailable until didCancel/didFinish arrives.
+        pending.resume(throwing: error)
+        if synthesisEnded && buffersEnded { releaseCallbacks() }
+        // Do not tear down Apple's render pipeline while a buffer callback is
+        // in flight. The current bounded utterance drains silently; its output
+        // is discarded and no further segments are enqueued after cancellation.
+    }
+    private func releaseCallbacks() {
+        timeout?.cancel()
+        timeout = nil
+        writer = nil
+        utterance = nil
+        callbackLifetime = nil
+    }
+    private func didFinish(_ identifier: ObjectIdentifier) {
+        guard let utterance, ObjectIdentifier(utterance) == identifier else { return }
+        synthesisEnded = true
+        finishIfReady()
+    }
+    private func didCancel(_ identifier: ObjectIdentifier) {
+        guard let utterance, ObjectIdentifier(utterance) == identifier else { return }
+        let pending = continuation
+        continuation = nil
+        writer?.close()
+        releaseCallbacks()
+        pending?.resume(throwing: CancellationError())
+    }
+    nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        let identifier = ObjectIdentifier(utterance)
+        Task { @MainActor [weak self] in self?.didFinish(identifier) }
     }
     nonisolated func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didCancel utterance: AVSpeechUtterance) {
-        Task { @MainActor [weak self] in self?.complete(.failure(CancellationError())) }
+        let identifier = ObjectIdentifier(utterance)
+        Task { @MainActor [weak self] in self?.didCancel(identifier) }
     }
 }

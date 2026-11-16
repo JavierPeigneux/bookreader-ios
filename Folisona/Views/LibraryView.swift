@@ -39,7 +39,7 @@ struct LibraryView: View {
                                     VStack(alignment: .leading, spacing: 6) {
                                         Text(book.title).font(.system(.headline, design: .serif)).foregroundStyle(FolioPalette.ink).lineLimit(2)
                                         Text(String.localizedStringWithFormat(String(localized: "library.book.sections"), book.format, Int64(book.blocks.count))).font(.caption).foregroundStyle(FolioPalette.secondary)
-                                        ProgressView(value: Double(book.position), total: Double(max(book.blocks.count, 1)))
+                                        Text(String.localizedStringWithFormat(String(localized: "reader.status.section"), Int64(book.position + 1), Int64(book.blocks.count))).font(.caption2).foregroundStyle(FolioPalette.secondary)
                                     }
                                     Image(systemName: "chevron.right").font(.caption)
                                 }.padding(16).background(FolioPalette.surface, in: RoundedRectangle(cornerRadius: 16))

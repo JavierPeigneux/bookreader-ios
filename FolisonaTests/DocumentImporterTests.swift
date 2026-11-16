@@ -138,12 +138,15 @@ final class DocumentImporterTests: XCTestCase {
             try? PreparedAudioStore().remove(book: book.id)
         }
         model.prepareAndPlay()
+        XCTAssertTrue(model.isWaitingForPlayback)
         let deadline = Date().addingTimeInterval(5)
         while (!model.isPlaying || !model.isGenerating) && Date() < deadline {
             try await Task.sleep(for: .milliseconds(25))
         }
         XCTAssertTrue(model.isPlaying, "Must play the first block while the second is still generating")
         XCTAssertTrue(model.isGenerating)
+        XCTAssertFalse(model.isWaitingForPlayback)
+        XCTAssertEqual(model.audioStatus, String(localized: "reader.audio.playing"))
         XCTAssertNotNil(model.book.lastListenedAt(block: 0))
         XCTAssertNil(model.book.lastListenedAt(block: 1), "Generation is not listening")
         XCTAssertEqual(model.cachedBlocks, [0])
@@ -164,6 +167,38 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertEqual(model.book.position, 2)
         try await Task.sleep(for: .milliseconds(100))
         XCTAssertFalse(model.isPlaying, "Cancelled work must not restart playback")
+    }
+
+    @MainActor
+    func testCancelWhileWaitingNeverStartsPlayback() async throws {
+        let store = PreparedAudioStore(root: directory.appendingPathComponent("audio"))
+        let book = Book(title: "Esperando", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Hola")])
+        let model = ReaderViewModel(book: book, service: TestSpeechGenerator(), audioStore: store, save: { _ in })
+        defer { model.close() }
+        model.prepareAndPlay()
+        XCTAssertTrue(model.isWaitingForPlayback)
+        model.cancelPlaybackRequest()
+        XCTAssertFalse(model.isWaitingForPlayback)
+        try await Task.sleep(for: .milliseconds(150))
+        XCTAssertFalse(model.isPlaying)
+        XCTAssertFalse(model.isGenerating)
+    }
+
+    @MainActor
+    func testListeningOnlyPreparesOneBlockAhead() async throws {
+        let store = PreparedAudioStore(root: directory.appendingPathComponent("audio"))
+        let service = TestSpeechGenerator(delayAfterFirst: .zero, frameCount: 240_000)
+        let book = Book(title: "Ventana", format: "TXT", blocks: (0..<20).map { ReadingBlock(id: $0, heading: "Texto", text: "Texto \($0)") })
+        let model = ReaderViewModel(book: book, service: service, audioStore: store, save: { _ in })
+        defer { model.close() }
+        model.prepareAndPlay()
+        let deadline = Date().addingTimeInterval(5)
+        while (model.isGenerating || !model.isPlaying) && Date() < deadline { try await Task.sleep(for: .milliseconds(25)) }
+        XCTAssertTrue(model.isPlaying)
+        XCTAssertFalse(model.isGenerating)
+        let requests = await service.requests
+        XCTAssertEqual(requests, ["Texto 0", "Texto 1"])
+        XCTAssertEqual(model.audioStatus, String(localized: "reader.audio.playing"))
     }
 
     @MainActor
@@ -299,7 +334,7 @@ final class DocumentImporterTests: XCTestCase {
     }
 
     @MainActor
-    func testUnsupportedBackgroundStopsGenerationButPauseDoesNot() async throws {
+    func testUnsupportedBackgroundStopsOfflineGenerationButPauseDoesNot() async throws {
         let store = PreparedAudioStore(root: directory.appendingPathComponent("audio"))
         var active = true
         let service = TestSpeechGenerator()
@@ -309,6 +344,7 @@ final class DocumentImporterTests: XCTestCase {
         let model = ReaderViewModel(book: book, service: service, audioStore: store,
             isAppActive: { active }, makeLease: { permission }, save: { _ in })
         defer { model.close() }
+        model.prepareBook()
         model.prepareAndPlay()
         let deadline = Date().addingTimeInterval(5)
         while !model.isPlaying && Date() < deadline { try await Task.sleep(for: .milliseconds(25)) }
@@ -321,6 +357,40 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertFalse(model.isGenerating)
         XCTAssertTrue(model.isPlaying, "Saved audio must continue without a Background task grant")
         XCTAssertNotNil(store.pending(book: book.id))
+    }
+
+    @MainActor
+    func testBackgroundPlaybackRefillsBeyondInitialWindowWithoutLease() async throws {
+        let store = PreparedAudioStore(root: directory.appendingPathComponent("background-playback"))
+        let service = TestSpeechGenerator(delayAfterFirst: .milliseconds(80), frameCount: 12_000)
+        var active = true
+        let permission = TestBackgroundLease(granted: false)
+        let book = Book(title: "Lectura bloqueada", format: "TXT", blocks: (0..<6).map {
+            ReadingBlock(id: $0, heading: "Capítulo \($0)", text: "Texto \($0)", chapterID: $0)
+        })
+        let model = ReaderViewModel(book: book, service: service, audioStore: store,
+            isAppActive: { active }, makeLease: { permission }, save: { _ in })
+        defer { model.close() }
+        model.prepareAndPlay()
+        let deadline = Date().addingTimeInterval(12)
+        while !model.isPlaying && Date() < deadline { try await Task.sleep(for: .milliseconds(20)) }
+        XCTAssertTrue(model.isPlaying)
+        active = false
+        model.willResignActive()
+        permission.expire() // No offline task should control listening prefetch.
+        while model.book.lastListenedAt(block: 5) == nil && Date() < deadline {
+            try await Task.sleep(for: .milliseconds(20))
+        }
+        XCTAssertNil(model.error)
+        XCTAssertEqual(model.cachedBlocks, Set(0..<6))
+        XCTAssertEqual(model.book.position, 5)
+        XCTAssertNotNil(model.book.lastListenedAt(block: 5))
+        let requests = await service.requests
+        XCTAssertEqual(requests, (0..<6).map { "Texto \($0)" })
+        model.pause()
+        XCTAssertFalse(model.isGenerating)
+        XCTAssertFalse(model.isPlaying)
+        XCTAssertFalse(model.isWaitingForPlayback)
     }
 
     @MainActor
@@ -383,6 +453,34 @@ final class DocumentImporterTests: XCTestCase {
             attachment.name = "Apple-\(voice.systemVoice!.language).wav"
             attachment.lifetime = .keepAlways
             add(attachment)
+        }
+    }
+
+    @MainActor
+    func testAppleSpeechRepeatedVoiceSwitchingAndCancellation() async throws {
+        guard ReaderVoice.spanish.systemVoice != nil, ReaderVoice.english.systemVoice != nil else {
+            throw XCTSkip("Install Spanish and English system voices")
+        }
+        let service = AppleSpeechService()
+        for index in 0..<12 {
+            let voice = index.isMultiple(of: 2) ? ReaderVoice.spanish : .english
+            let text = index.isMultiple(of: 2) ? "Una lectura breve para comprobar el cambio de voz." : "A short reading to check switching voices."
+            let output = directory.appendingPathComponent("switch-\(index).wav")
+            _ = try await service.generate(text: text, voice: voice, destination: output)
+            XCTAssertGreaterThan(try AVAudioFile(forReading: output).length, 0)
+        }
+        for index in 0..<6 {
+            let cancelled = directory.appendingPathComponent("cancel-\(index).wav")
+            let task = Task {
+                try await service.generate(text: String(repeating: "Una lectura muy larga. ", count: 1000), voice: .spanish, destination: cancelled)
+            }
+            try await Task.sleep(for: .milliseconds(15))
+            task.cancel()
+            do { _ = try await task.value; XCTFail("Expected cancellation") } catch is CancellationError { }
+            let output = directory.appendingPathComponent("restart-\(index).wav")
+            _ = try await service.generate(text: "La lectura vuelve a funcionar.", voice: .spanish, destination: output)
+            XCTAssertGreaterThan(try AVAudioFile(forReading: output).length, 0)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: cancelled.path))
         }
     }
 

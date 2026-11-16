@@ -9,7 +9,7 @@ Bundle ID: `com.javierpeigneux.Folisona`.
 1. Abre `Folisona.xcodeproj` en Xcode 27.2 o posterior y selecciona el esquema `Folisona`.
 2. Selecciona un iPhone/iPad o simulador. Para un dispositivo físico, configura el equipo de firma.
 3. Importa un documento desde Archivos o pulsa **Probar con un texto en castellano**.
-4. Selecciona una voz de Apple y pulsa **Preparar y escuchar**.
+4. Selecciona una voz de Apple y pulsa **Escuchar**.
 
 No hay modelos que descargar, scripts Python de preparación ni dependencias de síntesis externas. Swift Package Manager resuelve únicamente SwiftSoup 2.8.8 y ZIPFoundation 0.9.20 para importar documentos. Sus avisos MIT completos se distribuyen en `Folisona/Resources/ThirdPartyNotices.txt`.
 
@@ -27,11 +27,11 @@ source scripts/xcode_env.sh
 
 El selector muestra las voces de Apple disponibles en español e inglés, con nombre, variante regional y calidad. La selección inicial es la voz de iOS para español de España. Se pueden descargar otras voces desde Ajustes → Accesibilidad. La disponibilidad y los nombres dependen del dispositivo; no se incluyen voces de proveedores externos ni se solicita acceso a una voz personal.
 
-`AppleSpeechService` utiliza `AVSpeechSynthesizer.write(_:toBufferCallback:)` para escribir WAV por fragmentos. La app empieza a reproducir en cuanto el primero está preparado. El menú permite preparar un capítulo o todo el libro. El audio se guarda en Application Support, excluido de las copias de seguridad, y se reutiliza para la misma voz. No se envía el texto a un servidor propio.
+`AppleSpeechService` utiliza `AVSpeechSynthesizer.write(_:toBufferCallback:)` para escribir WAV por fragmentos. La app empieza a reproducir en cuanto el primero está preparado. Al escuchar, prepara únicamente el fragmento actual y el siguiente, y amplía esa ventana al avanzar. El audio ya guardado se reproduce antes de iniciar más preparación. Se reutiliza un máximo de dos motores, conservando su delegado y la frase hasta recibir tanto el final de los buffers como la finalización de la síntesis. Cancelar descarta el audio y deja terminar el fragmento corto en curso antes de reutilizar el motor. El menú permite preparar un capítulo o todo el libro. El audio se guarda en Application Support, excluido de las copias de seguridad, y se reutiliza para la misma voz. No se envía el texto a un servidor propio.
 
-Una voz no disponible produce un error explicativo; nunca se cambia silenciosamente de idioma. Se comprueba que el audio no esté vacío ni sea silencioso. Cada solicitud tiene su sintetizador y archivo temporal; cancelar una preparación elimina el parcial y no afecta a otra solicitud.
+Una voz no disponible ofrece **Descargar voces**, con instrucciones y un botón para abrir Ajustes. Se utiliza `UIApplication.openSettingsURLString`: abre los ajustes de Folisona, no directamente la pantalla Voces, para la que el SDK no ofrece un destino público. La guía indica volver a la pantalla principal y seguir Accesibilidad → Lectura y voz → Voces. La lista se actualiza al regresar a la app; nunca se cambia silenciosamente de idioma. Se comprueba que el audio no esté vacío ni sea silencioso. Cada solicitud reserva un motor y tiene su archivo temporal; cancelar una preparación elimina el parcial y no afecta a otra solicitud.
 
-La preparación muestra avance, fragmentos guardados y una estimación basada en el trabajo nuevo. La reproducción del audio preparado funciona con la pantalla bloqueada. La generación solicita una tarea finita de segundo plano sin GPU; iOS puede denegarla o finalizarla. En ese caso se conserva el trabajo completado y se reanuda desde la app. Para escuchar sin depender de nuevas generaciones, prepara el libro antes.
+La interfaz no utiliza barras de progreso. El control de reproducción permanece visible; mientras espera audio muestra un indicador circular, un mensaje y la acción de cancelar. La preparación explícita muestra un contador de fragmentos guardados y permite detenerla. La reproducción del audio preparado funciona con la pantalla bloqueada. Durante la escucha, la preparación del fragmento siguiente continúa aunque la app esté en segundo plano, como parte de la reproducción de audio. Pausar en segundo plano detiene esa preparación. La preparación explícita de capítulo/libro solicita una tarea finita de segundo plano sin GPU; iOS puede denegarla o finalizarla. En ese caso se conserva el trabajo completado y se reanuda desde la app. Para escuchar sin depender de nuevas generaciones, prepara el libro antes.
 
 Esta primera versión no incluye migración de voces, tareas pendientes ni audios de Kokoro.
 

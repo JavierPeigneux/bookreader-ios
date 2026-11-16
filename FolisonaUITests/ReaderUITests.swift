@@ -10,7 +10,7 @@ final class ReaderUITests: XCTestCase {
         var stableSamples = 0
         let settled = NSPredicate { _, _ in
             let frame = app.frame
-            let button = app.buttons["Preparar y escuchar"]
+            let button = app.buttons["Escuchar"]
             guard button.exists, button.isHittable, frame.contains(button.frame) else {
                 stableSamples = 0
                 return false
@@ -40,7 +40,7 @@ final class ReaderUITests: XCTestCase {
         } else {
             app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Bienvenida")).firstMatch.tap()
         }
-        XCTAssertTrue(app.buttons["Preparar y escuchar"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["Escuchar"].waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Bienvenida"].firstMatch.exists)
         let reader = XCTAttachment(screenshot: app.screenshot())
         reader.name = "Lector-castellano"
@@ -80,7 +80,7 @@ final class ReaderUITests: XCTestCase {
         app.buttons["reader.chapters"].tap()
         XCTAssertTrue(app.navigationBars["Chapter playlist"].waitForExistence(timeout: 5))
         app.buttons["chapter.0"].tap()
-        let play = app.buttons["Prepare and listen"]
+        let play = app.buttons["Listen"]
         XCTAssertTrue(play.waitForExistence(timeout: 10))
         XCTAssertTrue(app.staticTexts["Bienvenida"].firstMatch.exists)
         XCTAssertTrue(app.staticTexts["Section 1 of 1"].exists)
@@ -89,8 +89,44 @@ final class ReaderUITests: XCTestCase {
         screenshot.name = "English reader"
         screenshot.lifetime = .keepAlways
         add(screenshot)
-        XCTAssertTrue(app.staticTexts["Installed Apple voices. Download more voices in Settings > Accessibility."].exists)
+        XCTAssertEqual(app.progressIndicators.count, 0)
+        app.buttons["reader.prepare"].tap()
+        app.buttons["Download voices"].tap()
+        XCTAssertTrue(app.buttons["reader.voice.openSettings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Accessibility → Read & Speak → Voices"].exists)
 
+    }
+
+    @MainActor
+    func testMissingVoicesOffersSettings() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--store-screenshots", "--no-system-voices", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        let book = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "The Lighthouse Library")).firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 10))
+        book.tap()
+        app.buttons["chapter.0"].tap()
+        let download = app.buttons["reader.voice.download"]
+        XCTAssertTrue(download.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["reader.playback"].exists)
+        let empty = XCTAttachment(screenshot: app.screenshot())
+        empty.name = "No voices"
+        empty.lifetime = .keepAlways
+        add(empty)
+        download.tap()
+        let open = app.buttons["reader.voice.openSettings"]
+        XCTAssertTrue(open.waitForExistence(timeout: 5))
+        let instructions = XCTAttachment(screenshot: app.screenshot())
+        instructions.name = "Download voice instructions"
+        instructions.lifetime = .keepAlways
+        add(instructions)
+        open.tap()
+        let settings = XCUIApplication(bundleIdentifier: "com.apple.Preferences")
+        let foreground = XCTNSPredicateExpectation(predicate: NSPredicate { _,_ in settings.state == .runningForeground }, object: nil)
+        XCTAssertEqual(XCTWaiter.wait(for: [foreground], timeout: 10), .completed)
+        app.activate()
+        app.buttons["Done"].tap()
+        XCTAssertTrue(download.waitForExistence(timeout: 5))
     }
 
     @MainActor

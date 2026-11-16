@@ -96,7 +96,10 @@ struct ReaderVoice: RawRepresentable, Codable, Hashable, Identifiable, Sendable 
         return "\(voice.name) · \(language)\(quality)"
     }
     static var available: [ReaderVoice] {
-        AVSpeechSynthesisVoice.speechVoices()
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--no-system-voices") { return [] }
+        #endif
+        return AVSpeechSynthesisVoice.speechVoices()
             .filter { $0.identifier.hasPrefix("com.apple.") && !$0.voiceTraits.contains(.isPersonalVoice) && ($0.language.hasPrefix("es-") || $0.language.hasPrefix("en-")) }
             .sorted {
                 if $0.language != $1.language { return $0.language > $1.language }

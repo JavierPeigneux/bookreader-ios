@@ -1,3 +1,21 @@
+# Continuidad de reproducción en segundo plano · 16 noviembre 2026
+
+- Causa encontrada en código: la ventana de anticipación exigía primer plano, y abandonar la app cancelaba la generación sin concesión de BGContinuedProcessingTask. Tras consumir los dos fragmentos guardados no se preparaban los siguientes.
+- Separada la anticipación para escucha de la preparación explícita de libros. La primera continúa durante la reproducción con UIBackgroundModes audio y sesión playback; no solicita una tarea finita por cada ventana. La preparación explícita conserva concesión/expiración y persistencia. Pausar en segundo plano detiene la anticipación; volver a primer plano permite rellenar la cola pendiente.
+- Suite: 27 pruebas pasadas, cero fallos (`.build/BackgroundPlayback.xcresult`). Nueva regresión con seis fragmentos y actividad inyectada: cambia a segundo plano sin permiso de tarea, avanza más allá de la ventana inicial, genera todos en orden y registra escucha del último. Usa WAV de prueba; no demuestra concesión de ejecución de iOS con pantalla bloqueada.
+- Build física firmada correcta (`.build/background-phone-build.log`); instalación mediante devicectl confirmada (`.build/background-phone-install.log`) y lanzamiento de com.javierpeigneux.Folisona correcto en el iPhone conectado. No se ha comprobado todavía una escucha prolongada con bloqueo físico ni se ha subido otra build a App Store Connect.
+
+# Carga de audio e interfaz simplificada · 16 noviembre 2026
+
+- Control de reproducción permanente con espera cancelable y estado de audio único. Sin barras, porcentajes ni cronómetros en biblioteca/lector; la preparación explícita mantiene un contador de fragmentos.
+- Al escuchar se prepara el fragmento actual y uno de anticipación; se reproduce primero el audio ya guardado. La preparación explícita de capítulo/libro permanece disponible. El avance de la cola amplía la ventana sin preparar el libro entero de golpe.
+- Reutilización del sintetizador después de solicitudes correctas, manteniendo motores independientes para operaciones simultáneas/canceladas. Prueba Mac con seis fragmentos iguales: media de los cinco posteriores al primero, 198,3 ms antes y 48,2 ms después. Medida de síntesis, no latencia de reproducción en iPhone ni garantía de rendimiento. Logs `.build/audio-speed-before.log` y `.build/audio-speed-after.log`.
+- WAV reales en Mac: duraciones/RMS conservados en español e inglés; cancelación y nueva solicitud correctas (`.build/loading-host.log`).
+- Sin voces: pantalla con acción Descargar voces, instrucciones y apertura de Ajustes mediante `UIApplication.openSettingsURLString`. Este destino público abre los ajustes de la app, no la pantalla de descarga. El SDK 27.2 no expone un destino público específico para Voces; no se utilizan esquemas privados. La lista de voces se refresca al volver a primer plano.
+- Primera suite de esta mejora: 25 pruebas funcionales y 3 de interfaz correctas, incluyendo abrir Ajustes y regresar; dos pruebas de capturas de tienda omitidas. Suite final también correcta: 25 funcionales y 3 de interfaz pasadas, cero fallos, dos capturas de tienda omitidas (`.build/LoadingClarity-final.xcresult`), tras ajustar el avance de la cola y la persistencia del estado pausado.
+- Revisión visual de las pantallas sin voces y de instrucciones; contraste de botones y fondo del lector corregidos. Prueba focalizada de apertura de Ajustes repetida y pasada (`.build/LoadingClarity-settings.xcresult`).
+- Compilación Release para iPhone sin firma correcta (`.build/loading-release.log`). No se ha subido una nueva build ni actualizado la ficha de App Store Connect.
+
 # Validación actual · voces de Apple · 16 noviembre 2026
 
 - Respaldo completo del estado anterior publicado y verificado: `44c47de5d45b5a1a5675ed36018e34828bf2dae2`. Árbol remoto idéntico al local: `90e244ba19f79b1933de368e891edfe4b891e9e2`.
@@ -195,3 +213,12 @@ Texto de la prueba: «¡Buenos días! El niño lee un libro en castellano. Maña
 - Carga real por App Asset Library API: imagen PREPARE_FOR_SUBMISSION y tres asignaciones PRODUCT_PAGE_HEADER_ASSET/DEFAULT_PROFILE ACTIVE, leídas de nuevo. Informe header-upload-result.json. No enviado a revisión.
 - Nuevo store_headers.py consulta especificaciones de Apple, reutiliza el archivo por referencia SHA-256 y evita sustituir un header distinto. publish.py lo integra automáticamente cuando existe el arte. La reanudación reutilizó el header español y completó los dos ingleses.
 - Cuestionario de edades aplicado por API con store_age_rating.py, respuestas documentadas en Release/age-rating.json. Parental Controls = false porque no hay controles propios en la app. No modifica Tiempo de uso de iOS. Resto de capacidades ausentes y frecuencias NONE; sin categoría infantil ni elevación manual de edad. Apple devolvió appStoreAgeRating FOUR_PLUS y Brasil L. Todas las respuestas se verificaron con GET appInfos/{id}/ageRatingDeclaration.
+
+
+## Fallo de TextToSpeech en iPhone · 16 noviembre 2026
+
+- Debugger de Xcode: proceso Folisona detenido en `EXC_BAD_ACCESS` en `objc_retain`, con llamadas de TextToSpeech en el hilo principal y renderizado de audio activo en otro hilo. Es un fallo real observado, no una deducción a partir de avisos de consola. La traza de Time Profiler no contenía muestras porque el debugger mantenía detenido el proceso.
+- Corregido el ciclo de vida de la síntesis: motores y delegados persistentes, frase retenida hasta la finalización nativa y el final de buffers; cancelar descarta el parcial y deja drenar el fragmento acotado, sin detener el renderizador desde un callback. Pool limitado a dos motores con espera asíncrona cancelable. Esto corrige riesgos de vida útil; el stack interno de Apple no demuestra por sí solo la causa exacta.
+- Prueba añadida: 12 cambios ES/EN y seis cancelaciones rápidas seguidas de nuevas generaciones. El primer intento detectó motores bloqueados después de stopSpeaking; se eliminó esa interrupción. La siguiente suite pasó 26 pruebas sin fallos (`.build/SpeechLifecycle-regression2.xcresult`). Harness macOS: WAV español e inglés con señal y cancelación/reinicio correctos (`.build/speech-lifecycle-host2.log`).
+- Build final de pruebas para iPhone compilada y firmada correctamente (`.build/phone-lifecycle-final.log`). La primera instalación directa mediante devicectl agotó 45 segundos; no se presenta la compilación como validación física del arreglo.
+- Verificación del código final: 26 pruebas del simulador pasadas en `.build/SpeechLifecycle-final.xcresult`; harness macOS repetido con audio ES/EN y cancelación/reinicio correctos (`.build/speech-lifecycle-host-final.log`). Segunda instalación directa en iPhone agotó 30 segundos (`.build/phone-install-final.log`), por lo que la corrección sigue pendiente de prueba física.

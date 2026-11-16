@@ -10,6 +10,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     var voice: ReaderVoice = .spanish { didSet { if oldValue != voice { changeVoice() } } }
     private(set) var isGenerating = false
     private(set) var isPlaying = false
+    private var playbackPaused = false
     var error: String?
     var status = String(localized: "reader.status.ready")
     let chapters: [ReadingChapter]
@@ -30,6 +31,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     private let isAppActive: @MainActor () -> Bool
     private let makeLease: @MainActor () -> any BackgroundGenerationManaging
     private var lease: (any BackgroundGenerationManaging)?
+    private var preparingForPlayback = false
     private var listeningSessionID = UUID()
     private var lastPlaybackStartedAt: Date?
     private(set) var positionBeforeHistoryJump: Int?
@@ -44,6 +46,16 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     @ObservationIgnored private var remoteTargets: [(MPRemoteCommand, Any)] = []
     @ObservationIgnored private var interruption: NSObjectProtocol?
     private var playbackVoice: ReaderVoice = .spanish
+    var isWaitingForPlayback: Bool { wantsPlayback && !isPlaying }
+    var audioStatus: String {
+        if isPlaying { return String(localized: "reader.audio.playing") }
+        if error != nil { return String(localized: "reader.audio.failed") }
+        if isWaitingForPlayback { return String(localized: "reader.audio.starting") }
+        if playbackPaused { return String(localized: "reader.status.paused") }
+        if isGenerating { return String(localized: "reader.audio.preparing") }
+        return status
+    }
+    func cancelPlaybackRequest() { pause(); cancelGeneration() }
     var current: ReadingBlock { book.blocks[book.position] }
 
     init(book: Book, service: any SpeechGenerating,
@@ -75,13 +87,19 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     func prepareAndPlay() {
         if isPlaying { pause(); return }
         wantsPlayback = true
+        playbackPaused = false
         playbackVoice = voice
         error = nil
-        if (task == nil || pendingPreparation?.range.contains(book.position) != true),
-           !(book.position..<book.blocks.count).allSatisfy(cachedBlocks.contains), isAppActive() {
-            prepare(range: book.position..<book.blocks.count)
-        }
+        // Start saved audio before any preparation or directory bookkeeping.
         ensureAudio()
+        preparePlaybackWindowIfNeeded()
+    }
+
+    private func preparePlaybackWindowIfNeeded() {
+        guard wantsPlayback else { return }
+        if task != nil && pendingPreparation?.range.contains(book.position) == true { return }
+        let window = book.position..<min(book.position + 2, book.blocks.count)
+        if !window.allSatisfy(cachedBlocks.contains) { prepare(range: window, forPlayback: true) }
     }
 
     func prepareChapter(_ chapter: ReadingChapter) { prepare(range: chapter.range) }
@@ -92,9 +110,9 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         prepare(range: pendingPreparation.range)
     }
 
-    private func prepare(range: Range<Int>) {
+    private func prepare(range: Range<Int>, forPlayback: Bool = false) {
         guard !range.isEmpty, range.lowerBound >= 0, range.upperBound <= book.blocks.count else { return }
-        guard isAppActive() else { status = String(localized: "preparation.reopen"); return }
+        guard isAppActive() || (forPlayback && wantsPlayback) else { status = String(localized: "preparation.reopen"); return }
         stopPreparation()
         let job = AudioPreparation(voice: voice, lowerBound: range.lowerBound, upperBound: range.upperBound)
         do { try audioStore.save(job, book: book.id) }
@@ -110,29 +128,37 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         generationID = ticket
         let session = makeLease()
         lease = session
+        preparingForPlayback = forPlayback
         isGenerating = true
         generationStartedAt = Date()
         UIApplication.shared.isIdleTimerDisabled = true
-        session.request(title: book.title, onChange: { [weak self, weak session] in
-            guard let self, self.generationID == ticket else { return }
-            self.backgroundGenerationAllowed = session?.canRunInBackground == true
-        }, onExpiration: { [weak self] in
-            guard let self, self.generationID == ticket else { return }
-            self.stopPreparation()
-            self.status = String(localized: "preparation.interrupted")
-        })
+        // Playback prefetch is part of the active audio session, not a finite
+        // offline preparation task that can expire between chapters.
+        if !forPlayback {
+            session.request(title: book.title, onChange: { [weak self, weak session] in
+                guard let self, self.generationID == ticket else { return }
+                self.backgroundGenerationAllowed = session?.canRunInBackground == true
+            }, onExpiration: { [weak self] in
+                guard let self, self.generationID == ticket else { return }
+                self.stopPreparation()
+                self.status = String(localized: "preparation.interrupted")
+            })
+        }
         session.report(completed: preparationCompleted, total: preparationTotal)
         task = Task { [weak self, service] in
             var success = false
             defer {
                 session.finish(success: success)
-                if let self, self.generationID == ticket { self.finishGeneration() }
+                if let self, self.generationID == ticket {
+                    self.finishGeneration()
+                    if success { self.preparePlaybackWindowIfNeeded() }
+                }
             }
             do {
                 guard let self else { return }
-                while let needed = range.first(where: { !self.cachedBlocks.contains($0) }) {
+                for needed in range where !self.cachedBlocks.contains(needed) {
                     try Task.checkCancellation()
-                    guard self.isAppActive() || session.canRunInBackground else {
+                    guard self.isAppActive() || session.canRunInBackground || (forPlayback && self.wantsPlayback) else {
                         throw ReaderError.message(String(localized: "preparation.reopen"))
                     }
                     self.generationPhase = String(localized: "reader.generation.loading")
@@ -155,7 +181,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                     try Task.checkCancellation()
                     guard self.generationID == ticket else { return }
                     self.cachedBlocks.insert(needed)
-                    self.preparationCompleted = range.filter(self.cachedBlocks.contains).count
+                    self.preparationCompleted += 1
                     self.preparationProgress.completed = self.preparationCompleted
                     self.preparationProgress.partial = 0
                     self.updatePreparationEstimate()
@@ -170,6 +196,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
             } catch {
                 guard let self, self.generationID == ticket else { return }
                 if !(error is CancellationError) { self.error = error.localizedDescription }
+                if !self.isPlaying { self.wantsPlayback = false }
                 self.status = String(localized: "preparation.interrupted")
                 // Playback remains independent and can consume everything already saved.
             }
@@ -179,7 +206,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     private func ensureAudio() {
         guard wantsPlayback, playbackTask == nil else { return }
         if !isPlaying, cachedBlocks.contains(book.position) { startPlayback() }
-        else if !isPlaying, task == nil { status = String(localized: "preparation.reopen") }
+
     }
 
     private func finishGeneration() {
@@ -188,6 +215,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         generationStartedAt = nil
         backgroundGenerationAllowed = false
         lease = nil
+        preparingForPlayback = false
         UIApplication.shared.isIdleTimerDisabled = false
     }
 
@@ -201,17 +229,22 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
 
     func cancelGeneration() {
         stopPreparation()
+        if !isPlaying { wantsPlayback = false; cancelPlaybackStart() }
         status = String(localized: "preparation.interrupted")
     }
 
     func willResignActive() {
-        if isGenerating && lease?.canRunInBackground != true {
+        if isGenerating && lease?.canRunInBackground != true && !(preparingForPlayback && wantsPlayback) {
             stopPreparation()
+            if !isPlaying { wantsPlayback = false; cancelPlaybackStart() }
             status = String(localized: "preparation.reopen")
         }
     }
 
-    func didBecomeActive() { refreshCache(); if wantsPlayback { ensureAudio() } }
+    func didBecomeActive() {
+        refreshCache()
+        if wantsPlayback { ensureAudio(); preparePlaybackWindowIfNeeded() }
+    }
 
     private func refreshCache() { cachedBlocks = audioStore.available(book: book.id, voice: voice) }
 
@@ -280,10 +313,12 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     }
 
     func pause() {
+        playbackPaused = wantsPlayback || isPlaying || player != nil
         wantsPlayback = false
         cancelPlaybackStart()
         player?.pause()
         isPlaying = false
+        if preparingForPlayback && !isAppActive() { stopPreparation() }
         status = String(localized: "reader.status.paused")
         updateNowPlaying()
     }
@@ -309,6 +344,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         player?.stop(); player = nil; isPlaying = false
         listeningSessionID = UUID()
         book.position = index
+        playbackPaused = false
         save(book)
         status = String.localizedStringWithFormat(String(localized: "reader.status.section"), Int64(index + 1), Int64(book.blocks.count))
         updateNowPlaying()
@@ -335,6 +371,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                 self.book.position += 1
                 self.save(self.book)
                 self.ensureAudio()
+                self.preparePlaybackWindowIfNeeded()
             } else {
                 self.wantsPlayback = false
                 self.status = String(localized: "reader.status.finished")

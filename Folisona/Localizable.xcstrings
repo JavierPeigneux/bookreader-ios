@@ -1,6 +1,23 @@
 {
   "sourceLanguage": "es",
   "strings": {
+    "app.name": {
+      "extractionState": "stale",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folisona"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folisona"
+          }
+        }
+      }
+    },
     "common.delete": {
       "extractionState": "manual",
       "localizations": {
@@ -14,6 +31,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eliminar"
+          }
+        }
+      }
+    },
+    "common.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
           }
         }
       }
@@ -443,6 +477,57 @@
         }
       }
     },
+    "error.speech.invalid_audio": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice did not produce valid audio for this section. Try another voice."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La voz no ha producido audio válido para este fragmento. Prueba con otra voz."
+          }
+        }
+      }
+    },
+    "error.speech.timeout": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice did not respond. Try again or select another installed voice."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La voz no ha respondido. Vuelve a intentarlo o selecciona otra voz instalada."
+          }
+        }
+      }
+    },
+    "error.speech.voice_missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This voice is not installed. Select another voice or download it in Settings > Accessibility."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta voz no está instalada. Selecciona otra voz o descárgala en Ajustes > Accesibilidad."
+          }
+        }
+      }
+    },
     "library.book.sections": {
       "extractionState": "manual",
       "localizations": {
@@ -654,6 +739,244 @@
         }
       }
     },
+    "preparation.background.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparation can continue with the screen locked while iOS keeps the task active."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La preparación puede continuar con la pantalla bloqueada mientras iOS mantenga la tarea activa."
+          }
+        }
+      }
+    },
+    "preparation.background.unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Background generation is unavailable right now. Keep the app open to prepare audio; saved audio can play with the screen locked."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La generación en segundo plano no está disponible ahora. Mantén la app abierta para preparar audio; lo guardado se puede escuchar con la pantalla bloqueada."
+          }
+        }
+      }
+    },
+    "preparation.book": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepare entire book"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparar libro completo"
+          }
+        }
+      }
+    },
+    "preparation.chapter": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepare this chapter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparar este capítulo"
+          }
+        }
+      }
+    },
+    "preparation.interrupted": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparation stopped. Saved audio is kept and you can resume later."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación detenida. El audio guardado se conserva y puedes continuar después."
+          }
+        }
+      }
+    },
+    "preparation.menu": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline listening"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escuchar sin conexión"
+          }
+        }
+      }
+    },
+    "preparation.progress.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing audio"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando audio"
+          }
+        }
+      }
+    },
+    "preparation.ready": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio saved for offline listening"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio guardado para escuchar sin conexión"
+          }
+        }
+      }
+    },
+    "preparation.reopen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can listen to saved audio. Open the app and resume preparation to generate more."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puedes escuchar el audio guardado. Abre la app y continúa la preparación para generar más."
+          }
+        }
+      }
+    },
+    "preparation.resume": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume preparation"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar preparación"
+          }
+        }
+      }
+    },
+    "preparation.system.subtitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparing audio for offline listening"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando audio para escuchar sin conexión"
+          }
+        }
+      }
+    },
+    "preparation.time.calculating": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimating time remaining…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calculando tiempo restante…"
+          }
+        }
+      }
+    },
+    "preparation.time.less_than_minute": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About less than 1 min remaining"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Queda menos de 1 min aprox."
+          }
+        }
+      }
+    },
+    "preparation.time.remaining": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About %@ remaining"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quedan %@ aprox."
+          }
+        }
+      }
+    },
     "reader.audio.title": {
       "extractionState": "manual",
       "localizations": {
@@ -671,19 +994,87 @@
         }
       }
     },
+    "reader.chapters.cached": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio ready: %lld / %lld"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio preparado: %lld / %lld"
+          }
+        }
+      }
+    },
+    "reader.chapters.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chapter playlist"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lista de capítulos"
+          }
+        }
+      }
+    },
     "reader.generation.foreground_hint": {
       "extractionState": "manual",
       "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generating the current or next section. Keep the app open to prepare more audio."
+          }
+        },
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Generando el fragmento actual o el siguiente. Mantén la app abierta para preparar más audio."
           }
-        },
+        }
+      }
+    },
+    "reader.generation.loading": {
+      "extractionState": "manual",
+      "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Generating the current or next section. Keep the app open to prepare more audio."
+            "value": "Preparing voice…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparando voz…"
+          }
+        }
+      }
+    },
+    "reader.generation.saving": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saving audio…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardando audio…"
           }
         }
       }
@@ -701,6 +1092,159 @@
           "stringUnit": {
             "state": "translated",
             "value": "Detener generación"
+          }
+        }
+      }
+    },
+    "reader.generation.synthesizing": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generating audio…"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generando audio…"
+          }
+        }
+      }
+    },
+    "reader.history.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Times will appear once you listen to the book."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las horas aparecerán cuando escuches el libro."
+          }
+        }
+      }
+    },
+    "reader.history.heard_at": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listened on %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escuchado el %@"
+          }
+        }
+      }
+    },
+    "reader.history.latest": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last listen for each section"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última escucha de cada fragmento"
+          }
+        }
+      }
+    },
+    "reader.history.resume_hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play from this section."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reproduce desde este fragmento."
+          }
+        }
+      }
+    },
+    "reader.history.return": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Return to previous position"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a la posición anterior"
+          }
+        }
+      }
+    },
+    "reader.history.session": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening session"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesión de escucha"
+          }
+        }
+      }
+    },
+    "reader.history.show": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show listening times"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar horas de escucha"
+          }
+        }
+      }
+    },
+    "reader.history.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listening times"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horas de escucha"
           }
         }
       }
@@ -728,13 +1272,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prepare and listen"
+            "value": "Listen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Preparar y escuchar"
+            "value": "Escuchar"
           }
         }
       }
@@ -807,6 +1351,23 @@
         }
       }
     },
+    "reader.status.paused": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En pausa"
+          }
+        }
+      }
+    },
     "reader.status.playing": {
       "extractionState": "manual",
       "localizations": {
@@ -847,13 +1408,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Choose a voice and prepare the audio to listen."
+            "value": "Ready to listen"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Elige una voz y prepara el audio para escuchar."
+            "value": "Listo para escuchar"
           }
         }
       }
@@ -909,562 +1470,19 @@
         }
       }
     },
-    "reader.chapters.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lista de capítulos"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chapter playlist"
-          }
-        }
-      }
-    },
-    "reader.chapters.cached": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio preparado: %lld / %lld"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio ready: %lld / %lld"
-          }
-        }
-      }
-    },
-    "common.done": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listo"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Done"
-          }
-        }
-      }
-    },
-    "reader.generation.loading": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando voz…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing voice…"
-          }
-        }
-      }
-    },
-    "reader.generation.synthesizing": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generando audio…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generating audio…"
-          }
-        }
-      }
-    },
-    "reader.generation.saving": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardando audio…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saving audio…"
-          }
-        }
-      }
-    },
-    "reader.status.paused": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En pausa"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paused"
-          }
-        }
-      }
-    },
-    "preparation.system.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando audio para escuchar sin conexión"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing audio for offline listening"
-          }
-        }
-      }
-    },
-    "preparation.menu": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escuchar sin conexión"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Offline listening"
-          }
-        }
-      }
-    },
-    "preparation.chapter": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparar este capítulo"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prepare this chapter"
-          }
-        }
-      }
-    },
-    "preparation.book": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparar libro completo"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prepare entire book"
-          }
-        }
-      }
-    },
-    "preparation.resume": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continuar preparación"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resume preparation"
-          }
-        }
-      }
-    },
-    "preparation.ready": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio guardado para escuchar sin conexión"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio saved for offline listening"
-          }
-        }
-      }
-    },
-    "preparation.reopen": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Puedes escuchar el audio guardado. Abre la app y continúa la preparación para generar más."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You can listen to saved audio. Open the app and resume preparation to generate more."
-          }
-        }
-      }
-    },
-    "preparation.interrupted": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparación detenida. El audio guardado se conserva y puedes continuar después."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparation stopped. Saved audio is kept and you can resume later."
-          }
-        }
-      }
-    },
-    "preparation.background.active": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La preparación puede continuar con la pantalla bloqueada mientras iOS mantenga la tarea activa."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparation can continue with the screen locked while iOS keeps the task active."
-          }
-        }
-      }
-    },
-    "preparation.background.unavailable": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La generación en segundo plano no está disponible ahora. Mantén la app abierta para preparar audio; lo guardado se puede escuchar con la pantalla bloqueada."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Background generation is unavailable right now. Keep the app open to prepare audio; saved audio can play with the screen locked."
-          }
-        }
-      }
-    },
-    "reader.history.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Horas de escucha"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listening times"
-          }
-        }
-      }
-    },
-    "reader.history.show": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar horas de escucha"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show listening times"
-          }
-        }
-      }
-    },
-    "reader.history.session": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sesión de escucha"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listening session"
-          }
-        }
-      }
-    },
-    "reader.history.latest": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Última escucha de cada fragmento"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last listen for each section"
-          }
-        }
-      }
-    },
-    "reader.history.empty": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las horas aparecerán cuando escuches el libro."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Times will appear once you listen to the book."
-          }
-        }
-      }
-    },
-    "reader.history.return": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Volver a la posición anterior"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Return to previous position"
-          }
-        }
-      }
-    },
-    "reader.history.heard_at": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escuchado el %@"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listened on %@"
-          }
-        }
-      }
-    },
-    "reader.history.resume_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reproduce desde este fragmento."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Play from this section."
-          }
-        }
-      }
-    },
-    "preparation.progress.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando audio"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing audio"
-          }
-        }
-      }
-    },
-    "preparation.time.calculating": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calculando tiempo restante…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estimating time remaining…"
-          }
-        }
-      }
-    },
-    "preparation.time.less_than_minute": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Queda menos de 1 min aprox."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About less than 1 min remaining"
-          }
-        }
-      }
-    },
-    "preparation.time.remaining": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quedan %@ aprox."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About %@ remaining"
-          }
-        }
-      }
-    },
-    "app.name": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Folisona"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Folisona"
-          }
-        }
-      }
-    },
-    "voice.unavailable": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voz no disponible"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voice unavailable"
-          }
-        }
-      }
-    },
     "voice.enhanced": {
       "extractionState": "manual",
       "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calidad mejorada"
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Enhanced"
           }
-        }
-      }
-    },
-    "voice.premium": {
-      "extractionState": "manual",
-      "localizations": {
+        },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Calidad premium"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premium"
+            "value": "Calidad mejorada"
           }
         }
       }
@@ -1472,67 +1490,288 @@
     "voice.help": {
       "extractionState": "manual",
       "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voces de Apple instaladas. Descarga más voces en Ajustes > Accesibilidad."
-          }
-        },
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Installed Apple voices. Download more voices in Settings > Accessibility."
           }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voces de Apple instaladas. Descarga más voces en Ajustes > Accesibilidad."
+          }
         }
       }
     },
-    "error.speech.voice_missing": {
+    "voice.premium": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calidad premium"
+          }
+        }
+      }
+    },
+    "voice.unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voice unavailable"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voz no disponible"
+          }
+        }
+      }
+    },
+    "reader.audio.starting": {
       "extractionState": "manual",
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Esta voz no está instalada. Selecciona otra voz o descárgala en Ajustes > Accesibilidad."
+            "value": "Preparando audio para empezar…"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "This voice is not installed. Select another voice or download it in Settings > Accessibility."
+            "value": "Preparing audio to start…"
           }
         }
       }
     },
-    "error.speech.invalid_audio": {
+    "reader.audio.playing": {
       "extractionState": "manual",
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La voz no ha producido audio válido para este fragmento. Prueba con otra voz."
+            "value": "Reproduciendo"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The voice did not produce valid audio for this section. Try another voice."
+            "value": "Playing"
           }
         }
       }
     },
-    "error.speech.timeout": {
+    "reader.audio.preparing": {
       "extractionState": "manual",
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La voz no ha respondido. Vuelve a intentarlo o selecciona otra voz instalada."
+            "value": "Guardando audio para escuchar sin conexión…"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The voice did not respond. Try again or select another installed voice."
+            "value": "Saving audio for offline listening…"
+          }
+        }
+      }
+    },
+    "reader.audio.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se ha podido preparar el audio. Vuelve a intentarlo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Audio could not be prepared. Try again."
+          }
+        }
+      }
+    },
+    "reader.audio.cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "reader.audio.saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardados %lld de %lld fragmentos"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved %lld of %lld sections"
+          }
+        }
+      }
+    },
+    "reader.audio.stop_preparing": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detener preparación"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop preparing"
+          }
+        }
+      }
+    },
+    "voice.missing.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta voz no está disponible en tu dispositivo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This voice is not available on your device."
+          }
+        }
+      }
+    },
+    "voice.download": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar voces"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download voices"
+          }
+        }
+      }
+    },
+    "voice.settings.route": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesibilidad → Lectura y voz → Voces"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accessibility → Read & Speak → Voices"
+          }
+        }
+      }
+    },
+    "voice.settings.instructions": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Ajustes y vuelve a su pantalla principal. Sigue esta ruta, elige español o inglés y descarga una voz. Al volver a Folisona, selecciónala en el menú de voces."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings and return to its main screen. Follow this path, choose Spanish or English and download a voice. Return to Folisona and select it from the voice menu."
+          }
+        }
+      }
+    },
+    "voice.settings.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Ajustes"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Settings"
+          }
+        }
+      }
+    },
+    "voice.settings.failed": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No se han podido abrir los ajustes. Abre la app Ajustes manualmente y sigue la ruta indicada."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings could not be opened. Open the Settings app manually and follow the path above."
+          }
+        }
+      }
+    },
+    "error.speech.busy": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El servicio de voz sigue deteniendo la lectura anterior. Espera un momento y vuelve a intentarlo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The speech service is still stopping the previous reading. Wait a moment and try again."
           }
         }
       }

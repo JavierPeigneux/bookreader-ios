@@ -5,6 +5,8 @@ struct ReaderView: View {
     @Bindable var model: ReaderViewModel
     @AppStorage("reader.showListeningTimes") private var showListeningTimes = false
     @State private var availableVoices = ReaderVoice.available
+    @State private var showVoiceSettings = false
+    @State private var settingsOpenFailed = false
     @State private var listeningSessionID: UUID?
     @State private var showChapters = false
     @State private var hasPresentedChapters = false
@@ -21,15 +23,10 @@ struct ReaderView: View {
         model.resumeFromHistory(index)
     }
 
-    private var preparationTimeLabel: String {
-        guard let seconds = model.preparationRemainingSeconds else { return String(localized: "preparation.time.calculating") }
-        if seconds < 60 { return String(localized: "preparation.time.less_than_minute") }
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute]
-        formatter.unitsStyle = .abbreviated
-        let duration = formatter.string(from: ceil(seconds / 60) * 60) ?? ""
-        return String.localizedStringWithFormat(String(localized: "preparation.time.remaining"), duration)
+    private func refreshVoices() {
+        availableVoices = ReaderVoice.available
     }
+    private var selectedVoiceMissing: Bool { !availableVoices.contains(model.voice) }
 
     @Environment(\.scenePhase) private var scenePhase
     var body: some View {
@@ -106,9 +103,10 @@ struct ReaderView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     if let currentChapter {
-                        Button(String(localized: "preparation.chapter")) { model.prepareChapter(currentChapter) }
+                        Button(String(localized: "preparation.chapter")) { model.prepareChapter(currentChapter) }.disabled(selectedVoiceMissing)
                     }
-                    Button(String(localized: "preparation.book")) { model.prepareBook() }
+                    Button(String(localized: "preparation.book")) { model.prepareBook() }.disabled(selectedVoiceMissing)
+                    Button(String(localized: "voice.download")) { showVoiceSettings = true }
                     if model.pendingPreparation != nil && !model.isGenerating {
                         Button(String(localized: "preparation.resume")) { model.resumePreparation() }
                     }
@@ -182,57 +180,67 @@ struct ReaderView: View {
                     Spacer()
                     Text(verbatim: "\(model.book.position + 1) / \(model.book.blocks.count)").font(.caption.monospacedDigit()).foregroundStyle(FolioPalette.secondary)
                 }
-                Text(String(localized: "voice.help")).font(.caption2).foregroundStyle(FolioPalette.secondary)
-                if model.isGenerating {
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Text(String(localized: "preparation.progress.title")).font(.caption.weight(.semibold))
-                            Spacer()
-                            Text(model.preparationProgress.fraction, format: .percent.precision(.fractionLength(0)))
-                                .font(.caption.monospacedDigit())
-                        }
-                        ProgressView(value: model.preparationProgress.fraction)
-                            .accessibilityLabel(String(localized: "preparation.progress.title"))
-                            .accessibilityValue(model.preparationProgress.fraction.formatted(.percent.precision(.fractionLength(0))))
-                            .accessibilityIdentifier("reader.preparation.progress")
-                        Text(preparationTimeLabel).font(.caption2).foregroundStyle(FolioPalette.secondary)
-                    }
-                    Text(String.localizedStringWithFormat(String(localized: "reader.chapters.cached"), Int64(model.preparationCompleted), Int64(model.preparationTotal))).font(.caption)
-                    HStack {
-                        ProgressView()
-                        Text(model.generationPhase).font(.caption)
-                        if let start = model.generationStartedAt {
-                            Text(start, style: .timer).font(.caption.monospacedDigit())
-                        }
-                    }
-                    Button(String(localized: "reader.generation.stop"), role: .cancel) { model.cancelGeneration() }
-                }
-                if !model.isGenerating || model.isPlaying || model.cachedBlocks.contains(model.book.position) {
+                if selectedVoiceMissing && !model.cachedBlocks.contains(model.book.position) {
+                    VStack(spacing: 8) {
+                        Text(String(localized: "voice.missing.title")).font(.subheadline.weight(.semibold))
+                        Button(String(localized: "voice.download")) { showVoiceSettings = true }
+                            .buttonStyle(.borderedProminent).foregroundStyle(FolioPalette.surface).accessibilityIdentifier("reader.voice.download")
+                    }.frame(maxWidth: .infinity)
+                } else {
                     HStack(spacing: 12) {
                         Button { model.select(model.book.position - 1) } label: { Image(systemName: "backward.end.fill") }
                             .frame(minWidth: 44, minHeight: 44).disabled(model.book.position == 0).accessibilityLabel(String(localized: "reader.section.previous"))
-                        Button { model.prepareAndPlay() } label: {
-                            Label(model.isPlaying ? String(localized: "reader.pause") : String(localized: "reader.play"), systemImage: model.isPlaying ? "pause.fill" : "play.fill")
-                                .frame(maxWidth: .infinity)
+                        Button {
+                            if model.isWaitingForPlayback { model.cancelPlaybackRequest() }
+                            else { model.prepareAndPlay() }
+                        } label: {
+                            HStack {
+                                if model.isWaitingForPlayback { ProgressView().tint(FolioPalette.surface) }
+                                else { Image(systemName: model.isPlaying ? "pause.fill" : "play.fill") }
+                                Text(model.isWaitingForPlayback ? String(localized: "reader.audio.cancel") : model.isPlaying ? String(localized: "reader.pause") : String(localized: "reader.play"))
+                            }.frame(maxWidth: .infinity)
                         }.buttonStyle(.borderedProminent).foregroundStyle(FolioPalette.surface)
+                            .accessibilityIdentifier("reader.playback")
                         Button { model.select(model.book.position + 1) } label: { Image(systemName: "forward.end.fill") }
                             .frame(minWidth: 44, minHeight: 44).disabled(model.book.position + 1 == model.book.blocks.count).accessibilityLabel(String(localized: "reader.section.next"))
                     }
+                    Text(model.audioStatus).font(.caption).foregroundStyle(FolioPalette.secondary)
+                        .multilineTextAlignment(.center).accessibilityIdentifier("reader.audio.status")
                 }
-                Text(model.status).font(.caption).foregroundStyle(FolioPalette.secondary).multilineTextAlignment(.center)
-                if model.isGenerating {
-                    Text(model.backgroundGenerationAllowed ? String(localized: "preparation.background.active") : String(localized: "preparation.background.unavailable"))
-                        .font(.caption2).foregroundStyle(FolioPalette.secondary)
-                } else if model.pendingPreparation != nil {
-                    Button(String(localized: "preparation.resume")) { model.resumePreparation() }
+                if model.isGenerating && !model.isWaitingForPlayback {
+                    HStack {
+                        Text(String.localizedStringWithFormat(String(localized: "reader.audio.saved"), Int64(model.preparationCompleted), Int64(model.preparationTotal)))
+                        Spacer()
+                        Button(String(localized: "reader.audio.stop_preparing")) { model.cancelGeneration() }
+                    }.font(.caption).foregroundStyle(FolioPalette.secondary)
+                } else if model.pendingPreparation != nil && !model.isWaitingForPlayback {
+                    Button(String(localized: "preparation.resume")) { model.resumePreparation() }.font(.caption)
                 }
-            }.padding().frame(maxWidth: 720).frame(maxWidth: .infinity).background(FolioPalette.paper.opacity(0.98))
+
+            }.padding().frame(maxWidth: 720).frame(maxWidth: .infinity).background(FolioPalette.paper)
                 .overlay(alignment: .top) { Rectangle().fill(FolioPalette.border).frame(height: 0.5) }
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { model.didBecomeActive() } else { model.willResignActive() }
+            if phase == .active { refreshVoices(); model.didBecomeActive() } else { model.willResignActive() }
+        }
+        .sheet(isPresented: $showVoiceSettings) {
+            NavigationStack {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(String(localized: "voice.settings.route")).font(.title3.weight(.semibold))
+                    Text(String(localized: "voice.settings.instructions"))
+                    Button(String(localized: "voice.settings.open")) {
+                        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                        UIApplication.shared.open(url) { success in settingsOpenFailed = !success }
+                    }.buttonStyle(.borderedProminent).foregroundStyle(FolioPalette.surface).accessibilityIdentifier("reader.voice.openSettings")
+                    if settingsOpenFailed { Text(String(localized: "voice.settings.failed")).foregroundStyle(FolioPalette.warning) }
+                    Spacer()
+                }.padding(24)
+                    .navigationTitle(String(localized: "voice.download"))
+                    .toolbar { ToolbarItem(placement: .confirmationAction) { Button(String(localized: "common.done")) { showVoiceSettings = false } } }
+            }.presentationDetents([.medium, .large])
         }
         .alert(String(localized: "reader.audio.title"), isPresented: Binding(get: { model.error != nil }, set: { if !$0 { model.error = nil } })) {
+            Button(String(localized: "voice.download")) { model.error = nil; showVoiceSettings = true }
             Button(String(localized: "common.ok")) { model.error = nil }
         } message: { Text(model.error ?? "") }
     }

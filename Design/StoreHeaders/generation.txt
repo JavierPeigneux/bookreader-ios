@@ -1,0 +1,5 @@
+Generated with built-in image_gen; reference: Design/AppIcon/Folisona-master.png.
+Prompt: Premium panoramic App Store header for Folisona, an offline personal book narration app. Preserve the icon identity: cream sculptural paper open book flowing into two sound ribbons. Forest green #003D2B and warm ivory #F7F1E3. Center the full critical subject inside the central 40% width and 38% height. Wide forest green negative space with subtle embossed sound contours. Soft illumination, calm literary editorial aesthetic. No text, pricing, badges, phone frames or transparency. Intended 3840 x 1646, 21:9.
+Source generated image retained as folisona-header-master.png. Export to exact Apple dimensions with:
+sips -z 1646 3840 Design/StoreHeaders/folisona-header-master.png --out Release/StoreHeaders/folisona-header.png
+No text requires localization; identical artwork is assigned to es-ES, en-US and en-GB.

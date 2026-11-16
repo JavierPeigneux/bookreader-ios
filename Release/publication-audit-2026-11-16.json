@@ -1,0 +1,283 @@
+{
+  "fecha": "2026-11-16",
+  "aplicacion": "Folisona",
+  "appId": "6835442830",
+  "version": "1.0 (2)",
+  "dictamen": "No enviar esta build sin resolver licencias, privacidad integrada y configuración pendiente.",
+  "alcance": [
+    "Inspección estática de código, versiones fijadas, recursos y frameworks del archive local correspondiente a 1.0 (2).",
+    "Lectura en vivo de App Store Connect por API; interfaz solo para privacidad, disponibilidad y Business.",
+    "Consulta de fuentes primarias de Apple y licencias originales; 13 tests de scripts ejecutados correctamente.",
+    "No se descargó el binario procesado por Apple; no se afirma identidad byte a byte con el archive, que se refirma durante exportación.",
+    "No es dictamen jurídico, búsqueda completa de marcas ni auditoría exhaustiva de vulnerabilidades; no hubo prueba física ni modificación del producto o declaraciones remotas."
+  ],
+  "sha256EjecutableArchive": "5cd4c48dc49143db8a207ea2e8285a861897eec6e73a8a7823f018e21030871e",
+  "verificadoCorrecto": [
+    "Build 2 procesada VALID y APP_STORE_ELIGIBLE, asociada a versión 1.0 PREPARE_FOR_SUBMISSION.",
+    "usesNonExemptEncryption=false en Apple; falta de ITSAppUsesNonExemptEncryption en plist no bloquea esta build porque fue respondido en Apple.",
+    "45 screenshots COMPLETE (15 es-ES, 15 en-GB, 15 en-US) releídas en esta auditoría.",
+    "Soporte/privacidad y contacto/copyright presentes; política y soporte publicados en GitHub Pages.",
+    "Privacidad Data Not Collected publicada: verificado en interfaz, publicada por Javier. No sigue pendiente de la confirmación anterior.",
+    "Age rating FOUR_PLUS, sin Kids Category; parentalControls=false describe ausencia de controles internos, no desactiva controles iOS.",
+    "Free Apps Agreement Active. Paid Apps Agreement New no demuestra bloqueo para una app íntegramente gratuita.",
+    "Modelo/voices.npz/Bienvenida presentes; SHA256 del modelo coincide con el esperado por prepare_resources.py.",
+    "codesign --verify --deep --strict del archive correcto. get-task-allow=true corresponde al archive de desarrollo, no se usa como prueba de firma final de distribución.",
+    "No se halló código propio de cuentas, anuncios, analítica, pago, descarga dinámica de modelos ni servicio de envío de documentos. Sin evidencia que justifique ATT, eliminación de cuenta o IAP en el alcance actual.",
+    "Importación elimina scripts/style/nav de EPUB, no resuelve entidades XML externas y limita tamaño comprimido/expandido.",
+    "Marketing distingue timestamps de detección del sueño y explica preparación en primer plano; no promete clonación de voz."
+  ],
+  "hallazgos": [
+    {
+      "id": "L01",
+      "severidad": "alto",
+      "titulo": "Licencia eSpeak GPLv3",
+      "certeza": "Confirmado",
+      "evidencia": "La app enlaza KokoroSwift → eSpeakNGLib → ESpeakNG; ambos frameworks están en el archive 1.0 (2). El wrapper 1.1.6 y el motor usan GPLv3. No se encontró excepción de enlace o autorización App Store en los materiales revisados.",
+      "accion": "Resolver fuente correspondiente, avisos, licencia de la obra combinada y condiciones de distribución; o sustituir la dependencia y eliminarla también del paquete transitivo. La autorización solo del autor del wrapper no cubre automáticamente el motor.",
+      "ubicacion": "Folisona/Services/KokoroService.swift:90; Package.resolved; archive/Frameworks"
+    },
+    {
+      "id": "L02",
+      "severidad": "alto",
+      "titulo": "Procedencia LGPL dentro de MisakiSwift",
+      "certeza": "Indicio fuerte, no conclusión jurídica",
+      "evidencia": "EnglishNum2Word.swift:3 declara que es una conversión de num2words/Num2Word_EN. El original lang_EN.py está bajo LGPL-2.1-or-later, mientras MisakiSwift publica Apache-2.0 en su raíz. Su Lexicon utiliza este conversor.",
+      "accion": "Solicitar aclaración de derechos/excepción y licencia del código traducido, o reemplazar esa implementación por una propia independiente/API de Apple. No concluir que todo MisakiSwift sea GPL o que toda Folisona deba ser LGPL por este hallazgo.",
+      "ubicacion": ".build/SourcePackages/checkouts/MisakiSwift/Sources/MisakiSwift/English/Num2Word/EnglishNum2Word.swift:3"
+    },
+    {
+      "id": "L03",
+      "severidad": "alto",
+      "titulo": "Avisos de terceros incompletos en el producto",
+      "certeza": "Confirmado por inspección de recursos; búsqueda de cadenas auxiliar",
+      "evidencia": "No existen archivos LICENSE/COPYING/NOTICE/acknowledgments en el bundle inspeccionado ni pantalla de licencias en las vistas. Cmlx contiene alguna referencia Apache, insuficiente para acreditar todos los avisos. Licencias presentes en el checkout no equivalen a entregarlas con la app.",
+      "accion": "Incluir inventario y copias completas de licencias, copyrights, NOTICE y avisos de modificaciones. Preservar procedencia del modelo, conversión de voces y parches MLX; requiere nueva build.",
+      "ubicacion": "Release/Archives/Folisona-1.0-2.xcarchive/Products/Applications/Folisona.app"
+    },
+    {
+      "id": "P01",
+      "severidad": "alto",
+      "titulo": "Falta enlace de privacidad en la app",
+      "certeza": "Confirmado",
+      "evidencia": "LibraryView y ReaderView no ofrecen privacidad; el binario no contiene la URL publicada. La URL de App Store Connect sí está guardada.",
+      "accion": "Añadir acceso fácil a la política desde la app y subir una build nueva; una web externa configurada en Apple no cubre el requisito dentro de la app.",
+      "ubicacion": "Folisona/Views/LibraryView.swift; Folisona/Views/ReaderView.swift"
+    },
+    {
+      "id": "P02",
+      "severidad": "alto",
+      "titulo": "Manifiesto de APIs con motivo obligatorio ausente",
+      "certeza": "Confirmado",
+      "evidencia": "El archive solo tiene dos copias del manifiesto ZIPFoundation (FileTimestamp/0A2A.1). ReaderView usa AppStorage y ReaderViewModel usa systemUptime. El binario confirma AppStorage/NSUserDefaults y systemUptime.",
+      "accion": "Añadir PrivacyInfo.xcprivacy propio con motivos aplicables a preferencias (CA92.1) y medición de tiempo (35F9.1), verificar su inclusión en el bundle y generar informe de privacidad. Confirmar motivos contra documentación vigente al implementar.",
+      "ubicacion": "Folisona/Views/ReaderView.swift:5; Folisona/ViewModels/ReaderViewModel.swift:25,108"
+    },
+    {
+      "id": "P03",
+      "severidad": "alto",
+      "titulo": "Framework eSpeak sin manifiesto pese a importar stat",
+      "certeza": "Confirmado símbolo; finalidad requiere trazado de fuente",
+      "evidencia": "nm -u de ESpeakNG importa _stat; su bundle no tiene PrivacyInfo.xcprivacy. El manifiesto de ZIPFoundation no sirve como declaración de otro SDK.",
+      "accion": "Si se mantiene eSpeak, obtener/reconstruir SDK con manifiesto y motivos justificados por su uso real; no escoger un motivo solo por el nombre del símbolo.",
+      "ubicacion": "archive/Frameworks/ESpeakNG.framework/ESpeakNG"
+    },
+    {
+      "id": "A01",
+      "severidad": "bloqueo",
+      "titulo": "Content Rights sin declarar",
+      "certeza": "Confirmado API",
+      "evidencia": "apps/6835442830.contentRightsDeclaration = null.",
+      "accion": "Completar tras resolver licencias y permisos. No usar la declaración de Apple como sustituto de cumplimiento legal.",
+      "ubicacion": "App Store Connect GET apps/6835442830"
+    },
+    {
+      "id": "A02",
+      "severidad": "bloqueo",
+      "titulo": "Categoría principal vacía",
+      "certeza": "Confirmado API",
+      "evidencia": "GET appInfos/.../primaryCategory devuelve data:null.",
+      "accion": "Seleccionar una categoría adecuada; Books parece la candidata por su función principal.",
+      "ubicacion": "App Store Connect"
+    },
+    {
+      "id": "A03",
+      "severidad": "bloqueo",
+      "titulo": "Precio no configurado",
+      "certeza": "Confirmado interfaz",
+      "evidencia": "Pricing and Availability muestra Add Pricing; tener pricingIntent FREE en JSON no configura el precio remoto.",
+      "accion": "Establecer precio gratuito y verificar calendario/precios efectivos.",
+      "ubicacion": "App Store Connect"
+    },
+    {
+      "id": "A04",
+      "severidad": "bloqueo",
+      "titulo": "Territorios sin configurar",
+      "certeza": "Confirmado interfaz",
+      "evidencia": "Pricing and Availability muestra Set Up Availability; la API no devuelve recurso de disponibilidad.",
+      "accion": "Elegir países de lanzamiento; revisar requisitos adicionales antes de activar países con permisos específicos.",
+      "ubicacion": "App Store Connect"
+    },
+    {
+      "id": "A05",
+      "severidad": "bloqueo UE",
+      "titulo": "DSA pendiente",
+      "certeza": "Confirmado interfaz",
+      "evidencia": "Business muestra Complete Compliance Requirements para declarar trader/no trader.",
+      "accion": "Realizar autoevaluación real. Gratis no implica automáticamente no trader. Si procede trader, verificar datos/documentación que Apple publicará.",
+      "ubicacion": "App Store Connect Business"
+    },
+    {
+      "id": "Q01",
+      "severidad": "alto",
+      "titulo": "Función central no validada en dispositivo para esta build",
+      "certeza": "No validado",
+      "evidencia": "VALIDACION.md documenta pruebas Mac y simulador, con Kokoro físico omitido y pruebas físicas interrumpidas. No se ha ejecutado esta build en un iPhone/iPad en esta auditoría.",
+      "accion": "Probar instalación TestFlight limpia, las cuatro voces, documentos reales, cambio de voz, síntesis prolongada, cancelación, relanzamiento, bloqueo, llamadas y ruta de audio.",
+      "ubicacion": "VALIDACION.md"
+    },
+    {
+      "id": "Q02",
+      "severidad": "medio-alto",
+      "titulo": "Mac y Vision Pro habilitados sin validación",
+      "certeza": "Confirmado interfaz",
+      "evidencia": "Ambas disponibilidades están activadas; Apple dice compatibilidad Mac no verificada. Compatibilidad calculada no es prueba de funcionamiento.",
+      "accion": "Validar la app iOS distribuida en esos destinos o desactivarlos para el primer lanzamiento. No equivale al harness Mac de desarrollo.",
+      "ubicacion": "App Store Connect Pricing and Availability"
+    },
+    {
+      "id": "Q03",
+      "severidad": "medio",
+      "titulo": "PDF con una página sin texto rechaza todo el documento",
+      "certeza": "Confirmado por lectura del código",
+      "evidencia": "El bucle de importación lanza error ante cualquier página vacía o solo imagen, incluso portada o separador de un PDF mayoritariamente textual.",
+      "accion": "Omitir páginas vacías de forma controlada y diferenciar escaneado integral de documento mixto; añadir caso de prueba. Alinear descripción con limitaciones reales.",
+      "ubicacion": "Folisona/Services/DocumentImporter.swift:37-41"
+    },
+    {
+      "id": "Q04",
+      "severidad": "medio",
+      "titulo": "Un JSON dañado impide cargar toda la biblioteca",
+      "certeza": "Confirmado por lectura del código",
+      "evidencia": "LibraryStore.load usa map con try; un error aborta la colección y LibraryViewModel conserva books vacío, aunque los otros libros estén en disco.",
+      "accion": "Recuperación por archivo con mensaje al usuario, preservar documentos válidos y no sobrescribir el archivo dañado sin decisión.",
+      "ubicacion": "Folisona/Services/LibraryStore.swift:8-13"
+    },
+    {
+      "id": "Q05",
+      "severidad": "medio",
+      "titulo": "Memoria, batería y disco sin validación prolongada",
+      "certeza": "No validado",
+      "evidencia": "Bundle sin comprimir ~403.38 MB. PCM mono 24kHz 16bit consume ~172.8 MB/h por voz. El límite MLX no es un límite absoluto de memoria del proceso. No hay medidas reales prolongadas en la documentación.",
+      "accion": "Medir en el dispositivo mínimo y con libro largo; comprobar almacenamiento lleno, cancelación y recuperación. Considerar aviso de tamaño y gestión de audio.",
+      "ubicacion": "KokoroService.swift; PreparedAudioStore.swift; VALIDACION.md"
+    },
+    {
+      "id": "Q06",
+      "severidad": "bajo",
+      "titulo": "dSYM de ESpeakNG ausente",
+      "certeza": "Advertencia confirmada, no bloqueo actual",
+      "evidencia": "Log de carga contiene Upload Symbols Failed para ESpeakNG; la subida terminó y Apple marca VALID.",
+      "accion": "Obtener dSYM de la misma compilación/UUID o reconstruir el framework para simbolicar fallos.",
+      "ubicacion": "/tmp/folisona-upload-1.0.log"
+    },
+    {
+      "id": "Q07",
+      "severidad": "decisión de producto",
+      "titulo": "Mínimo iOS 27.2",
+      "certeza": "Confirmado archive y API",
+      "evidencia": "MinimumOSVersion 27.2; Xcode 27.2 RC build 27B48; Apple devuelve APP_STORE_ELIGIBLE para build 2.",
+      "accion": "Verificar alcance de dispositivos deseado y soporte público al lanzamiento. No declarar la RC un bloqueo automático: el binario ya fue aceptado para App Store.",
+      "ubicacion": "Archive Info.plist; GET builds/..."
+    },
+    {
+      "id": "L04",
+      "severidad": "pendiente",
+      "titulo": "Nombre y procedencia de recursos",
+      "certeza": "Validación parcial",
+      "evidencia": "El nombre está guardado en Apple pero no se completó búsqueda registral de marcas similares. Modelo Kokoro Apache-2.0 y voces oficiales; hay modelos/diccionarios adicionales de Misaki incluidos con declaración Apache de repositorio, sin auditoría independiente completa de sus datos de origen.",
+      "accion": "Conservar evidencias de versiones/licencias y atribuciones del model card. Revisar marcas en territorios elegidos; no confundir reserva del nombre con derechos de marca.",
+      "ubicacion": "Release/NAME-REVIEW.md; scripts/prepare_resources.py"
+    },
+    {
+      "id": "A06",
+      "severidad": "información",
+      "titulo": "Publicación automática tras aprobación",
+      "certeza": "Confirmado API",
+      "evidencia": "releaseType AFTER_APPROVAL.",
+      "accion": "Decidir si mantener ese comportamiento al enviar la versión. No se ha cambiado ni enviado en esta auditoría.",
+      "ubicacion": "GET appStoreVersions/..."
+    }
+  ],
+  "dependencias": [
+    [
+      "eSpeakNGSwift-multilingual",
+      "1.1.6",
+      "GPL-3.0"
+    ],
+    [
+      "kokoro-ios-multilingual",
+      "802f904617231cdb746c3910a21d95f16ba022f1",
+      "MIT"
+    ],
+    [
+      "MisakiSwift",
+      "1.0.6",
+      "Apache-2.0 declarada; procedencia num2words LGPL pendiente"
+    ],
+    [
+      "MLXUtilsLibrary",
+      "0.0.6",
+      "Apache-2.0"
+    ],
+    [
+      "swift-numerics",
+      "1.1.1",
+      "Apache-2.0 con excepción Swift del archivo completo"
+    ],
+    [
+      "SwiftSoup",
+      "2.8.8",
+      "MIT"
+    ],
+    [
+      "ZIPFoundation",
+      "0.9.20",
+      "MIT"
+    ],
+    [
+      "mlx-swift / mlx / mlx-c",
+      "vendorizado 0.30.2 y parches locales",
+      "MIT; revisar también avisos transitivos"
+    ],
+    [
+      "metal-cpp / fmt / nlohmann-json",
+      "vendorizados",
+      "licencias incluidas en fuente; faltan entrega/inventario en producto"
+    ],
+    [
+      "Kokoro-82M y voces",
+      "revisión f3ff3571791e39611d31c381e3a41a3af07b4987 para voces",
+      "Apache-2.0 según model card"
+    ]
+  ],
+  "fuentes": {
+    "gplWrapper": "https://github.com/skywalkerswartz/eSpeakNGSwift-multilingual/blob/main/LICENSE",
+    "gplMotor": "https://github.com/espeak-ng/espeak-ng/blob/master/COPYING",
+    "misakiConversion": "https://github.com/mlalma/MisakiSwift/blob/6835a1ce4a8854075c89f18ff75c74b13ef58e15/Sources/MisakiSwift/English/Num2Word/EnglishNum2Word.swift",
+    "num2wordsOriginal": "https://github.com/savoirfairelinux/num2words/blob/master/num2words/lang_EN.py",
+    "num2wordsLicense": "https://github.com/savoirfairelinux/num2words/blob/master/COPYING",
+    "appleEula": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/",
+    "requiredReason": "https://developer.apple.com/documentation/bundleresources/describing-use-of-required-reason-api",
+    "privacyTechnicalNote": "https://developer.apple.com/documentation/technotes/tn3183-adding-required-reason-api-entries-to-your-privacy-manifest",
+    "review": "https://developer.apple.com/app-store/review/guidelines/",
+    "dsa": "https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements/",
+    "kokoro": "https://huggingface.co/hexgrad/Kokoro-82M/blob/f3ff3571791e39611d31c381e3a41a3af07b4987/README.md"
+  },
+  "ordenRecomendado": [
+    "Resolver eSpeak y discrepancia num2words/Misaki.",
+    "Añadir avisos legales, enlace de privacidad y manifiestos correctos por bundle; reconstruir.",
+    "Validar build candidata en iPhone/iPad físico, todas las voces e interrupciones.",
+    "Completar categoría, precio cero, territorios, DSA y derechos de contenido con base verificable.",
+    "Revisar disponibilidad Mac/Vision Pro y modo de lanzamiento, comprobar nueva build en TestFlight y después enviar."
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "tool": "Built-in image_gen",
+  "purpose": "Icon exploration; no app asset replaced",
+  "concepts": [
+    {
+      "name": "01-folio",
+      "prompt": "Use case: logo-brand. Create one premium iOS app icon concept for a personal book reader that narrates EPUB and PDF aloud in Spanish and English. Direction: pages becoming a voice. A single sculptural ivory paper ribbon, folded into an abstract open-book silhouette, flowing on its right into two broad sound-wave curves. Rich deep forest-green full-bleed background, warm ivory symbol, subtle paper depth and restrained shadows. Distinctive, simple, editorial, calm and adult. Centered bold silhouette occupying about 65 percent of a square image. Readable at tiny home-screen sizes. Flat front view, no device mockup, no surrounding canvas, no text, letters, numbers, headphones, microphone, border or watermark. Entire output is the square icon artwork, opaque background extending into corners; do not pre-round the icon corners."
+    },
+    {
+      "name": "02-lumbre",
+      "prompt": "Use case: logo-brand. Create one premium iOS app icon concept for a book reader with spoken narration and bedtime listening. Direction: a crescent moon made from turning book pages. One large luminous warm cream crescent formed from three thick elegantly curved paper leaves, with a tiny restrained amber inner edge; the silhouette should read as moon first and paper second. Midnight ink-blue full-bleed background, subtle tactile paper shading, quiet nocturnal warmth. Contemporary refined adult brand, very simple and instantly recognizable, no landscape or star field. Square front-facing artwork, centered strong silhouette at about 65 percent of the image, generous breathing room. No text, letters, numbers, devices, headphones, borders or watermark. Opaque edge-to-edge background, no pre-rounded corners."
+    },
+    {
+      "name": "03-hilo",
+      "prompt": "Use case: logo-brand. Create one distinctive premium iOS app icon concept for an audiobook and document reading app. Direction: the thread of a story. A single broad continuous petrol-teal satin bookmark ribbon makes a confident fluid loop and ends in a subtle folded-page notch, suggesting both a flowing audio waveform and a bookmark. Sculptural minimal design with a crisp memorable silhouette, warm vivid apricot-orange full-bleed background, restrained dimensional highlights, sophisticated editorial feel. One coherent emblem, not a pile of symbols. Large centered symbol around 65 percent of square, readable small. No text, letters, numbers, books drawn literally, headphones, microphone, device mockup, border, watermarks. Opaque full square background, no rounded-corner clipping."
+    },
+    {
+      "name": "04-buho",
+      "prompt": "Use case: logo-brand. Create one polished original iOS app icon concept for a book narration app, a small memorable narrator mascot for adult readers. Direction: a calm owl whose body is subtly an open book. A bold stylized warm-ivory owl head and two wing/page shapes, tiny amber beak, relaxed dark eyes, subtle tilted asymmetry giving character; keep it charming and intelligent rather than childish or sleepy with closed eyes. Deep plum full-bleed background. Minimal sculpted paper-cut style with gentle depth, strong simple silhouette and very few shapes, no feathers or fine lines. Centered emblem, generous safe area, reads clearly at small icon sizes. No text, letters, numbers, moon, headphones, device mockup, border or watermark. Opaque square background all the way to corners; no rounded icon mask."
+    }
+  ]
+}

@@ -23,7 +23,7 @@ struct Harness {
             let result = await worker.value
             guard blocked, result == [8, 12] else { throw ReaderError.message("GPU submission gate regression failed") }
             print("METAL_SUBMISSION_GATE_OK")
-            let destination = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? "/tmp/bookreader-castellano.wav")
+            let destination = URL(fileURLWithPath: CommandLine.arguments.dropFirst().first ?? "/tmp/folisona-castellano.wav")
             let matrix = MLXArray(Array(0..<12)).reshaped(3, 4)
             let selected = take(matrix, MLXArray(2), axis: 1, stream: .gpu).asArray(Int32.self)
             guard selected == [2, 6, 10] else { throw ReaderError.message("Scalar gather regression failed") }

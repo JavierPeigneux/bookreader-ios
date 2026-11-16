@@ -1,0 +1,1 @@
+reader,books,speech,epub,pdf,text,audio,reading,spanish,chapters,audiobook,narrate,sleep,offline,tts

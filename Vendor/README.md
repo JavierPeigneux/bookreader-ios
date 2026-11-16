@@ -6,7 +6,7 @@
 
 Metal validation stays enabled. Remove this local override when Kokoro supports an MLX release containing the fix.
 
-## iOS background submission gate (Bookreader-specific)
+## iOS background submission gate (Folisona-specific)
 
 `Source/Cmlx/mlx/mlx/backend/metal/device.cpp` adds a mutex/condition-variable gate around command-buffer submission. `GPU.setSubmissionAllowed` exposes it through `Source/MLX/GPU+Metal.swift` and `Source/Cmlx/include/mlx/c/metal.h`. This is a local lifecycle integration, not an upstream patch.
 

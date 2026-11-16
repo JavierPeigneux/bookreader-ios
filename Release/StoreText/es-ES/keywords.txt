@@ -1,0 +1,1 @@
+lector,libros,voz,epub,pdf,texto,audio,lectura,castellano,capítulos,audiolibros,narrar,dormir,tts

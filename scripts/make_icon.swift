@@ -1,24 +1,28 @@
 import AppKit
-let size = NSSize(width: 1024, height: 1024)
-let rep = NSBitmapImageRep(bitmapDataPlanes: nil, pixelsWide: 1024, pixelsHigh: 1024, bitsPerSample: 8, samplesPerPixel: 4, hasAlpha: true, isPlanar: false, colorSpaceName: .deviceRGB, bytesPerRow: 0, bitsPerPixel: 0)!
-NSGraphicsContext.saveGraphicsState()
-NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
-NSColor(calibratedRed: 0.12, green: 0.34, blue: 0.29, alpha: 1).setFill()
-NSBezierPath(rect: NSRect(origin: .zero, size: size)).fill()
-let page = NSBezierPath()
-page.move(to: NSPoint(x: 512, y: 266))
-page.curve(to: NSPoint(x: 212, y: 318), controlPoint1: NSPoint(x: 405, y: 336), controlPoint2: NSPoint(x: 307, y: 348))
-page.line(to: NSPoint(x: 212, y: 733))
-page.curve(to: NSPoint(x: 512, y: 678), controlPoint1: NSPoint(x: 334, y: 760), controlPoint2: NSPoint(x: 414, y: 730))
-page.curve(to: NSPoint(x: 812, y: 733), controlPoint1: NSPoint(x: 610, y: 730), controlPoint2: NSPoint(x: 690, y: 760))
-page.line(to: NSPoint(x: 812, y: 318))
-page.curve(to: NSPoint(x: 512, y: 266), controlPoint1: NSPoint(x: 717, y: 348), controlPoint2: NSPoint(x: 619, y: 336))
-page.close()
-NSColor(calibratedRed: 0.98, green: 0.94, blue: 0.82, alpha: 1).setFill()
-page.fill()
-let spine = NSBezierPath()
-spine.move(to: NSPoint(x: 512, y: 296)); spine.line(to: NSPoint(x: 512, y: 648))
-spine.lineWidth = 12
-NSColor(calibratedRed: 0.12, green: 0.34, blue: 0.29, alpha: 1).setStroke(); spine.stroke()
-NSGraphicsContext.restoreGraphicsState()
-try rep.representation(using: .png, properties: [:])!.write(to: URL(fileURLWithPath: CommandLine.arguments[1]))
+import Foundation
+
+// Reproducible size exports of the approved artwork; never redraw the icon.
+let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+let source = root.appendingPathComponent("Design/AppIcon/Folisona-master.png")
+guard let image = NSImage(contentsOf: source) else { fatalError("Missing \(source.path)") }
+let output = root.appendingPathComponent("Release/Icons")
+try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
+let sizes = [20, 29, 40, 58, 60, 76, 80, 87, 120, 152, 167, 180, 1024]
+for size in sizes {
+    var sourceRect = CGRect(origin: .zero, size: image.size)
+    guard let original = image.cgImage(forProposedRect: &sourceRect, context: nil, hints: nil),
+          let context = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8,
+                                  bytesPerRow: 0, space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                                  bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue) else {
+        fatalError("Cannot create RGB icon context")
+    }
+    context.interpolationQuality = .high
+    context.draw(original, in: CGRect(x: 0, y: 0, width: size, height: size))
+    let rep = NSBitmapImageRep(cgImage: context.makeImage()!)
+    let data = rep.representation(using: .png, properties: [:])!
+    try data.write(to: output.appendingPathComponent("Folisona-\(size).png"), options: .atomic)
+    if size == 1024 {
+        try data.write(to: root.appendingPathComponent("Folisona/Assets.xcassets/AppIcon.appiconset/AppIcon.png"), options: .atomic)
+    }
+}
+print("Exported \(sizes.count) opaque icon sizes and updated AppIcon (1024 px).")

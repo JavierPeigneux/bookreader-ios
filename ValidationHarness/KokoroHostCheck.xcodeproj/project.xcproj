@@ -30,17 +30,17 @@
     },
   ],
   "files": [
-    { "path": "../Bookreader/Localizable.xcstrings", "target-membership": [ "KokoroHostCheck/resources" ] },
+    { "path": "../Folisona/Localizable.xcstrings", "target-membership": [ "KokoroHostCheck/resources" ] },
     { "path": "Harness.swift", "target-membership": [ "KokoroHostCheck/compile-sources" ] },
     {
       "kind": "group",
-      "path": "../Bookreader/Models",
+      "path": "../Folisona/Models",
       "children": [
         { "path": "Book.swift", "target-membership": [ "KokoroHostCheck/compile-sources" ] },
       ],
     }, {
       "kind": "group",
-      "path": "../Bookreader/Resources",
+      "path": "../Folisona/Resources",
       "children": [
         { "path": "Bienvenida.txt", "target-membership": [ "KokoroHostCheck/resources" ] },
         { "path": "kokoro-v1_0.safetensors", "target-membership": [ "KokoroHostCheck/resources" ] },
@@ -48,7 +48,7 @@
       ],
     }, {
       "kind": "group",
-      "path": "../Bookreader/Services",
+      "path": "../Folisona/Services",
       "children": [
         { "path": "KokoroService.swift", "target-membership": [ "KokoroHostCheck/compile-sources" ] },
       ],

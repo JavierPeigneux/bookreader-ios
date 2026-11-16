@@ -1,0 +1,7 @@
+Folisona is a free, ad-free reader for user-imported DRM-free EPUB, text-based PDF, TXT and Markdown files. No sign-in is required.
+
+Speech is generated locally using the bundled Kokoro model. Please test narration on a physical iPhone/iPad. Select a chapter and prepare its audio with the app in the foreground. Prepared audio supports background playback.
+
+Listening time labels show when a text block started playing. Use the clock menu in the reader to show timestamps and browse previous sessions. Tap a timestamp to return to that passage. This is a reading-history feature, not sleep detection.
+
+Store screenshots use an isolated fictional library and listening history to demonstrate the real interface. This fixture is compiled only in DEBUG, not the distribution build.

@@ -13,6 +13,6 @@ print(ranked[0]["udid"])
 ')
   export READER_DESTINATION="platform=iOS Simulator,id=$reader_device"
 fi
-xcodebuild -project BookreaderSimulator.xcodeproj -scheme Bookreader \
+xcodebuild -project FolisonaSimulator.xcodeproj -scheme Folisona \
   -destination "$READER_DESTINATION" \
   -derivedDataPath .build/simulator272 -clonedSourcePackagesDirPath .build/SourcePackages test CODE_SIGNING_ALLOWED=NO "$@"

@@ -1,11 +1,13 @@
-# Bookreader iOS · primera versión
+# Folisona iOS · primera versión
 
 App SwiftUI independiente del servidor Python, iOS 27.2 o posterior. Importa EPUB sin DRM, PDF con texto, TXT UTF-8 y Markdown. Kokoro se ejecuta localmente con Dora, Alex y Santa en español y Heart en inglés. No traduce los documentos.
 
+Bundle ID: `com.javierpeigneux.Folisona`. El cambio de identificador instala una app independiente de la antigua Bookreader; no migra automáticamente su biblioteca local.
+
 ## Abrir y ejecutar
 
-1. Abre `Bookreader.xcodeproj` con Xcode 27.2 o posterior.
-2. Selecciona el esquema `Bookreader`, tu equipo de firma y un iPhone/iPad físico.
+1. Abre `Folisona.xcodeproj` con Xcode 27.2 o posterior.
+2. Selecciona el esquema `Folisona`, tu equipo de firma y un iPhone/iPad físico.
 3. Ejecuta e importa un documento desde Archivos o pulsa **Probar con un texto en castellano**.
 4. Elige voz y pulsa **Preparar y escuchar**. El primer fragmento empieza a sonar cuando está listo y la app prepara los restantes. El menú de preparación permite guardar un capítulo o el libro completo para escucharlo sin generar más audio. Los fragmentos terminados se conservan y se reutilizan al reintentar.
 
@@ -33,9 +35,13 @@ El script respeta `DEVELOPER_DIR` si lo has configurado; en esta máquina usa `/
 
 La app usa `NavigationSplitView`: biblioteca y lector pueden coexistir en anchuras amplias y la navegación se contrae a una columna en pantallas compactas. La selección se mantiene al cambiar de tamaño. Se respetan las áreas seguras del sistema, incluidos los controles laterales de Duo; el texto tiene un ancho de lectura limitado y los controles de audio se mantienen accesibles. La tipografía del lector responde a Dynamic Type. Se admiten orientaciones vertical y horizontal.
 
+## Paleta Folio
+
+La interfaz utiliza verde bosque (`#003D2B`) para acciones y títulos, papel marfil (`#F7F1E3`) de fondo, crema (`#FFFAEF`) para tarjetas y verde salvia (`#E2E9DB`) para la selección y las etiquetas. El texto usa tinta verde oscura (`#182F25`) y un tono secundario (`#526356`). Los colores se centralizan en `FolioPalette` y en los conjuntos de colores de `Assets.xcassets`, compartidos por biblioteca, lector, capítulos y controles.
+
 ## Idiomas de la interfaz
 
-La app incluye inglés y castellano mediante `Bookreader/Localizable.xcstrings`, con mensajes de error, estados de audio, accesibilidad y plurales. Las claves son identificadores semánticos estables (`library.import`, `reader.play`, `error.pdf.open`); los textos traducidos viven exclusivamente en los catálogos. Los mensajes con argumentos usan el formato localizado, conservando las reglas de plural. Sigue el idioma preferido del sistema; también se puede elegir su idioma desde los ajustes de iOS para la app. El castellano es el idioma de desarrollo y de respaldo. `InfoPlist.xcstrings` localiza el nombre del tipo de documento.
+La app incluye inglés y castellano mediante `Folisona/Localizable.xcstrings`, con mensajes de error, estados de audio, accesibilidad y plurales. Las claves son identificadores semánticos estables (`library.import`, `reader.play`, `error.pdf.open`); los textos traducidos viven exclusivamente en los catálogos. Los mensajes con argumentos usan el formato localizado, conservando las reglas de plural. Sigue el idioma preferido del sistema; también se puede elegir su idioma desde los ajustes de iOS para la app. El castellano es el idioma de desarrollo y de respaldo. `InfoPlist.xcstrings` localiza el nombre del tipo de documento.
 
 El idioma de la interfaz no cambia la voz seleccionada ni traduce los libros. El ejemplo incluido sigue siendo un texto en castellano. Los títulos y encabezados guardados con el documento se conservan al cambiar de idioma.
 
@@ -71,7 +77,7 @@ Con las etiquetas visibles, tocar una etiqueta o el texto reproduce desde el pri
 
 El menú de preparación ofrece capítulo actual, libro completo y reanudar. La lista de capítulos también permite preparar uno mediante su menú contextual. Pausar el audio no cancela la preparación; detener la preparación conserva los fragmentos terminados y permite seguir escuchándolos. La tarea pendiente se guarda para reanudarla desde la interfaz después de cerrar la app.
 
-La reproducción utiliza el modo de audio en segundo plano. Para la síntesis con Metal se solicita una tarea finita `BGContinuedProcessingTask` iniciada en primer plano, con recurso GPU y progreso visible para el sistema. El archivo `Bookreader/Bookreader.entitlements` contiene `com.apple.developer.background-tasks.continued-processing.gpu`. Está desactivado por defecto porque el equipo personal configurado no admite esta capacidad. Con un equipo y perfil compatibles, define el ajuste de compilación `BOOKREADER_GPU_ENTITLEMENTS = Bookreader/Bookreader.entitlements` y vuelve a firmar. Con el equipo personal se mantiene la reproducción en segundo plano y la preparación en primer plano. Se comprueba `supportedResources` y la concesión efectiva de la tarea antes de continuar la generación en segundo plano.
+La reproducción utiliza el modo de audio en segundo plano. Para la síntesis con Metal se solicita una tarea finita `BGContinuedProcessingTask` iniciada en primer plano, con recurso GPU y progreso visible para el sistema. El archivo `Folisona/Folisona.entitlements` contiene `com.apple.developer.background-tasks.continued-processing.gpu`. Está desactivado por defecto porque el equipo personal configurado no admite esta capacidad. Con un equipo y perfil compatibles, define el ajuste de compilación `FOLISONA_GPU_ENTITLEMENTS = Folisona/Folisona.entitlements` y vuelve a firmar. Con el equipo personal se mantiene la reproducción en segundo plano y la preparación en primer plano. Se comprueba `supportedResources` y la concesión efectiva de la tarea antes de continuar la generación en segundo plano.
 
 Si iOS no concede GPU o interrumpe la tarea, se conserva el progreso y se indica que hay que abrir la app para reanudar. El audio ya preparado puede seguir reproduciéndose. No se mantiene artificialmente la app activa con audio silencioso ni se garantiza generación ilimitada. Para escuchar un libro completo sin depender de la generación en segundo plano, prepáralo antes. El funcionamiento real con pantalla bloqueada y la concesión de GPU requieren comprobación en iPhone; el simulador solo valida los estados mediante dobles de prueba.
 
@@ -83,7 +89,7 @@ La caché de buffers MLX se limita a 20 MiB y se vacía tras cada unidad de sín
 
 Se incluye una copia local de MLX 0.30.2 con el backport oficial para vectores vacíos en `set_vector_bytes`, causante de la aserción `bytes argument cannot be nil` con validación Metal. Véase `Vendor/README.md`. La validación de Metal permanece habilitada. El backend local también incorpora un bloqueo de envíos GPU sincronizado con las notificaciones de UIKit y la concesión/expiración del permiso de segundo plano.
 
-Para el simulador abre `BookreaderSimulator.xcodeproj`. Comparte los mismos archivos Swift y excluye las dependencias MLX, que fallaron al enlazar con el simulador durante la integración inicial. Permite probar importación, biblioteca y lectura; la síntesis MLX está deshabilitada expresamente porque necesita un dispositivo físico. Nunca se sustituye silenciosamente Kokoro por las voces de Apple.
+Para el simulador abre `FolisonaSimulator.xcodeproj`. Comparte los mismos archivos Swift y excluye las dependencias MLX, que fallaron al enlazar con el simulador durante la integración inicial. Permite probar importación, biblioteca y lectura; la síntesis MLX está deshabilitada expresamente porque necesita un dispositivo físico. Nunca se sustituye silenciosamente Kokoro por las voces de Apple.
 
 ## Límites de esta versión
 
@@ -113,3 +119,9 @@ Consulta `VALIDACION.md` para los resultados reales de este checkout.
 - [MLX Swift](https://github.com/ml-explore/mlx-swift), [MLXUtilsLibrary](https://github.com/mlalma/MLXUtilsLibrary), [MisakiSwift](https://github.com/mlalma/MisakiSwift), [ZIPFoundation](https://github.com/weichsel/ZIPFoundation), [SwiftSoup](https://github.com/scinfu/SwiftSoup).
 
 Las dependencias conservan sus licencias. Esta es una integración local de desarrollo; la distribución debe contemplar las obligaciones de las dependencias, en particular eSpeak NG.
+
+## Folisona y distribución
+
+El nombre de la app, los proyectos JSON, esquemas, módulos y pruebas es **Folisona**. Abre `Folisona.xcodeproj` o `FolisonaSimulator.xcodeproj`. Se conserva el bundle ID de las instalaciones existentes para no cambiar su identidad ni perder la biblioteca.
+
+Consulta [Release/README.md](Release/README.md) para regenerar iconos, capturas bilingües y archivar/subir versiones con `scripts/release.sh`. La comprobación preliminar del nombre y sus límites están en [Release/NAME-REVIEW.md](Release/NAME-REVIEW.md).

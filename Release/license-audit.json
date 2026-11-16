@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-16",
+  "version": "1.0 (2)",
+  "contentRightsDeclaration": "PENDING_LICENSE_COMPLIANCE",
+  "components": [
+    {
+      "name": "Kokoro-82M model and voice embeddings",
+      "license": "Apache-2.0 (repository model card)",
+      "revision": "f3ff3571791e39611d31c381e3a41a3af07b4987",
+      "voices": [
+        "ef_dora",
+        "em_alex",
+        "em_santa",
+        "af_heart"
+      ],
+      "source": "https://huggingface.co/hexgrad/Kokoro-82M/tree/f3ff3571791e39611d31c381e3a41a3af07b4987",
+      "finding": "Use and redistribution permitted subject to license, notices and attribution requirements. No additional restrictions found for these four voices in VOICES.md. Converted from PT to NPZ by prepare_resources.py."
+    },
+    {
+      "name": "kokoro-ios-multilingual",
+      "license": "MIT",
+      "finding": "Copyright and license notice must be retained."
+    },
+    {
+      "name": "eSpeakNGSwift-multilingual and eSpeak NG",
+      "license": "GPL-3.0",
+      "finding": "Spanish phonemization uses this dependency (KokoroService.swift:90). ESpeakNG.framework and eSpeakNGLib.framework are bundled in archive 1.0 (2). Distribution requires GPL compliance including corresponding source and recipient rights. App Store distribution compatibility is not established."
+    }
+  ],
+  "archiveCheck": "No separate license/NOTICE/acknowledgments files found by filename scan. This does not exclude notices embedded in binaries.",
+  "nextSteps": [
+    "Resolve GPL distribution conditions or replace the dependency before asserting content rights.",
+    "Include applicable license copies, notices, attribution and modification notices in the distributed app.",
+    "Rebuild if distributed resources or dependencies change."
+  ],
+  "supersededBy": "publication-audit-2026-11-16.json",
+  "additionalFinding": "MisakiSwift EnglishNum2Word.swift explicitly derives from num2words; upstream LGPL-2.1-or-later provenance requires clarification despite Apache root license."
+}

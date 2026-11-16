@@ -2,8 +2,8 @@
 DerivedData/
 *.xcuserstate
 xcuserdata/
-Bookreader/Resources/*.safetensors
-Bookreader/Resources/voices.npz
+Folisona/Resources/*.safetensors
+Folisona/Resources/voices.npz
 
 .DS_Store
 .venv/
@@ -11,4 +11,14 @@ __pycache__/
 .env
 *.p12
 *.mobileprovision
-Bookreader/Resources/*.pt
+Folisona/Resources/*.pt
+
+# Distribution credentials and local configuration
+*.p8
+Release/local.json
+Release/.release.lock
+Release/Archives/
+Release/Exports/
+Release/Logs/
+Release/store-upload-result.json
+Release/header-upload-result.json

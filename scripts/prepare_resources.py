@@ -6,7 +6,7 @@ import urllib.request
 import numpy as np
 import torch
 
-ROOT = pathlib.Path(__file__).resolve().parents[1] / 'Bookreader' / 'Resources'
+ROOT = pathlib.Path(__file__).resolve().parents[1] / 'Folisona' / 'Resources'
 ROOT.mkdir(parents=True, exist_ok=True)
 MODEL = ROOT / 'kokoro-v1_0.safetensors'
 EXPECTED = '4e9ecdf03b8b6cf906070390237feda473dc13327cb8d56a43deaa374c02acd8'

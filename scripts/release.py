@@ -48,10 +48,10 @@ def auth_args(config):
 
 def preflight(config):
     run(['xcodebuild', '-version'])
-    for p in ['Folisona/Resources/kokoro-v1_0.safetensors', 'Folisona/Resources/voices.npz',
+    for p in ['Folisona/Resources/ThirdPartyNotices.txt',
               'Folisona/Assets.xcassets/AppIcon.appiconset/AppIcon.png']:
         if not (ROOT / p).is_file():
-            raise ValueError(f'Missing {p}; run scripts/prepare_resources.py or make_icon.swift first.')
+            raise ValueError(f'Missing {p}; restore bundled resources or run scripts/make_icon.swift.')
     auth_args(config)
     print('Local resources OK. Apple Developer membership, distribution signing and the App Store Connect record are checked by Apple at archive/upload time.')
 

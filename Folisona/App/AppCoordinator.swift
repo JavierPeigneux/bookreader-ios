@@ -1,11 +1,11 @@
 import SwiftUI
 import Observation
 
-/// MVVC: Models + Views + ViewModels + Coordinator. Services own IO and inference.
+/// MVVC: Models + Views + ViewModels + Coordinator. Services own IO and speech synthesis.
 @MainActor @Observable
 final class AppCoordinator {
     let library: LibraryViewModel
-    private let kokoro = KokoroService()
+    private let speech = AppleSpeechService()
     var selection: UUID?
     var reader: ReaderViewModel?
 
@@ -58,11 +58,11 @@ final class AppCoordinator {
 
     func open(_ book: Book) {
         reader?.close()
-        reader = ReaderViewModel(book: book, service: kokoro) { [weak self] in self?.library.update($0) }
+        reader = ReaderViewModel(book: book, service: speech) { [weak self] in self?.library.update($0) }
         #if DEBUG
         if ProcessInfo.processInfo.arguments.contains("--store-screenshots"),
            Locale.preferredLanguages.first?.hasPrefix("en") == true {
-            reader?.voice = .heart
+            reader?.voice = .english
         }
         #endif
         selection = book.id
@@ -76,7 +76,6 @@ final class AppCoordinator {
     }
     func handleMemoryWarning() {
         reader?.cancelGeneration()
-        Task { await kokoro.releaseResources() }
     }
     func returnedToLibrary() { reader?.close(); reader = nil }
 }

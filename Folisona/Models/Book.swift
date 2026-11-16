@@ -1,4 +1,6 @@
 import Foundation
+import AVFoundation
+import CryptoKit
 
 struct ReadingBlock: Codable, Hashable, Identifiable {
     var id: Int
@@ -74,16 +76,38 @@ enum ReaderError: LocalizedError {
     var errorDescription: String? { if case .message(let text) = self { return text }; return nil }
 }
 
-enum ReaderVoice: String, Codable, CaseIterable, Identifiable {
-    case dora = "ef_dora", alex = "em_alex", santa = "em_santa", heart = "af_heart"
+struct ReaderVoice: RawRepresentable, Codable, Hashable, Identifiable, Sendable {
+    let rawValue: String
     var id: String { rawValue }
-    var title: String {
-        switch self {
-        case .dora: return String(localized: "voice.dora")
-        case .alex: return String(localized: "voice.alex")
-        case .santa: return String(localized: "voice.santa")
-        case .heart: return String(localized: "voice.heart")
-        }
+    var cacheKey: String { SHA256.hash(data: Data(rawValue.utf8)).map { String(format: "%02x", $0) }.joined() }
+    var systemVoice: AVSpeechSynthesisVoice? {
+        guard rawValue.hasPrefix("com.apple.") else { return nil }
+        return AVSpeechSynthesisVoice(identifier: rawValue)
     }
-    var isSpanish: Bool { self != .heart }
+    var title: String {
+        guard let voice = systemVoice else { return String(localized: "voice.unavailable") }
+        let language = Locale.current.localizedString(forIdentifier: voice.language) ?? voice.language
+        let quality: String
+        switch voice.quality {
+        case .premium: quality = " · " + String(localized: "voice.premium")
+        case .enhanced: quality = " · " + String(localized: "voice.enhanced")
+        default: quality = ""
+        }
+        return "\(voice.name) · \(language)\(quality)"
+    }
+    static var available: [ReaderVoice] {
+        AVSpeechSynthesisVoice.speechVoices()
+            .filter { $0.identifier.hasPrefix("com.apple.") && !$0.voiceTraits.contains(.isPersonalVoice) && ($0.language.hasPrefix("es-") || $0.language.hasPrefix("en-")) }
+            .sorted {
+                if $0.language != $1.language { return $0.language > $1.language }
+                if $0.quality != $1.quality { return $0.quality.rawValue > $1.quality.rawValue }
+                return $0.name.localizedStandardCompare($1.name) == .orderedAscending
+            }
+            .map { ReaderVoice(rawValue: $0.identifier) }
+    }
+    static var spanish: ReaderVoice { preferred(language: "es-ES") }
+    static var english: ReaderVoice { preferred(language: "en-US") }
+    private static func preferred(language: String) -> ReaderVoice {
+        ReaderVoice(rawValue: AVSpeechSynthesisVoice(language: language)?.identifier ?? "unavailable-\(language)")
+    }
 }

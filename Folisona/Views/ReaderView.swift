@@ -1,8 +1,10 @@
 import SwiftUI
+import AVFoundation
 
 struct ReaderView: View {
     @Bindable var model: ReaderViewModel
     @AppStorage("reader.showListeningTimes") private var showListeningTimes = false
+    @State private var availableVoices = ReaderVoice.available
     @State private var listeningSessionID: UUID?
     @State private var showChapters = false
     @State private var hasPresentedChapters = false
@@ -160,7 +162,11 @@ struct ReaderView: View {
                 }
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: AVSpeechSynthesizer.availableVoicesDidChangeNotification)) { _ in
+            availableVoices = ReaderVoice.available
+        }
         .onAppear {
+            availableVoices = ReaderVoice.available
             if !hasPresentedChapters && ["EPUB", "PDF"].contains(model.book.format) {
                 hasPresentedChapters = true
                 showChapters = true
@@ -170,11 +176,13 @@ struct ReaderView: View {
             VStack(spacing: 10) {
                 HStack {
                     Picker(String(localized: "reader.voice"), selection: $model.voice) {
-                        ForEach(ReaderVoice.allCases) { Text($0.title).tag($0) }
+                        ForEach(availableVoices) { Text($0.title).tag($0) }
+                        if !availableVoices.contains(model.voice) { Text(model.voice.title).tag(model.voice) }
                     }.disabled(model.isGenerating)
                     Spacer()
                     Text(verbatim: "\(model.book.position + 1) / \(model.book.blocks.count)").font(.caption.monospacedDigit()).foregroundStyle(FolioPalette.secondary)
                 }
+                Text(String(localized: "voice.help")).font(.caption2).foregroundStyle(FolioPalette.secondary)
                 if model.isGenerating {
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
@@ -218,11 +226,6 @@ struct ReaderView: View {
                 } else if model.pendingPreparation != nil {
                     Button(String(localized: "preparation.resume")) { model.resumePreparation() }
                 }
-                #if targetEnvironment(simulator)
-                if !ProcessInfo.processInfo.arguments.contains("--store-screenshots") {
-                    Text(String(localized: "reader.simulator.notice")).font(.caption2).foregroundStyle(FolioPalette.warning)
-                }
-                #endif
             }.padding().frame(maxWidth: 720).frame(maxWidth: .infinity).background(FolioPalette.paper.opacity(0.98))
                 .overlay(alignment: .top) { Rectangle().fill(FolioPalette.border).frame(height: 0.5) }
         }

@@ -4,7 +4,7 @@ FELL ASLEEP WHILE LISTENING?
 Folisona remembers when each passage began playing and shows small time labels beside the text. When you wake up, check your listening times, find the last passage you remember and tap to pick up the story. You can also browse earlier listening sessions. These timestamps help you find your place; Folisona does not detect when you fall asleep.
 
 YOUR LIBRARY, READ ALOUD
-Import DRM-free EPUB books, text-based PDFs, TXT and Markdown files. Listen to Spanish and English voices while following the words on screen.
+Import DRM-free EPUB books, text-based PDFs, TXT and Markdown files. Listen to installed Apple voices in Spanish and English while following the words on screen. Download more voices in Settings > Accessibility.
 
 ONE CHAPTER AFTER ANOTHER
 Browse chapters in order, choose where to start and prepare audio for a chapter or a whole book. PDFs are divided using their outline or pages.

@@ -1,50 +1,6 @@
 {
-  "originHash" : "3b053174e5cde54c1094bbf8edd163b69bee21fdbed8a0852668418041569b25",
+  "originHash" : "03315f87f15566ca7049cc23d24852c7618ef7c4a7e132c3f35aad9e9e6b8084",
   "pins" : [
-    {
-      "identity" : "espeakngswift-multilingual",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/skywalkerswartz/eSpeakNGSwift-multilingual",
-      "state" : {
-        "revision" : "dba997ac9582f8992d145986f6bbc66b89a675ae",
-        "version" : "1.1.6"
-      }
-    },
-    {
-      "identity" : "kokoro-ios-multilingual",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/skywalkerswartz/kokoro-ios-multilingual.git",
-      "state" : {
-        "revision" : "802f904617231cdb746c3910a21d95f16ba022f1"
-      }
-    },
-    {
-      "identity" : "misakiswift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mlalma/MisakiSwift",
-      "state" : {
-        "revision" : "6835a1ce4a8854075c89f18ff75c74b13ef58e15",
-        "version" : "1.0.6"
-      }
-    },
-    {
-      "identity" : "mlxutilslibrary",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mlalma/MLXUtilsLibrary.git",
-      "state" : {
-        "revision" : "41f6cfd5d68b65aa3c65a34efe3b71c371ed915b",
-        "version" : "0.0.6"
-      }
-    },
-    {
-      "identity" : "swift-numerics",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-numerics",
-      "state" : {
-        "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
-        "version" : "1.1.1"
-      }
-    },
     {
       "identity" : "swiftsoup",
       "kind" : "remoteSourceControl",

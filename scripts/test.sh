@@ -15,4 +15,4 @@ print(ranked[0]["udid"])
 fi
 xcodebuild -project FolisonaSimulator.xcodeproj -scheme Folisona \
   -destination "$READER_DESTINATION" \
-  -derivedDataPath .build/simulator272 -clonedSourcePackagesDirPath .build/SourcePackages test CODE_SIGNING_ALLOWED=NO "$@"
+  -derivedDataPath .build/apple-simulator -clonedSourcePackagesDirPath .build/apple-packages test CODE_SIGNING_ALLOWED=NO "$@"

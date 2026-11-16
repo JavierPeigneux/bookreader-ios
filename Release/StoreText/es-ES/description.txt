@@ -4,7 +4,7 @@ Tus libros tienen mucho que contarte. Escúchalos con Folisona: un lector gratui
 Folisona guarda a qué hora empezó a sonar cada fragmento y muestra pequeñas etiquetas junto al texto. Al despertar, consulta las horas de escucha, busca el último pasaje que recuerdas y toca para retomarlo. También puedes consultar sesiones anteriores. Las horas son una ayuda para orientarte: Folisona no detecta cuándo te duermes.
 
 TU BIBLIOTECA, EN VOZ ALTA
-Importa libros EPUB sin DRM, PDF con texto, archivos TXT y Markdown. Escucha voces en castellano e inglés mientras sigues la lectura en pantalla.
+Importa libros EPUB sin DRM, PDF con texto, archivos TXT y Markdown. Escucha las voces de Apple instaladas en castellano e inglés mientras sigues la lectura en pantalla. Puedes descargar más voces desde Ajustes > Accesibilidad.
 
 UN CAPÍTULO DESPUÉS DE OTRO
 Recorre los capítulos en orden, elige dónde empezar y prepara el audio de un capítulo o del libro completo. En PDF, la división utiliza el índice del documento o sus páginas.

@@ -38,36 +38,6 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertEqual(book.listeningSessions?.count, 30)
     }
 
-    @MainActor
-    func testGPULifecycleClosesSynchronouslyAndRejectsExpiredGrant() {
-        let state = TestGPUState()
-        let policy = GPUExecutionPolicy { state.set($0) }
-        let center = NotificationCenter()
-        let lifecycle = GPUApplicationLifecycle(policy: policy, center: center)
-        withExtendedLifetime(lifecycle) {
-            XCTAssertFalse(state.allowed)
-            center.post(name: UIApplication.didBecomeActiveNotification, object: nil)
-            XCTAssertTrue(state.allowed)
-            center.post(name: UIApplication.willResignActiveNotification, object: nil)
-            XCTAssertFalse(state.allowed, "Must close before notification delivery returns")
-            let expired = UUID()
-            policy.register(expired)
-            policy.revoke(expired)
-            XCTAssertFalse(policy.grant(expired), "A late task callback must not resurrect expired permission")
-            XCTAssertFalse(state.allowed)
-            let granted = UUID()
-            policy.register(granted)
-            XCTAssertTrue(policy.grant(granted))
-            XCTAssertTrue(state.allowed)
-            center.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
-            XCTAssertTrue(state.allowed, "A real grant allows background submission")
-            policy.revoke(granted)
-            XCTAssertFalse(state.allowed)
-            center.post(name: UIApplication.didBecomeActiveNotification, object: nil)
-            XCTAssertTrue(state.allowed)
-        }
-    }
-
     func testPreparationProgressExcludesCachedWorkFromEstimate() {
         var progress = PreparationProgress(total: 10, initiallyCached: 8, completed: 8)
         XCTAssertEqual(progress.fraction, 0.8)
@@ -228,8 +198,8 @@ final class DocumentImporterTests: XCTestCase {
         let first = Book(title: "Anterior", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Uno")])
         let second = Book(title: "Nuevo", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Dos")])
         for book in [first, second] {
-            let url = URL.cachesDirectory.appendingPathComponent(book.id.uuidString).appendingPathComponent(ReaderVoice.dora.rawValue).appendingPathComponent("0.wav")
-            _ = try await service.generate(text: book.title, voice: .dora, destination: url, progress: { _ in })
+            let url = URL.cachesDirectory.appendingPathComponent(book.id.uuidString).appendingPathComponent(ReaderVoice.spanish.rawValue).appendingPathComponent("0.wav")
+            _ = try await service.generate(text: book.title, voice: .spanish, destination: url, progress: { _ in })
         }
         let oldReader = ReaderViewModel(book: first, service: service, save: { _ in })
         let newReader = ReaderViewModel(book: second, service: service, save: { _ in })
@@ -256,16 +226,16 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertTrue(newReader.isPlaying, "Resume must await session activation too")
     }
 
-    func testInferenceSegmentsBoundExistingLongBlocksWithoutLosingText() {
+    func testSpeechSegmentsBoundExistingLongBlocksWithoutLosingText() {
         let text = Array(repeating: "El niño encontró un libro. ¡Qué alegría! Mañana leeremos más.", count: 20).joined(separator: " ")
-        let segments = KokoroService.inferenceSegments(text)
+        let segments = AppleSpeechService.segments(text)
         XCTAssertGreaterThan(segments.count, 1)
-        XCTAssertTrue(segments.allSatisfy { !$0.isEmpty && $0.count <= KokoroService.inferenceCharacterLimit })
+        XCTAssertTrue(segments.allSatisfy { !$0.isEmpty && $0.count <= AppleSpeechService.segmentCharacterLimit })
         XCTAssertEqual(segments.joined(separator: " "), text)
         let unbroken = String(repeating: "á", count: 350)
-        XCTAssertEqual(KokoroService.inferenceSegments(unbroken).joined(), unbroken)
-        XCTAssertTrue(KokoroService.inferenceSegments(unbroken).allSatisfy { $0.count <= KokoroService.inferenceCharacterLimit })
-        XCTAssertTrue(KokoroService.inferenceSegments(" \n ").isEmpty)
+        XCTAssertEqual(AppleSpeechService.segments(unbroken).joined(), unbroken)
+        XCTAssertTrue(AppleSpeechService.segments(unbroken).allSatisfy { $0.count <= AppleSpeechService.segmentCharacterLimit })
+        XCTAssertTrue(AppleSpeechService.segments(" \n ").isEmpty)
     }
 
     @MainActor
@@ -285,7 +255,7 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertEqual(model.book.position, 0)
         XCTAssertEqual(model.cachedBlocks, [1])
         XCTAssertNil(model.book.listeningSessions, "Offline preparation must not create listening tags")
-        XCTAssertTrue(FileManager.default.fileExists(atPath: store.destination(book: book.id, voice: .dora, index: 1).path))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: store.destination(book: book.id, voice: .spanish, index: 1).path))
         XCTAssertNil(store.pending(book: book.id))
         let restored = ReaderViewModel(book: book, service: service, audioStore: store, save: { _ in })
         XCTAssertEqual(restored.cachedBlocks, [1])
@@ -308,12 +278,12 @@ final class DocumentImporterTests: XCTestCase {
         while await service.requests.count < 2 && Date() < deadline { try await Task.sleep(for: .milliseconds(25)) }
         active = false
         model.willResignActive()
-        XCTAssertTrue(model.isGenerating, "GPU grant allows the current job to continue")
+        XCTAssertTrue(model.isGenerating, "Background task grant allows the current job to continue")
         XCTAssertTrue(model.backgroundGenerationAllowed)
         permission.expire()
         XCTAssertFalse(model.isGenerating)
         XCTAssertEqual(store.pending(book: book.id)?.range, 0..<3)
-        XCTAssertTrue(store.available(book: book.id, voice: .dora).contains(0))
+        XCTAssertTrue(store.available(book: book.id, voice: .spanish).contains(0))
         model.close()
         active = true
         let resumedService = TestSpeechGenerator(delayAfterFirst: .zero, frameCount: 480)
@@ -334,7 +304,7 @@ final class DocumentImporterTests: XCTestCase {
         var active = true
         let service = TestSpeechGenerator()
         let permission = TestBackgroundLease(granted: false)
-        let book = Book(title: "Sin GPU de fondo", format: "TXT", blocks: [
+        let book = Book(title: "Sin tarea de fondo", format: "TXT", blocks: [
             ReadingBlock(id: 0, heading: "Texto", text: "Uno"), ReadingBlock(id: 1, heading: "Texto", text: "Dos")])
         let model = ReaderViewModel(book: book, service: service, audioStore: store,
             isAppActive: { active }, makeLease: { permission }, save: { _ in })
@@ -349,29 +319,28 @@ final class DocumentImporterTests: XCTestCase {
         active = false
         model.willResignActive()
         XCTAssertFalse(model.isGenerating)
-        XCTAssertTrue(model.isPlaying, "Saved audio must continue without a GPU grant")
+        XCTAssertTrue(model.isPlaying, "Saved audio must continue without a Background task grant")
         XCTAssertNotNil(store.pending(book: book.id))
     }
 
     @MainActor
-    func testOfflinePreparationPromotesLegacyCache() async throws {
+    func testOfflinePreparationReusesSavedAppleAudio() async throws {
         let store = PreparedAudioStore(root: directory.appendingPathComponent("audio"))
         let book = Book(title: "Anterior", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Uno")])
-        let legacy = URL.cachesDirectory.appendingPathComponent(book.id.uuidString).appendingPathComponent(ReaderVoice.dora.rawValue).appendingPathComponent("0.wav")
+        let saved = store.destination(book: book.id, voice: .spanish, index: 0)
         let service = TestSpeechGenerator()
-        _ = try await service.generate(text: "Uno", voice: .dora, destination: legacy, progress: { _ in })
-        defer { try? FileManager.default.removeItem(at: legacy.deletingLastPathComponent().deletingLastPathComponent()) }
+        _ = try await service.generate(text: "Uno", voice: .spanish, destination: saved, progress: { _ in })
         let model = ReaderViewModel(book: book, service: service, audioStore: store, save: { _ in })
         defer { model.close() }
         model.prepareBook()
         let deadline = Date().addingTimeInterval(5)
         while model.isGenerating && Date() < deadline { try await Task.sleep(for: .milliseconds(25)) }
         XCTAssertNil(model.error)
-        let durable = store.destination(book: book.id, voice: .dora, index: 0)
-        XCTAssertEqual(try Data(contentsOf: durable), try Data(contentsOf: legacy))
+        let durable = store.destination(book: book.id, voice: .spanish, index: 0)
+        XCTAssertEqual(try Data(contentsOf: durable), try Data(contentsOf: saved))
         XCTAssertNil(store.pending(book: book.id))
         let requests = await service.requests
-        XCTAssertEqual(requests, ["Uno"], "Migration should not regenerate existing audio")
+        XCTAssertEqual(requests, ["Uno"], "Preparing again should reuse saved Apple audio")
     }
 
     func testEPUBRejectsDRM() throws {
@@ -397,24 +366,58 @@ final class DocumentImporterTests: XCTestCase {
         try store.remove(book)
         XCTAssertTrue(try store.load().isEmpty)
     }
-    func testRealKokoroSpanishOnDevice() async throws {
-        #if targetEnvironment(simulator)
-        throw XCTSkip("MLX requiere dispositivo físico; la síntesis no se simula.")
-        #else
-        let url = directory.appendingPathComponent("castellano.wav")
-        let result = try await KokoroService().generate(text: "¡Buenos días! El niño lee un libro en castellano. Mañana iremos a la biblioteca de Valencia.", voice: .dora, destination: url)
-        let file = try AVAudioFile(forReading: result)
-        XCTAssertEqual(file.processingFormat.sampleRate, 24_000)
-        XCTAssertGreaterThan(file.length, 24_000)
-        let attachment = XCTAttachment(contentsOfFile: result)
-        attachment.name = "Kokoro-Dora-castellano.wav"
-        attachment.lifetime = .keepAlways
-        add(attachment)
-        #endif
+    @MainActor
+    func testRealAppleSpeechSpanishAndEnglish() async throws {
+        for (voice, text) in [(ReaderVoice.spanish, "¡Buenos días! El niño lee un libro en castellano. Mañana iremos a la biblioteca de Valencia."),
+                              (ReaderVoice.english, "Good morning! The child is reading a book. Tomorrow we will visit the library together.")] {
+            guard voice.systemVoice != nil else { throw XCTSkip("Install the Spanish and English system voices to validate synthesis.") }
+            let url = directory.appendingPathComponent(voice.cacheKey + ".wav")
+            let result = try await AppleSpeechService().generate(text: text, voice: voice, destination: url)
+            let file = try AVAudioFile(forReading: result)
+            XCTAssertGreaterThan(file.length, Int64(file.processingFormat.sampleRate))
+            let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: AVAudioFrameCount(file.length)))
+            try file.read(into: buffer)
+            let samples = try XCTUnwrap(buffer.floatChannelData?[0])
+            XCTAssertTrue((0..<Int(buffer.frameLength)).contains { abs(samples[$0]) > 0.0001 })
+            let attachment = XCTAttachment(contentsOfFile: result)
+            attachment.name = "Apple-\(voice.systemVoice!.language).wav"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
     }
+
+    @MainActor
+    func testAppleSpeechCancellationAndNextRequest() async throws {
+        guard ReaderVoice.spanish.systemVoice != nil else { throw XCTSkip("Spanish system voice not installed") }
+        let service = AppleSpeechService()
+        let cancelled = directory.appendingPathComponent("cancelled.wav")
+        let task = Task { try await service.generate(text: String(repeating: "Un libro para leer en voz alta. ", count: 1000), voice: .spanish, destination: cancelled) }
+        try await Task.sleep(for: .milliseconds(10))
+        task.cancel()
+        let next = directory.appendingPathComponent("next.wav")
+        _ = try await service.generate(text: "La siguiente lectura funciona después de cancelar.", voice: .spanish, destination: next)
+        do { _ = try await task.value; XCTFail("Cancelled synthesis must throw") }
+        catch is CancellationError { }
+        XCTAssertFalse(FileManager.default.fileExists(atPath: cancelled.path))
+        XCTAssertGreaterThan(try AVAudioFile(forReading: next).length, 0)
+        XCTAssertFalse(try FileManager.default.contentsOfDirectory(atPath: directory.path).contains { $0.contains("partial") })
+    }
+
+    @MainActor
+    func testUnavailableVoiceDoesNotSilentlyChangeLanguage() async throws {
+        let destination = directory.appendingPathComponent("missing.wav")
+        do {
+            _ = try await AppleSpeechService().generate(text: "Hola", voice: ReaderVoice(rawValue: "unavailable-es-ES"), destination: destination)
+            XCTFail("Unavailable voice must fail")
+        } catch { XCTAssertFalse(FileManager.default.fileExists(atPath: destination.path)) }
+        let voice = ReaderVoice.spanish
+        XCTAssertEqual(try JSONDecoder().decode(ReaderVoice.self, from: JSONEncoder().encode(voice)), voice)
+        XCTAssertTrue(ReaderVoice.available.allSatisfy { $0.rawValue.hasPrefix("com.apple.") })
+    }
+
 }
 
-/// Unit-test audio only: this verifies queue behavior, not Kokoro synthesis.
+/// Unit-test audio only: this verifies queue behavior, not system speech synthesis.
 private actor TestSpeechGenerator: SpeechGenerating {
     private(set) var requests: [String] = []
     private let delayAfterFirst: Duration
@@ -450,11 +453,4 @@ private final class TestBackgroundLease: BackgroundGenerationManaging {
     func report(completed: Int, total: Int) {}
     func finish(success: Bool) { canRunInBackground = false }
     func expire() { canRunInBackground = false; onExpiration?() }
-}
-
-private final class TestGPUState: @unchecked Sendable {
-    private let lock = NSLock()
-    private var value = false
-    var allowed: Bool { lock.withLock { value } }
-    func set(_ value: Bool) { lock.withLock { self.value = value } }
 }

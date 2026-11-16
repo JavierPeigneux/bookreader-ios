@@ -392,74 +392,6 @@
         }
       }
     },
-    "error.kokoro.invalid_audio": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kokoro did not produce valid audio for this section."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kokoro no ha producido audio válido para este fragmento."
-          }
-        }
-      }
-    },
-    "error.kokoro.resources_missing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kokoro resources are missing. Run scripts/prepare_resources.py and rebuild."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Faltan los recursos de Kokoro. Ejecuta scripts/prepare_resources.py y recompila."
-          }
-        }
-      }
-    },
-    "error.kokoro.simulator": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kokoro requires a physical iPhone or iPad. You can test the library and read documents in the simulator."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kokoro necesita un iPhone o iPad físico. En el simulador puedes probar la biblioteca y leer los documentos."
-          }
-        }
-      }
-    },
-    "error.kokoro.voice_missing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The voice %@ could not be found."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se encuentra la voz %@."
-          }
-        }
-      }
-    },
     "error.operation.title": {
       "extractionState": "manual",
       "localizations": {
@@ -841,23 +773,6 @@
         }
       }
     },
-    "reader.simulator.notice": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kokoro speech synthesis requires a physical device."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La síntesis Kokoro requiere un dispositivo físico."
-          }
-        }
-      }
-    },
     "reader.status.finished": {
       "extractionState": "manual",
       "localizations": {
@@ -983,81 +898,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kokoro voice"
+            "value": "Apple voice"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Voz de Kokoro"
-          }
-        }
-      }
-    },
-    "voice.alex": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alex · Spanish"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Alex · Español"
-          }
-        }
-      }
-    },
-    "voice.dora": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dora · Spanish"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Dora · Español"
-          }
-        }
-      }
-    },
-    "voice.heart": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Heart · English"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Heart · Inglés"
-          }
-        }
-      }
-    },
-    "voice.santa": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Santa · Spanish"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Santa · Español"
+            "value": "Voz de Apple"
           }
         }
       }
@@ -1119,13 +966,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cargando modelo y voz…"
+            "value": "Preparando voz…"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Loading model and voice…"
+            "value": "Preparing voice…"
           }
         }
       }
@@ -1567,6 +1414,125 @@
           "stringUnit": {
             "state": "translated",
             "value": "Folisona"
+          }
+        }
+      }
+    },
+    "voice.unavailable": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voz no disponible"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voice unavailable"
+          }
+        }
+      }
+    },
+    "voice.enhanced": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calidad mejorada"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enhanced"
+          }
+        }
+      }
+    },
+    "voice.premium": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calidad premium"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premium"
+          }
+        }
+      }
+    },
+    "voice.help": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voces de Apple instaladas. Descarga más voces en Ajustes > Accesibilidad."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed Apple voices. Download more voices in Settings > Accessibility."
+          }
+        }
+      }
+    },
+    "error.speech.voice_missing": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta voz no está instalada. Selecciona otra voz o descárgala en Ajustes > Accesibilidad."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This voice is not installed. Select another voice or download it in Settings > Accessibility."
+          }
+        }
+      }
+    },
+    "error.speech.invalid_audio": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La voz no ha producido audio válido para este fragmento. Prueba con otra voz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice did not produce valid audio for this section. Try another voice."
+          }
+        }
+      }
+    },
+    "error.speech.timeout": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La voz no ha respondido. Vuelve a intentarlo o selecciona otra voz instalada."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The voice did not respond. Try again or select another installed voice."
           }
         }
       }

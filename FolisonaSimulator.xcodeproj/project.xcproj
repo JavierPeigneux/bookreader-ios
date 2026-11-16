@@ -2,115 +2,252 @@
   "default-configuration": "Debug",
   "configurations": [
     "Debug",
-    "Release",
+    "Release"
   ],
   "localizations": {
     "development": "es",
     "supported": [
       "Base",
       "es",
-      "en",
-    ],
+      "en"
+    ]
   },
   "packages": [
     {
       "kind": "remote",
       "repository": "https://github.com/scinfu/SwiftSoup.git",
       "version": {
-        "version": "2.8.8",
-      },
-    }, {
+        "version": "2.8.8"
+      }
+    },
+    {
       "kind": "remote",
       "repository": "https://github.com/weichsel/ZIPFoundation.git",
       "version": {
-        "version": "0.9.20",
-      },
-    },
+        "version": "0.9.20"
+      }
+    }
   ],
   "files": [
     {
       "kind": "group",
       "path": "Folisona",
       "children": [
-        { "path": "Assets.xcassets", "target-membership": [ "Folisona/resources" ] },
-        { "path": "Info.plist" },
-        { "path": "InfoPlist.xcstrings", "target-membership": [ "Folisona/resources" ] },
-        { "path": "Localizable.xcstrings", "target-membership": [ "Folisona/resources" ] },
+        {
+          "path": "Assets.xcassets",
+          "target-membership": [
+            "Folisona/resources"
+          ]
+        },
+        {
+          "path": "Info.plist"
+        },
+        {
+          "path": "InfoPlist.xcstrings",
+          "target-membership": [
+            "Folisona/resources"
+          ]
+        },
+        {
+          "path": "Localizable.xcstrings",
+          "target-membership": [
+            "Folisona/resources"
+          ]
+        },
         {
           "kind": "group",
           "path": "App",
           "children": [
-            { "path": "AppCoordinator.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "FolisonaApp.swift", "target-membership": [ "Folisona/compile-sources" ] },
-          ],
-        }, {
+            {
+              "path": "AppCoordinator.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "FolisonaApp.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            }
+          ]
+        },
+        {
           "kind": "group",
           "path": "Models",
           "children": [
-            { "path": "Book.swift", "target-membership": [ "Folisona/compile-sources" ] },
-          ],
-        }, {
+            {
+              "path": "Book.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            }
+          ]
+        },
+        {
           "kind": "group",
           "path": "Resources",
           "children": [
-            { "path": "Bienvenida.txt", "target-membership": [ "Folisona/resources" ] },
-          ],
-        }, {
+            {
+              "path": "Bienvenida.txt",
+              "target-membership": [
+                "Folisona/resources"
+              ]
+            },
+            {
+              "path": "ThirdPartyNotices.txt",
+              "target-membership": [
+                "Folisona/resources"
+              ]
+            }
+          ]
+        },
+        {
           "kind": "group",
           "path": "Services",
           "children": [
-            { "path": "DocumentImporter.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "KokoroService.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "LibraryStore.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "PreparedAudioStore.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "BackgroundGenerationLease.swift", "target-membership": [ "Folisona/compile-sources" ] },
-          ],
-        }, {
+            {
+              "path": "DocumentImporter.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "AppleSpeechService.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "LibraryStore.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "PreparedAudioStore.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "BackgroundGenerationLease.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            }
+          ]
+        },
+        {
           "kind": "group",
           "path": "ViewModels",
           "children": [
-            { "path": "LibraryViewModel.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "ReaderViewModel.swift", "target-membership": [ "Folisona/compile-sources" ] },
-          ],
-        }, {
+            {
+              "path": "LibraryViewModel.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "ReaderViewModel.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            }
+          ]
+        },
+        {
           "kind": "group",
           "path": "Views",
           "children": [
-            { "path": "LibraryView.swift", "target-membership": [ "Folisona/compile-sources" ] },
-            { "path": "ReaderView.swift", "target-membership": [ "Folisona/compile-sources" ] },
-          ],
-        },
-      ],
-    }, {
+            {
+              "path": "LibraryView.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
+              "path": "ReaderView.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "kind": "group",
       "path": "FolisonaTests",
       "children": [
-        { "path": "DocumentImporterTests.swift", "target-membership": [ "FolisonaTests/compile-sources" ] },
+        {
+          "path": "DocumentImporterTests.swift",
+          "target-membership": [
+            "FolisonaTests/compile-sources"
+          ]
+        },
         {
           "kind": "group",
           "path": "Fixtures",
           "children": [
-            { "path": "drm.epub", "target-membership": [ "FolisonaTests/resources" ] },
-            { "path": "chapters.pdf", "target-membership": [ "FolisonaTests/resources" ] },
-            { "path": "ordered.epub", "target-membership": [ "FolisonaTests/resources" ] },
-          ],
-        },
-      ],
-    }, {
+            {
+              "path": "drm.epub",
+              "target-membership": [
+                "FolisonaTests/resources"
+              ]
+            },
+            {
+              "path": "chapters.pdf",
+              "target-membership": [
+                "FolisonaTests/resources"
+              ]
+            },
+            {
+              "path": "ordered.epub",
+              "target-membership": [
+                "FolisonaTests/resources"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
       "kind": "group",
       "path": "FolisonaUITests",
       "children": [
-        { "path": "ReaderUITests.swift", "target-membership": [ "FolisonaUITests/compile-sources" ] },
-      ],
-    }, {
+        {
+          "path": "ReaderUITests.swift",
+          "target-membership": [
+            "FolisonaUITests/compile-sources"
+          ]
+        }
+      ]
+    },
+    {
       "kind": "group",
       "name": "Products",
       "children": [
-        { "path": "<PRODUCTS>/Folisona.app", "id": "A7665C326CD1AB658D00444D", "type": "wrapper.application", "index": false },
-        { "path": "<PRODUCTS>/FolisonaTests.xctest", "id": "1468390A81064A821F0DE1F4", "type": "wrapper.cfbundle", "index": false },
-        { "path": "<PRODUCTS>/FolisonaUITests.xctest", "id": "22DB66489F731F92BC280321", "type": "wrapper.cfbundle", "index": false },
-      ],
-    },
+        {
+          "path": "<PRODUCTS>/Folisona.app",
+          "id": "A7665C326CD1AB658D00444D",
+          "type": "wrapper.application",
+          "index": false
+        },
+        {
+          "path": "<PRODUCTS>/FolisonaTests.xctest",
+          "id": "1468390A81064A821F0DE1F4",
+          "type": "wrapper.cfbundle",
+          "index": false
+        },
+        {
+          "path": "<PRODUCTS>/FolisonaUITests.xctest",
+          "id": "22DB66489F731F92BC280321",
+          "type": "wrapper.cfbundle",
+          "index": false
+        }
+      ]
+    }
   ],
   "targets": [
     {
@@ -122,10 +259,10 @@
       "legacy-team-id": "R8B3FUVAHY",
       "test-host-target": "Folisona",
       "dependencies": [
-        "Folisona",
+        "Folisona"
       ],
       "build-phases": [
-        "compile-sources",
+        "compile-sources"
       ],
       "build-settings": {
         "BUNDLE_LOADER": "$(TEST_HOST)",
@@ -133,14 +270,15 @@
         "LD_RUNPATH_SEARCH_PATHS": [
           "$(inherited)",
           "@executable_path/Frameworks",
-          "@loader_path/Frameworks",
+          "@loader_path/Frameworks"
         ],
         "PRODUCT_BUNDLE_IDENTIFIER": "com.javierpeigneux.FolisonaUITests",
         "SDKROOT": "iphoneos",
         "TARGETED_DEVICE_FAMILY": "1,2",
-        "TEST_TARGET_NAME": "Folisona",
-      },
-    }, {
+        "TEST_TARGET_NAME": "Folisona"
+      }
+    },
+    {
       "name": "Folisona",
       "id": "E9C6660D1A2DF68429681F42",
       "product": "Products/Folisona.app",
@@ -150,18 +288,23 @@
       "build-phases": [
         "compile-sources",
         "resources",
-        "frameworks",
+        "frameworks"
       ],
       "package-product-members": [
         {
           "package": "SwiftSoup",
           "product-name": "SwiftSoup",
-          "build-phase": { "build-phase": "frameworks" },
-        }, {
+          "build-phase": {
+            "build-phase": "frameworks"
+          }
+        },
+        {
           "package": "ZIPFoundation",
           "product-name": "ZIPFoundation",
-          "build-phase": { "build-phase": "frameworks" },
-        },
+          "build-phase": {
+            "build-phase": "frameworks"
+          }
+        }
       ],
       "build-settings": {
         "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
@@ -170,13 +313,14 @@
         "IPHONEOS_DEPLOYMENT_TARGET": "27.2",
         "LD_RUNPATH_SEARCH_PATHS": [
           "$(inherited)",
-          "@executable_path/Frameworks",
+          "@executable_path/Frameworks"
         ],
         "PRODUCT_BUNDLE_IDENTIFIER": "com.javierpeigneux.Folisona",
         "SDKROOT": "iphoneos",
-        "TARGETED_DEVICE_FAMILY": "1,2",
-      },
-    }, {
+        "TARGETED_DEVICE_FAMILY": "1,2"
+      }
+    },
+    {
       "name": "FolisonaTests",
       "id": "7FA48C0B9EC087FBDC9B1732",
       "product": "Products/FolisonaTests.xctest",
@@ -184,11 +328,11 @@
       "legacy-provisioning-style": "automatic",
       "legacy-team-id": "R8B3FUVAHY",
       "dependencies": [
-        "Folisona",
+        "Folisona"
       ],
       "build-phases": [
         "compile-sources",
-        "resources",
+        "resources"
       ],
       "build-settings": {
         "BUNDLE_LOADER": "$(TEST_HOST)",
@@ -196,14 +340,14 @@
         "LD_RUNPATH_SEARCH_PATHS": [
           "$(inherited)",
           "@executable_path/Frameworks",
-          "@loader_path/Frameworks",
+          "@loader_path/Frameworks"
         ],
         "PRODUCT_BUNDLE_IDENTIFIER": "com.javierpeigneux.FolisonaTests",
         "SDKROOT": "iphoneos",
         "TARGETED_DEVICE_FAMILY": "1,2",
-        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Folisona.app/Folisona",
-      },
-    },
+        "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Folisona.app/Folisona"
+      }
+    }
   ],
   "build-settings": {
     "ALWAYS_SEARCH_USER_PATHS": "NO",
@@ -253,7 +397,7 @@
     "GCC_OPTIMIZATION_LEVEL[config=Debug]": "0",
     "GCC_PREPROCESSOR_DEFINITIONS[config=Debug]": [
       "$(inherited)",
-      "DEBUG=1",
+      "DEBUG=1"
     ],
     "GCC_WARN_64_TO_32_BIT_CONVERSION": "YES",
     "GCC_WARN_ABOUT_RETURN_TYPE": "YES_ERROR",
@@ -275,7 +419,7 @@
     "SWIFT_OPTIMIZATION_LEVEL[config=Debug]": "-Onone",
     "SWIFT_OPTIMIZATION_LEVEL[config=Release]": "-O",
     "SWIFT_VERSION": "5.0",
-    "TARGETED_DEVICE_FAMILY": "1,2",
+    "TARGETED_DEVICE_FAMILY": "1,2"
   },
-  "last-upgrade": "14.3",
+  "last-upgrade": "14.3"
 }

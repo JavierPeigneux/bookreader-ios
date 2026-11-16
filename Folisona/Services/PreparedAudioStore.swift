@@ -9,19 +9,17 @@ struct AudioPreparation: Codable, Equatable {
 
 struct PreparedAudioStore {
     let root: URL
-    init(root: URL = URL.applicationSupportDirectory.appendingPathComponent("PreparedAudio")) { self.root = root }
+    init(root: URL = URL.applicationSupportDirectory.appendingPathComponent("ApplePreparedAudio")) { self.root = root }
     func directory(_ book: UUID) -> URL { root.appendingPathComponent(book.uuidString) }
     func destination(book: UUID, voice: ReaderVoice, index: Int) -> URL {
-        directory(book).appendingPathComponent(voice.rawValue).appendingPathComponent("\(index).wav")
+        directory(book).appendingPathComponent(voice.cacheKey).appendingPathComponent("\(index).wav")
     }
     func playbackURL(book: UUID, voice: ReaderVoice, index: Int) -> URL {
-        let saved = destination(book: book, voice: voice, index: index)
-        if FileManager.default.fileExists(atPath: saved.path) { return saved }
-        return URL.cachesDirectory.appendingPathComponent(book.uuidString).appendingPathComponent(voice.rawValue).appendingPathComponent("\(index).wav")
+        destination(book: book, voice: voice, index: index)
     }
     func available(book: UUID, voice: ReaderVoice) -> Set<Int> {
-        let folders = [directory(book).appendingPathComponent(voice.rawValue), URL.cachesDirectory.appendingPathComponent(book.uuidString).appendingPathComponent(voice.rawValue)]
-        return Set(folders.flatMap { (try? FileManager.default.contentsOfDirectory(at: $0, includingPropertiesForKeys: nil)) ?? [] }
+        let folder = directory(book).appendingPathComponent(voice.cacheKey)
+        return Set(((try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)) ?? [])
             .filter { $0.pathExtension == "wav" }.compactMap { Int($0.deletingPathExtension().lastPathComponent) })
     }
     func save(_ preparation: AudioPreparation, book: UUID) throws {

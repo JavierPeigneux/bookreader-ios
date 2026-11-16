@@ -1,127 +1,69 @@
-# Folisona iOS · primera versión
+# Folisona iOS · versión 1.0
 
-App SwiftUI independiente del servidor Python, iOS 27.2 o posterior. Importa EPUB sin DRM, PDF con texto, TXT UTF-8 y Markdown. Kokoro se ejecuta localmente con Dora, Alex y Santa en español y Heart en inglés. No traduce los documentos.
+Lector SwiftUI para iOS 27.2 o posterior. Importa EPUB sin DRM, PDF con texto, TXT UTF-8 y Markdown, y los lee con las **voces de Apple instaladas en el dispositivo**. Interfaz en castellano e inglés. No traduce los documentos.
 
-Bundle ID: `com.javierpeigneux.Folisona`. El cambio de identificador instala una app independiente de la antigua Bookreader; no migra automáticamente su biblioteca local.
+Bundle ID: `com.javierpeigneux.Folisona`.
 
 ## Abrir y ejecutar
 
-1. Abre `Folisona.xcodeproj` con Xcode 27.2 o posterior.
-2. Selecciona el esquema `Folisona`, tu equipo de firma y un iPhone/iPad físico.
-3. Ejecuta e importa un documento desde Archivos o pulsa **Probar con un texto en castellano**.
-4. Elige voz y pulsa **Preparar y escuchar**. El primer fragmento empieza a sonar cuando está listo y la app prepara los restantes. El menú de preparación permite guardar un capítulo o el libro completo para escucharlo sin generar más audio. Los fragmentos terminados se conservan y se reutilizan al reintentar.
+1. Abre `Folisona.xcodeproj` en Xcode 27.2 o posterior y selecciona el esquema `Folisona`.
+2. Selecciona un iPhone/iPad o simulador. Para un dispositivo físico, configura el equipo de firma.
+3. Importa un documento desde Archivos o pulsa **Probar con un texto en castellano**.
+4. Selecciona una voz de Apple y pulsa **Preparar y escuchar**.
 
-Los modelos no se incluyen en Git. Desde la raíz del repositorio, prepara un entorno Python 3.11 o posterior y descarga los recursos:
+No hay modelos que descargar, scripts Python de preparación ni dependencias de síntesis externas. Swift Package Manager resuelve únicamente SwiftSoup 2.8.8 y ZIPFoundation 0.9.20 para importar documentos. Sus avisos MIT completos se distribuyen en `Folisona/Resources/ThirdPartyNotices.txt`.
 
-```sh
-python3 -m venv .venv
-.venv/bin/pip install numpy torch
-.venv/bin/python scripts/prepare_resources.py
-```
-
-El script necesita NumPy y PyTorch (instalados con el comando anterior). Python solo prepara recursos durante el desarrollo; no se incluye ni ejecuta en iOS. El modelo ocupa unos 327 MB y las cuatro voces unos 2 MB. El script verifica el SHA-256 del modelo y usa revisiones concretas para descargar modelo y voces. Los recursos grandes se excluyen de Git.
-
-Las dependencias se resuelven con Swift Package Manager. `Package.resolved` fija las versiones transitivas. Los tres proyectos usan el formato JSON nativo de Xcode (`project.xcproj` dentro de `.xcodeproj`). Estos JSON son la configuración que se mantiene: edítalos desde Xcode o con `xcrun xcodeproj`. Ya no se regeneran desde YAML/XcodeGen.
-
-Para configurar la herramienta de línea de comandos sin modificar la selección global:
+Los dos proyectos (`Folisona` y `FolisonaSimulator`) comparten el mismo código y motor de voz. Se mantienen en formato JSON nativo de Xcode (`project.xcproj`), sin regenerarlos con XcodeGen. `Package.resolved` fija las dependencias.
 
 ```sh
 source scripts/xcode_env.sh
+./scripts/test.sh
+./scripts/test_apple_speech.sh
 ```
 
-El script respeta `DEVELOPER_DIR` si lo has configurado; en esta máquina usa `/Applications/Xcode-27.2.0-Release.Candidate.app/Contents/Developer` (Xcode 27.2 RC, build 27B48). Si Xcode solicita Metal Toolchain: `xcodebuild -downloadComponent MetalToolchain`.
+`xcode_env.sh` respeta `DEVELOPER_DIR`; en este equipo selecciona Xcode 27.2 RC sin cambiar la configuración global de Xcode.
 
-## Interfaz adaptativa e iPhone Duo
+## Voces y audio sin conexión
 
-La app usa `NavigationSplitView`: biblioteca y lector pueden coexistir en anchuras amplias y la navegación se contrae a una columna en pantallas compactas. La selección se mantiene al cambiar de tamaño. Se respetan las áreas seguras del sistema, incluidos los controles laterales de Duo; el texto tiene un ancho de lectura limitado y los controles de audio se mantienen accesibles. La tipografía del lector responde a Dynamic Type. Se admiten orientaciones vertical y horizontal.
+El selector muestra las voces de Apple disponibles en español e inglés, con nombre, variante regional y calidad. La selección inicial es la voz de iOS para español de España. Se pueden descargar otras voces desde Ajustes → Accesibilidad. La disponibilidad y los nombres dependen del dispositivo; no se incluyen voces de proveedores externos ni se solicita acceso a una voz personal.
 
-## Paleta Folio
+`AppleSpeechService` utiliza `AVSpeechSynthesizer.write(_:toBufferCallback:)` para escribir WAV por fragmentos. La app empieza a reproducir en cuanto el primero está preparado. El menú permite preparar un capítulo o todo el libro. El audio se guarda en Application Support, excluido de las copias de seguridad, y se reutiliza para la misma voz. No se envía el texto a un servidor propio.
 
-La interfaz utiliza verde bosque (`#003D2B`) para acciones y títulos, papel marfil (`#F7F1E3`) de fondo, crema (`#FFFAEF`) para tarjetas y verde salvia (`#E2E9DB`) para la selección y las etiquetas. El texto usa tinta verde oscura (`#182F25`) y un tono secundario (`#526356`). Los colores se centralizan en `FolioPalette` y en los conjuntos de colores de `Assets.xcassets`, compartidos por biblioteca, lector, capítulos y controles.
+Una voz no disponible produce un error explicativo; nunca se cambia silenciosamente de idioma. Se comprueba que el audio no esté vacío ni sea silencioso. Cada solicitud tiene su sintetizador y archivo temporal; cancelar una preparación elimina el parcial y no afecta a otra solicitud.
 
-## Idiomas de la interfaz
+La preparación muestra avance, fragmentos guardados y una estimación basada en el trabajo nuevo. La reproducción del audio preparado funciona con la pantalla bloqueada. La generación solicita una tarea finita de segundo plano sin GPU; iOS puede denegarla o finalizarla. En ese caso se conserva el trabajo completado y se reanuda desde la app. Para escuchar sin depender de nuevas generaciones, prepara el libro antes.
 
-La app incluye inglés y castellano mediante `Folisona/Localizable.xcstrings`, con mensajes de error, estados de audio, accesibilidad y plurales. Las claves son identificadores semánticos estables (`library.import`, `reader.play`, `error.pdf.open`); los textos traducidos viven exclusivamente en los catálogos. Los mensajes con argumentos usan el formato localizado, conservando las reglas de plural. Sigue el idioma preferido del sistema; también se puede elegir su idioma desde los ajustes de iOS para la app. El castellano es el idioma de desarrollo y de respaldo. `InfoPlist.xcstrings` localiza el nombre del tipo de documento.
+Esta primera versión no incluye migración de voces, tareas pendientes ni audios de Kokoro.
 
-El idioma de la interfaz no cambia la voz seleccionada ni traduce los libros. El ejemplo incluido sigue siendo un texto en castellano. Los títulos y encabezados guardados con el documento se conservan al cambiar de idioma.
+## Lectura e historial
 
-## Arquitectura MVVC
+Los documentos se dividen en capítulos y fragmentos. Puedes elegir capítulo, saltar entre fragmentos y volver a tu posición de lectura. Las etiquetas horarias registran cuándo empezó a sonar un fragmento; el menú del reloj permite mostrar horas y sesiones anteriores. Tocar una hora vuelve al pasaje correspondiente. No es detección del sueño.
 
-Se interpreta MVVC como Model–View–ViewModel–Coordinator (también conocida como MVVM-C):
+`NavigationSplitView` adapta biblioteca y lector a iPhone, iPad y diferentes anchuras. El texto admite Dynamic Type, selección y orientaciones vertical y horizontal. La paleta de papel marfil y verde bosque se centraliza en `FolioPalette` y el catálogo de colores.
 
-- **Models:** `Book`, `ReadingBlock`, `ReaderVoice`; datos Codable sin dependencias de UI.
-- **Views:** SwiftUI para biblioteca y lectura; presentan estado y envían acciones.
-- **ViewModels:** `LibraryViewModel` y `ReaderViewModel`; importación, estado, generación y reproducción.
-- **Coordinator:** `AppCoordinator`; composición de servicios y navegación.
-- **Services:** `DocumentImporter` (PDFKit, EPUB ZIP/XML/HTML, texto y Markdown), `LibraryStore` (JSON atómico), `KokoroService` (actor que serializa la inferencia y escribe WAV).
+Los textos de interfaz, estados, errores, plurales y accesibilidad viven en `Localizable.xcstrings`. El idioma de interfaz no cambia el idioma del libro ni traduce el contenido.
 
-## Lista de capítulos y audio progresivo
+## Arquitectura
 
-Al abrir un EPUB o PDF aparece una lista ordenada y seleccionable. El botón de lista del lector permite volver a ella; muestra cuántos fragmentos tienen audio en la voz elegida. El lector presenta el capítulo seleccionado y continúa con el siguiente durante la reproducción.
+- Models: `Book`, `ReadingBlock`, `ReaderVoice`.
+- Views: biblioteca y lector SwiftUI.
+- ViewModels: estado, importación, generación, reproducción e historial.
+- Coordinator: composición de servicios y navegación.
+- Services: importación PDFKit/EPUB/texto, persistencia JSON, audio preparado y síntesis de Apple.
 
-- EPUB: conserva el orden del `spine` y separa por el nivel de encabezado principal disponible (`h1`, o `h2` si no hay `h1`) dentro de cada archivo. Un EPUB sin encabezados conserva sus secciones del spine. Los capítulos con títulos iguales mantienen identidades distintas.
-- PDF: utiliza las entradas principales del índice con destino de página, recurriendo a sus hijos cuando la entrada es un contenedor sin destino. Sin índice, ofrece una lista por páginas. Los límites son por página; entradas que empiezan en la misma página se agrupan. No se detectan capítulos a partir del aspecto visual del texto.
-- Los libros ya importados conservan sus datos y caché. Para obtener los nuevos límites de capítulos de un PDF o EPUB antiguo, vuelve a importar su archivo.
+## Validación
 
-La app prepara desde el fragmento seleccionado hasta el final del libro y empieza a reproducir en cuanto el primero está listo. Cada fragmento se sintetiza internamente en unidades de hasta 96 caracteres, preferentemente separadas por puntuación o espacios, y se escribe por partes al WAV. Esto también se aplica a libros ya importados, sin modificar su posición ni su lista de capítulos. Puede haber pausas si la síntesis tarda más que el audio. La preparación muestra una barra con porcentaje que avanza al completar cada unidad de síntesis, además del número de fragmentos guardados. El tiempo restante es aproximado y se calcula con el trabajo nuevo y el tiempo medido en ese dispositivo; el audio ya guardado no falsea la velocidad. Hasta disponer de una medición se muestra «Calculando tiempo restante…». La pantalla muestra carga del modelo, síntesis o guardado y el tiempo transcurrido, sin inventar porcentajes de inferencia. Se puede cancelar o saltar de capítulo; una operación MLX ya en marcha puede tardar en terminar, pero su resultado no reinicia la reproducción cancelada.
+`./scripts/test.sh` ejecuta las pruebas funcionales y de interfaz en el simulador. Las pruebas reales de voz guardan WAV adjuntos al resultado XCTest y comprueban señal, cancelación y recuperación. Si faltan voces del sistema, la prueba correspondiente se omite explícitamente.
 
-La biblioteca y el fragmento de lectura se guardan en Documents/Library. El audio se guarda en Application Support/PreparedAudio por libro/voz/fragmento, excluido de copias de seguridad y disponible después del primer desbloqueo del dispositivo. La preparación promueve también el audio antiguo de Caches al almacenamiento persistente. La posición persistida es por fragmento, no por segundo. El audio se prepara progresivamente, escribiendo cada fragmento a disco sin acumular el libro en memoria. La reproducción continúa entre fragmentos y configura la sesión de audio y los controles de reproducción/pausa de la pantalla bloqueada.
+`./scripts/test_apple_speech.sh` compila en macOS los mismos archivos `Book.swift` y `AppleSpeechService.swift`, genera audio español e inglés y verifica señal y cancelación. No sustituye las pruebas en un iPhone físico. Los resultados y límites de validación están en `VALIDACION.md`.
 
-## Horas de escucha
+## Publicación
 
-El menú del reloj permite activar **Mostrar horas de escucha**. Cada fragmento escuchado muestra una cápsula pequeña con la fecha y hora de inicio del audio; preparar o leer visualmente un fragmento no crea una marca. Se puede consultar la última escucha de cada fragmento o elegir una de las últimas 30 sesiones conservadas. Una reapertura del lector, un salto manual o una separación de más de 30 minutos entre inicios de reproducción crea una nueva sesión; una pausa breve conserva la hora original.
+La versión comercial sigue siendo **1.0**. La build 1.0 (2) subida anteriormente contiene el motor anterior. Para preparar otra build de la misma versión:
 
-Con las etiquetas visibles, tocar una etiqueta o el texto reproduce desde el principio de ese fragmento. La sesión histórica queda seleccionada para no reemplazar sus horas durante la nueva escucha. El menú ofrece **Volver a la posición anterior** después de un salto. Las marcas persisten con el libro; no indican que el usuario estuviera despierto y no recuperan escuchas anteriores a esta versión.
+```sh
+./scripts/release.sh check
+./scripts/release.sh archive --rebuild
+```
 
-## Preparación y reproducción en segundo plano
-
-El menú de preparación ofrece capítulo actual, libro completo y reanudar. La lista de capítulos también permite preparar uno mediante su menú contextual. Pausar el audio no cancela la preparación; detener la preparación conserva los fragmentos terminados y permite seguir escuchándolos. La tarea pendiente se guarda para reanudarla desde la interfaz después de cerrar la app.
-
-La reproducción utiliza el modo de audio en segundo plano. Para la síntesis con Metal se solicita una tarea finita `BGContinuedProcessingTask` iniciada en primer plano, con recurso GPU y progreso visible para el sistema. El archivo `Folisona/Folisona.entitlements` contiene `com.apple.developer.background-tasks.continued-processing.gpu`. Está desactivado por defecto porque el equipo personal configurado no admite esta capacidad. Con un equipo y perfil compatibles, define el ajuste de compilación `FOLISONA_GPU_ENTITLEMENTS = Folisona/Folisona.entitlements` y vuelve a firmar. Con el equipo personal se mantiene la reproducción en segundo plano y la preparación en primer plano. Se comprueba `supportedResources` y la concesión efectiva de la tarea antes de continuar la generación en segundo plano.
-
-Si iOS no concede GPU o interrumpe la tarea, se conserva el progreso y se indica que hay que abrir la app para reanudar. El audio ya preparado puede seguir reproduciéndose. No se mantiene artificialmente la app activa con audio silencioso ni se garantiza generación ilimitada. Para escuchar un libro completo sin depender de la generación en segundo plano, prepáralo antes. El funcionamiento real con pantalla bloqueada y la concesión de GPU requieren comprobación en iPhone; el simulador solo valida los estados mediante dobles de prueba.
-
-## Motor y castellano
-
-Se usa el fork `skywalkerswartz/kokoro-ios-multilingual`, revisión `802f904617231cdb746c3910a21d95f16ba022f1`. Activa eSpeak NG para transformar texto español en fonemas e incorpora `.es`. El modelo y las voces son de Kokoro-82M. Esta integración no exige que el documento esté en inglés. La pronunciación y el acento final dependen de la voz; seleccionar español no garantiza por sí solo un acento peninsular perfecto.
-
-La caché de buffers MLX se limita a 20 MiB y se vacía tras cada unidad de síntesis. El umbral de asignación de MLX se fija en 1 GiB para regular el trabajo pendiente; no es un límite absoluto del proceso. Ante un aviso de memoria de iOS, se cancela la preparación y se liberan modelo, voces y caché cuando termina la operación en curso. La división en unidades pequeñas puede modificar las pausas y la prosodia.
-
-Se incluye una copia local de MLX 0.30.2 con el backport oficial para vectores vacíos en `set_vector_bytes`, causante de la aserción `bytes argument cannot be nil` con validación Metal. Véase `Vendor/README.md`. La validación de Metal permanece habilitada. El backend local también incorpora un bloqueo de envíos GPU sincronizado con las notificaciones de UIKit y la concesión/expiración del permiso de segundo plano.
-
-Para el simulador abre `FolisonaSimulator.xcodeproj`. Comparte los mismos archivos Swift y excluye las dependencias MLX, que fallaron al enlazar con el simulador durante la integración inicial. Permite probar importación, biblioteca y lectura; la síntesis MLX está deshabilitada expresamente porque necesita un dispositivo físico. Nunca se sustituye silenciosamente Kokoro por las voces de Apple.
-
-## Límites de esta versión
-
-- EPUB sin DRM, en orden del `spine`; se omiten las entradas `linear="no"`. No representa la maquetación original, imágenes, tablas ni notas enlazadas.
-- PDF con texto extraíble; una página sin texto devuelve un error de OCR. No hay OCR ni reconstrucción de columnas.
-- Markdown se convierte a texto por líneas; no es un visor completo de Markdown.
-- Hasta 25 MB de entrada, 100 MB expandidos en EPUB y dos millones de caracteres.
-- La generación en segundo plano depende del soporte GPU y del permiso temporal concedido por iOS. Sin permiso, se detiene al salir; la cola puede escuchar lo guardado y se detiene si necesita más audio. La cancelación Swift se atiende entre operaciones MLX. Además, un bloqueo nativo detiene nuevos envíos a Metal al perder actividad sin permiso GPU. La operación en curso puede quedar esperando hasta recuperar el primer plano, donde completa su cancelación; el audio ya guardado sigue disponible.
-- WAV PCM 24 kHz mono; alrededor de 173 MB/hora. Eliminar un libro elimina también su audio preparado y su caché antigua.
-- No hay sincronización, descarga de modelos desde la app, exportación de audiolibro ni publicación en App Store.
-
-## Pruebas
-
-El esquema incluye pruebas de TXT/Markdown con tildes, PDF con texto y escaneado, orden EPUB y DRM, división del texto y persistencia. La prueba `testRealKokoroSpanishOnDevice` genera audio con Dora en dispositivo físico y adjunta un WAV al resultado XCTest; en simulador figura como omitida, no como síntesis validada.
-
-Ejecuta `scripts/test.sh` para las pruebas de simulador (puedes elegir otro dispositivo mediante `READER_DESTINATION`). Para el dispositivo físico utiliza el esquema del proyecto principal en Xcode.
-
-`ValidationHarness/KokoroHostCheck.xcodeproj` es una herramienta de desarrollo para probar en el Mac el mismo servicio Swift, modelo y voces. No es la app iOS ni sustituye la prueba en iPhone. Compila en Release; el ejecutable dentro de la app acepta la ruta del WAV de salida como argumento.
-
-Consulta `VALIDACION.md` para los resultados reales de este checkout.
-
-## Dependencias y licencias
-
-- [Kokoro Swift multilingüe](https://github.com/skywalkerswartz/kokoro-ios-multilingual), derivado del port MIT de mlalma.
-- [eSpeak NG Swift multilingüe](https://github.com/skywalkerswartz/eSpeakNGSwift-multilingual), incluye eSpeak NG y sus condiciones GPL.
-- [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), modelo Apache 2.0.
-- [MLX Swift](https://github.com/ml-explore/mlx-swift), [MLXUtilsLibrary](https://github.com/mlalma/MLXUtilsLibrary), [MisakiSwift](https://github.com/mlalma/MisakiSwift), [ZIPFoundation](https://github.com/weichsel/ZIPFoundation), [SwiftSoup](https://github.com/scinfu/SwiftSoup).
-
-Las dependencias conservan sus licencias. Esta es una integración local de desarrollo; la distribución debe contemplar las obligaciones de las dependencias, en particular eSpeak NG.
-
-## Folisona y distribución
-
-El nombre de la app, los proyectos JSON, esquemas, módulos y pruebas es **Folisona**. Abre `Folisona.xcodeproj` o `FolisonaSimulator.xcodeproj`. Se conserva el bundle ID de las instalaciones existentes para no cambiar su identidad ni perder la biblioteca.
-
-Consulta [Release/README.md](Release/README.md) para regenerar iconos, capturas bilingües y archivar/subir versiones con `scripts/release.sh`. La comprobación preliminar del nombre y sus límites están en [Release/NAME-REVIEW.md](Release/NAME-REVIEW.md).
+Consulta `Release/README.md` para exportar, subir, regenerar capturas y actualizar la ficha. Crear una nueva build no equivale a enviarla a revisión. Las claves `.p8`, `Release/local.json`, archivos de distribución y datos generados permanecen fuera de Git.

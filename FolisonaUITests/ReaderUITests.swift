@@ -89,11 +89,8 @@ final class ReaderUITests: XCTestCase {
         screenshot.name = "English reader"
         screenshot.lifetime = .keepAlways
         add(screenshot)
-        // The simulator error exercises localization outside SwiftUI views.
-        play.tap()
-        XCTAssertTrue(app.alerts["Audio"].waitForExistence(timeout: 10))
-        XCTAssertTrue(app.alerts.staticTexts["Kokoro requires a physical iPhone or iPad. You can test the library and read documents in the simulator."].exists)
-        app.alerts.buttons["OK"].tap()
+        XCTAssertTrue(app.staticTexts["Installed Apple voices. Download more voices in Settings > Accessibility."].exists)
+
     }
 
     @MainActor

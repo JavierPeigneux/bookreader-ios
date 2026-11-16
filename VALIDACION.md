@@ -1,3 +1,23 @@
+# Validación actual · voces de Apple · 16 noviembre 2026
+
+- Respaldo completo del estado anterior publicado y verificado: `44c47de5d45b5a1a5675ed36018e34828bf2dae2`. Árbol remoto idéntico al local: `90e244ba19f79b1933de368e891edfe4b891e9e2`.
+- Se sustituye Kokoro por `AppleSpeechService`, con voces instaladas de Apple en español e inglés. Se eliminan Kokoro, eSpeak, Misaki, MLX, MLXUtilsLibrary, swift-numerics, modelos, embeddings, copia vendorizada y entitlement GPU. Los dos `Package.resolved` contienen únicamente SwiftSoup y ZIPFoundation.
+- Versión comercial conservada: **1.0**. No se ha archivado ni subido otra build a App Store Connect. La build 1.0 (2) ya subida sigue siendo la anterior.
+- Compilación Release para iPhone sin firma: **BUILD SUCCEEDED**, `.build/apple-device-final.log`. Binario aproximadamente 5,8 MB; inspección del bundle sin frameworks ni recursos del motor anterior y con avisos MIT incluidos. No es una estimación del tamaño final de descarga de la App Store.
+- Suite final iPhone 18 Pro, simulador iOS 27.2: **23 pruebas funcionales y 2 de interfaz pasadas**, cero fallos. Dos métodos de capturas de tienda omitidos porque requieren el modo específico de generación. Resultado: `.build/AppleSpeech-final.xcresult`.
+- Síntesis real de español e inglés en simulador: WAV adjuntos, duración superior a un segundo y muestras con señal. Cancelación seguida de otra generación, ausencia de parciales, voz no instalada y reutilización de audio preparado verificadas.
+- Comprobación Mac con los mismos archivos fuente del servicio: castellano 40,918 s, RMS 0,15568; inglés 39,361 s, RMS 0,16158. Cancelación y nueva solicitud correctas. `.build/apple-host-check.log`; reproducible con `./scripts/test_apple_speech.sh`. Estos resultados no son medidas de un iPhone físico.
+- 13 pruebas Python de publicación pasadas; `./scripts/release.sh check` correcto sin recursos de modelos.
+- Primera pasada de iOS: falló únicamente la prueba antigua que exigía migrar la caché. Se reemplazó por la verificación de reutilización de audio de Apple; la suite completa posterior pasó. No se incorpora migración de audios/voces anteriores, según el alcance de esta primera versión.
+- Capturas XCTest revisadas para comprobar selector y controles. El simulador conservaba un libro de bienvenida importado previamente cuyo texto mencionaba Kokoro; el recurso de bienvenida de la app nueva ya menciona las voces de Apple. No se modifica contenido de libros importados.
+- Pendiente antes de publicar: prueba física en iPhone de pronunciación, interrupciones, bloqueo y concesión/expiración de la tarea de segundo plano; regenerar capturas de tienda y subir una nueva build 1.0. La nueva tarea es CPU, sin GPU; su ejecución real en segundo plano no queda validada por simulador ni Mac.
+
+---
+
+# Historial anterior a la sustitución del motor
+
+Las comprobaciones siguientes describen versiones anteriores con Kokoro, no la implementación actual.
+
 # Validación · 11 de noviembre de 2026
 
 ## Memoria durante síntesis

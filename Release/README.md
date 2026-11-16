@@ -1,3 +1,7 @@
+# Versión 1.0 con voces de Apple
+
+La build 1.0 (2) y las capturas previas pertenecen al motor anterior. Antes de enviar a revisión, genera una nueva build con `./scripts/release.sh archive --rebuild`, regenera las capturas y carga las nuevas notas de revisión. La versión comercial permanece en 1.0.
+
 # Publicación de Folisona
 
 ## Comandos
@@ -16,7 +20,7 @@ xcrun swift scripts/make_icon.swift
 
 `export --archive …` solicita a Xcode una IPA con firma de distribución App Store, sin subirla ni incrementar la versión. La firma automática gestiona el certificado/perfil compatible del equipo; requiere una cuenta autorizada de Apple Developer. El archivo original puede tener firma de desarrollo: Xcode vuelve a firmar al exportar.
 
-También puedes ejecutar `./scripts/release.sh upload` para incrementar versión, archivar y subir en una sola operación. No envía a revisión ni publica automáticamente: deja la build en App Store Connect para su procesamiento y TestFlight. Las capturas y textos se preparan localmente; su carga a la ficha no está automatizada en esta primera versión.
+También puedes ejecutar `./scripts/release.sh upload` para incrementar versión, archivar y subir en una sola operación. No envía a revisión ni publica automáticamente: deja la build en App Store Connect para su procesamiento y TestFlight. La carga de textos y capturas se realiza con los scripts de publicación de esta carpeta.
 
 `Release/version.json` es la fuente del contador local. Cada archivo nuevo incrementa el patch y la build, y actualiza los dos proyectos JSON nativos. `--version 1.1.0` permite elegir una versión superior. Se reserva el número antes de compilar; una compilación fallida puede dejar un salto, que es válido. `upload --archive …` reutiliza un archivo sin incrementar otra vez. Un bloqueo impide ejecuciones simultáneas en este checkout. Guarda los cambios de versión en Git antes de cambiar de máquina: el contador local no consulta el historial remoto. Al subir, Xcode puede ajustar la build para evitar duplicados en Apple.
 
@@ -27,7 +31,7 @@ También puedes ejecutar `./scripts/release.sh upload` para incrementar versión
 - El bundle ID se conserva para mantener identidad, firma y bibliotecas de instalaciones existentes. Los nombres visibles, productos, targets, módulos, carpetas y esquemas son Folisona. El remoto GitHub conserva su URL actual; no se ha renombrado el repositorio remoto.
 - Si usas otro equipo, define `FOLISONA_TEAM_ID`. Para CI puedes usar `ASC_KEY_PATH`, `ASC_KEY_ID`, `ASC_ISSUER_ID`. La clave `.p8` debe estar fuera del repositorio.
 - Opcionalmente guarda esos cuatro campos en `Release/local.json` (ignorado por Git; puedes copiar `Release/local.example.json`). Si no hay clave API, se usa la cuenta de Xcode. No se almacena ninguna contraseña en los scripts.
-- El permiso GPU de segundo plano sigue siendo optativo. Actívalo únicamente con un equipo/perfil compatible; no es necesario para escuchar audio previamente preparado en segundo plano.
+- La síntesis usa voces de Apple instaladas en el dispositivo. No necesita modelos externos ni permisos GPU.
 
 No es posible eliminar la inscripción de Apple, los acuerdos ni la autenticación con un script. `check` valida herramientas y recursos locales; no certifica permisos de la cuenta ni aprobación de Apple.
 
@@ -51,7 +55,7 @@ Apple exige capturas de iPhone y, para esta app universal, iPad. Consulta las [e
 
 Textos iniciales en `metadata.json`. Antes de enviar a revisión hay que completar URLs reales de soporte y privacidad, clasificación por edad, declaración de privacidad, derechos sobre el contenido, export compliance, precio/territorios y datos de contacto de revisión. No se han inventado esos datos ni se han enviado declaraciones legales.
 
-Revisar las licencias del modelo, voces y dependencias, y validar Kokoro en un iPhone real (pronunciación castellana, consumo de memoria, interrupciones y pantalla bloqueada). Las capturas del simulador prueban la interfaz, no la síntesis.
+Se incluyen los avisos MIT de SwiftSoup y ZIPFoundation en la app. Validar las voces de Apple en un iPhone real (pronunciación, interrupciones y pantalla bloqueada). Las capturas del simulador prueban la interfaz, no la síntesis.
 
 Fuentes: [subida de builds](https://developer.apple.com/help/app-store-connect/manage-builds/upload-builds/), `xcodebuild -help` de Xcode 27.2 para `app-store-connect`, `destination=upload` y `manageAppVersionAndBuildNumber`.
 

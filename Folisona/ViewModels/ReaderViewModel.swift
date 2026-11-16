@@ -7,7 +7,7 @@ import UIKit
 @MainActor @Observable
 final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     private(set) var book: Book
-    var voice: ReaderVoice = .dora { didSet { if oldValue != voice { changeVoice() } } }
+    var voice: ReaderVoice = .spanish { didSet { if oldValue != voice { changeVoice() } } }
     private(set) var isGenerating = false
     private(set) var isPlaying = false
     var error: String?
@@ -43,7 +43,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     private var playbackID = UUID()
     @ObservationIgnored private var remoteTargets: [(MPRemoteCommand, Any)] = []
     @ObservationIgnored private var interruption: NSObjectProtocol?
-    private var playbackVoice: ReaderVoice = .dora
+    private var playbackVoice: ReaderVoice = .spanish
     var current: ReadingBlock { book.blocks[book.position] }
 
     init(book: Book, service: any SpeechGenerating,
@@ -137,24 +137,18 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                     }
                     self.generationPhase = String(localized: "reader.generation.loading")
                     let destination = self.audioStore.destination(book: self.book.id, voice: job.voice, index: needed)
-                    // Migrate legacy cache while preparing offline; Caches is purgeable.
-                    let existing = self.audioURL(index: needed, voice: job.voice)
-                    if FileManager.default.fileExists(atPath: existing.path) {
-                        try self.persistCachedAudio(from: existing, to: destination)
-                    } else {
-                        _ = try await service.generate(text: self.book.blocks[needed].text, voice: job.voice, destination: destination) { [weak self] phase in
-                            Task { @MainActor in
-                                guard let self, self.generationID == ticket else { return }
-                                switch phase {
-                                case .loading: self.generationPhase = String(localized: "reader.generation.loading")
-                                case .synthesizing: self.generationPhase = String(localized: "reader.generation.synthesizing")
-                                case .saving: self.generationPhase = String(localized: "reader.generation.saving")
-                                case let .segment(completed, total):
-                                    // A delayed callback must not count an already saved block twice.
-                                    guard !self.cachedBlocks.contains(needed), total > 0 else { return }
-                                    self.preparationProgress.partial = min(1, max(self.preparationProgress.partial, Double(completed) / Double(total)))
-                                    self.updatePreparationEstimate()
-                                }
+                    _ = try await service.generate(text: self.book.blocks[needed].text, voice: job.voice, destination: destination) { [weak self] phase in
+                        Task { @MainActor in
+                            guard let self, self.generationID == ticket else { return }
+                            switch phase {
+                            case .loading: self.generationPhase = String(localized: "reader.generation.loading")
+                            case .synthesizing: self.generationPhase = String(localized: "reader.generation.synthesizing")
+                            case .saving: self.generationPhase = String(localized: "reader.generation.saving")
+                            case let .segment(completed, total):
+                                // A delayed callback must not count an already saved block twice.
+                                guard !self.cachedBlocks.contains(needed), total > 0 else { return }
+                                self.preparationProgress.partial = min(1, max(self.preparationProgress.partial, Double(completed) / Double(total)))
+                                self.updatePreparationEstimate()
                             }
                         }
                     }
@@ -168,12 +162,6 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                     session.report(completed: self.preparationCompleted, total: self.preparationTotal)
                     self.ensureAudio()
                 }
-                // Existing legacy audio also needs promotion before declaring it offline-ready.
-                for index in range {
-                    try Task.checkCancellation()
-                    try self.persistCachedAudio(from: self.audioURL(index: index, voice: job.voice),
-                        to: self.audioStore.destination(book: self.book.id, voice: job.voice, index: index))
-                }
                 try self.audioStore.complete(book: self.book.id)
                 self.pendingPreparation = nil
                 success = true
@@ -186,14 +174,6 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
                 // Playback remains independent and can consume everything already saved.
             }
         }
-    }
-
-    private func persistCachedAudio(from source: URL, to destination: URL) throws {
-        guard source != destination else { return }
-        try FileManager.default.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true,
-            attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-        try FileManager.default.copyItem(at: source, to: destination)
-        try FileManager.default.setAttributes([.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication], ofItemAtPath: destination.path)
     }
 
     private func ensureAudio() {
@@ -214,7 +194,7 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
     private func stopPreparation() {
         generationID = UUID()
         task?.cancel()
-        // A running task retains its lease until the current inference has stopped.
+        // A running task retains its lease until the current synthesis has stopped.
         if task == nil { lease?.finish(success: false) }
         finishGeneration()
     }

@@ -1,3 +1,16 @@
+# Firma y selección de build
+
+Para usar la cuenta de Xcode al firmar mientras la clave API gestiona la ficha, configurar `FOLISONA_USE_XCODE_ACCOUNT: true` en `Release/local.json`, o ejecutar con `FOLISONA_USE_XCODE_ACCOUNT=1`. Es necesario si la clave de metadatos carece de permiso de certificados de distribución gestionados en la nube. Reutilizar `--archive` tras un fallo de exportación evita incrementar la build otra vez.
+
+# Web actual de soporte
+
+La web pública se publica en https://javierpeigneux.github.io/folisona/ desde el repositorio `JavierPeigneux/folisona`, rama `main`, raíz. Incluye el icono de la app como marca y favicon. Las fuentes se mantienen también en `docs/` de este proyecto; deben sincronizarse con el repositorio web al modificarlas.
+
+Soporte: https://javierpeigneux.github.io/folisona/#support
+Privacidad: https://javierpeigneux.github.io/folisona/privacy.html
+
+`store_upload.py` asocia el número exacto de `Release/version.json`, o el indicado con `--build-number`, y espera a que esa build esté VALID. No utiliza una build anterior como sustituta mientras Apple procesa la nueva.
+
 # Versión 1.0 con voces de Apple
 
 La build 1.0 (2) y las capturas previas pertenecen al motor anterior. Antes de enviar a revisión, genera una nueva build con `./scripts/release.sh archive --rebuild`, regenera las capturas y carga las nuevas notas de revisión. La versión comercial permanece en 1.0.

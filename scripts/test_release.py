@@ -10,6 +10,11 @@ import release
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_xcode_account_can_sign_without_using_metadata_api_key(self):
+        config = {'FOLISONA_USE_XCODE_ACCOUNT': True, 'ASC_KEY_PATH': '/not/a/key',
+                  'ASC_KEY_ID': 'metadata-key', 'ASC_ISSUER_ID': 'issuer'}
+        self.assertEqual(release.auth_args(config), [])
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
         self.addCleanup(self.temp.cleanup)

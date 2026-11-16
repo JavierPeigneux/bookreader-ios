@@ -6,6 +6,14 @@ from unittest.mock import Mock, patch
 import store_upload as store
 
 class StoreUploadTests(unittest.TestCase):
+    def test_expected_build_never_falls_back_to_previous_valid_build(self):
+        old = {'id': 'old', 'attributes': {'version': '2', 'expired': False}}
+        current = {'id': 'new', 'attributes': {'version': '3', 'expired': False}}
+        self.assertIsNone(store.select_build([old], '3'))
+        self.assertEqual(store.select_build([current, old], '3'), current)
+        current['attributes']['expired'] = True
+        self.assertIsNone(store.select_build([current, old], '3'))
+
     def test_british_primary_uses_prepared_english_without_mutating_source(self):
         metadata = {'localizations': {'en-US': {'description': 'English'}, 'es-ES': {'description': 'Castellano'}}}
         copies = store.localized_copy(metadata, 'en-GB')

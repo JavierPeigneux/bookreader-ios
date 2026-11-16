@@ -117,7 +117,12 @@ def localized_copy(metadata, primary_locale):
     return copies
 
 
-def upload(api, version, replace=False):
+def select_build(builds, expected_build=None):
+    return next((b for b in builds if not b['attributes'].get('expired')
+                 and (expected_build is None or b['attributes']['version'] == str(expected_build))), None)
+
+
+def upload(api, version, replace=False, expected_build=None):
     for locale in ('es', 'en'):
         for family in SLOTS:
             for name in SCREENS:
@@ -192,7 +197,7 @@ def upload(api, version, replace=False):
         builds = api.listing('builds?' + urlencode({'filter[app]': APP_ID,
             'filter[preReleaseVersion.version]': version, 'filter[processingState]': 'VALID',
             'sort': '-uploadedDate', 'limit': 10}))
-        selected = next((b for b in builds if not b['attributes'].get('expired')), None)
+        selected = select_build(builds, expected_build)
         if selected:
             break
         print('Waiting for Apple to process the uploaded build...', flush=True)
@@ -213,6 +218,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--version', default='1.0')
     p.add_argument('--check', action='store_true')
+    p.add_argument('--build-number', help='Exact build to associate; defaults to the matching local release counter')
     p.add_argument('--replace-screenshots', action='store_true')
     args = p.parse_args()
     api = API(credentials())
@@ -222,7 +228,13 @@ def main():
             raise ValueError('Unexpected bundle ID')
         print('API access verified for Folisona ' + APP_ID)
     else:
-        upload(api, args.version, args.replace_screenshots)
+        expected = args.build_number
+        if expected is None:
+            local = json.loads((ROOT / 'Release/version.json').read_text())
+            if local['version'] != args.version:
+                raise ValueError('Specify --build-number when targeting a version other than the local release')
+            expected = str(local['build'])
+        upload(api, args.version, args.replace_screenshots, expected)
 
 if __name__ == '__main__':
     try:

@@ -34,6 +34,10 @@ def settings():
 
 
 def auth_args(config):
+    # Metadata API keys may lack cloud-managed distribution signing permission.
+    # Keep metadata credentials while explicitly using the signed-in Xcode account.
+    if config.get('FOLISONA_USE_XCODE_ACCOUNT') is True or os.environ.get('FOLISONA_USE_XCODE_ACCOUNT') == '1':
+        return []
     values = [os.environ.get(k) or config.get(k) for k in
               ('ASC_KEY_PATH', 'ASC_KEY_ID', 'ASC_ISSUER_ID')]
     if any(values) and not all(values):

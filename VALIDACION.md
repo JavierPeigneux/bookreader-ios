@@ -1,3 +1,18 @@
+# Nueva release con voces de Apple · 16 noviembre 2026
+
+- Carga API final: 45 capturas COMPLETE en es-ES/en-US/en-GB, orden y textos releídos; build 1.0 (3) VALID asociada y verificada en la ficha. Informe local `Release/store-upload-result.json`. No enviado a revisión.
+
+- Regeneradas 36 capturas y sus 36 composiciones ES/EN para iPhone, Pro Max, Air, 17e, iPad y Duo. Doce pruebas UI pasadas en `.build/store-screenshots/20261116-200522`; dimensiones y ausencia de alfa verificadas. Revisados visualmente lector ES y composición EN con voces Mónica/Samantha y controles nuevos.
+- Archive 1.0 (3), Bundle ID `com.javierpeigneux.Folisona`, sin frameworks externos de síntesis. La clave API rechazó firma cloud; se reutilizó el mismo archive con la cuenta de Xcode. `Upload succeeded` y `EXPORT SUCCEEDED` en `.build/upload-apple-voices-xcode.log`. API confirmó build 3 VALID, no expirada.
+- Configuración local `FOLISONA_USE_XCODE_ACCOUNT=true` permite firmar con Xcode conservando la clave API para metadatos. Quince pruebas de los scripts pasadas. Las credenciales y los archivos de distribución siguen excluidos de Git.
+
+# Web Folisona y URLs de revisión · 16 noviembre 2026
+
+- Creado repositorio público `JavierPeigneux/folisona` exclusivamente para la web. GitHub Pages activado en `main:/`; sitio https://javierpeigneux.github.io/folisona/ publicado, commit `fac573962dcc86de30f088d4b6c3a92485ce67c3`.
+- Icono aprobado de la app como marca, favicon y apple-touch-icon. Web ES/EN y privacidad comprobadas por HTTP y comparación de bytes; revisión visual del icono y cambio ES→EN en Chrome.
+- `store_review.py` completado: soporte `/folisona/#support` y privacidad `/folisona/privacy.html` releídos en es-ES, en-US y en-GB. Notas de revisión actualizadas al motor de Apple. No enviado a revisión.
+- Protegida la asociación de build: `store_upload.py` espera la build exacta, evitando seleccionar la build antigua VALID mientras se procesa la nueva. Seis pruebas del script pasadas.
+
 # Continuidad de reproducción en segundo plano · 16 noviembre 2026
 
 - Causa encontrada en código: la ventana de anticipación exigía primer plano, y abandonar la app cancelaba la generación sin concesión de BGContinuedProcessingTask. Tras consumir los dos fragmentos guardados no se preparaban los siguientes.

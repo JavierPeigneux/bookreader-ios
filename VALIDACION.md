@@ -1,3 +1,12 @@
+# Biblioteca, carpetas y límite de importación · 18 noviembre 2026
+
+- Límite de archivo y EPUB expandido: 200 × 1024 × 1024 bytes. Avisos ES/EN actualizados. Se conserva el límite independiente de 2.000.000 de caracteres extraídos; no se ha medido el consumo máximo con un documento real de 200 MB en iPhone físico.
+- Duplicados por SHA256 del texto normalizado, calculado fuera del hilo principal: copias renombradas no se guardan de nuevo, conservan historial y ofrecen abrir el original. Documentos distintos con igual nombre siguen admitidos.
+- Carpetas persistidas en `Library/Organization/folders.json`, compatibles con bibliotecas existentes. Crear, renombrar, mover, agrupar por arrastre y eliminar carpeta sin borrar documentos. Búsqueda global por título/contenido o limitada a la carpeta abierta.
+- 31 pruebas funcionales pasadas en `.build/library-folders-2.xcresult` (la fase UI posterior se interrumpió por esperas de animación del simulador). Incluyen duplicados, historial conservado, migración implícita, persistencia, búsqueda sin acentos, nombres inválidos, fallo de escritura y rechazo por encima de 200 MB.
+- Prueba UI de creación, movimiento, renombrado y búsqueda pasada en `.build/library-ui-4.xcresult`. Prueba de arrastre pasada en `.build/library-drag-5.xcresult`, tras ajustar el gesto XCTest a una pulsación de 1,2 s y una pausa sobre el destino. Capturas de carpeta y búsqueda revisadas visualmente. Las animaciones se desactivan solo con un argumento DEBUG de las pruebas; la app normal no cambia.
+- Validación en simulador iPhone 18 Pro, iOS 27.2. Estos cambios no se han subido a App Store Connect.
+
 # Campos obligatorios de revisión · 16 noviembre 2026
 
 - Ejecutado `scripts/store_submission_setup.py` sobre la build asociada 1.0 (3), VALID. `usesNonExemptEncryption=false` guardado y releído: CryptoKit se usa para SHA256 de identificadores; no hay implementación criptográfica propia ni de terceros. Añadida `ITSAppUsesNonExemptEncryption=false` al Info.plist para futuras builds; no es necesario reconstruir la build 3 para resolver su declaración remota.

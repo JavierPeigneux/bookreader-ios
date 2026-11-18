@@ -17,6 +17,71 @@ final class DocumentImporterTests: XCTestCase {
         try data.write(to: url)
         return url
     }
+    func testDocumentSizeLimitIs200MiBAndCheckedBeforeReading() throws {
+        XCTAssertEqual(DocumentImporter.maxBytes, 200 * 1024 * 1024)
+        let url = try write("large.txt", Data())
+        let handle = try FileHandle(forWritingTo: url)
+        try handle.truncate(atOffset: UInt64(DocumentImporter.maxBytes + 1))
+        try handle.close()
+        XCTAssertThrowsError(try DocumentImporter().read(url)) { error in
+            XCTAssertTrue(error.localizedDescription.contains("200 MB"))
+        }
+    }
+
+    @MainActor func testDuplicateImportPreservesOriginalAndAllowsDifferentContent() async throws {
+        let store = LibraryStore(root: directory.appendingPathComponent("Library"))
+        let model = LibraryViewModel(store: store)
+        let url = try write("Original.txt", Data("Texto único para estudiar.".utf8))
+        let imported = await model.importDocument(url)
+        var book = try XCTUnwrap(imported)
+        book.recordListening(block: 0, sessionID: UUID(), at: Date())
+        model.update(book)
+        let copy = try write("Renombrado.txt", Data("Texto  único para estudiar.\n".utf8))
+        let duplicate = await model.importDocument(copy)
+        XCTAssertNil(duplicate)
+        XCTAssertEqual(model.duplicateBook?.id, book.id)
+        XCTAssertEqual(model.books.count, 1)
+        XCTAssertEqual(model.books.first?.listeningSessions?.count, 1)
+        try Data("Otro contenido completamente distinto.".utf8).write(to: url)
+        let different = await model.importDocument(url)
+        XCTAssertNotNil(different)
+        XCTAssertNil(model.duplicateBook)
+        XCTAssertEqual(try store.load().count, 2)
+    }
+
+    @MainActor func testFoldersPersistSearchAndRetainDocumentsWhenRemoved() throws {
+        let store = LibraryStore(root: directory.appendingPathComponent("Library"))
+        let book = Book(title: "Oposición", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Tema", text: "Constitución española")])
+        try store.save(book)
+        let model = LibraryViewModel(store: store)
+        XCTAssertEqual(model.visibleBooks(folder: nil, query: "").count, 1)
+        let folder = try XCTUnwrap(model.createFolder(name: " Estudios ", books: [book.id]))
+        XCTAssertEqual(folder.name, "Estudios")
+        XCTAssertTrue(model.visibleBooks(folder: nil, query: "").isEmpty)
+        XCTAssertEqual(model.visibleBooks(folder: nil, query: "constitucion").count, 1)
+        XCTAssertEqual(model.visibleBooks(folder: folder.id, query: "oposicion").count, 1)
+        XCTAssertNil(model.createFolder(name: "ESTÚDIOS"))
+        XCTAssertNil(model.createFolder(name: "  "))
+        XCTAssertTrue(model.renameFolder(folder, name: "Temario"))
+        model.update(book)
+        let restored = LibraryViewModel(store: store)
+        XCTAssertEqual(restored.folders.first?.name, "Temario")
+        XCTAssertEqual(restored.folderID(for: book), folder.id)
+        restored.removeFolder(folder)
+        XCTAssertEqual(restored.visibleBooks(folder: nil, query: "").count, 1)
+        XCTAssertEqual(try store.load().first?.id, book.id)
+        XCTAssertTrue(LibraryViewModel(store: store).folders.isEmpty)
+    }
+
+    @MainActor func testFolderSaveFailureDoesNotMutateLibrary() throws {
+        let store = LibraryStore(root: directory.appendingPathComponent("Library"))
+        let model = LibraryViewModel(store: store)
+        try Data().write(to: store.root.appendingPathComponent("Organization"))
+        XCTAssertNil(model.createFolder(name: "No se puede guardar"))
+        XCTAssertTrue(model.folders.isEmpty)
+        XCTAssertNotNil(model.error)
+    }
+
     func testListeningHistoryPersistsAndKeepsPreviousSessions() throws {
         var book = Book(title: "Horas", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Hola")])
         // Simulate a library written before listening history existed.

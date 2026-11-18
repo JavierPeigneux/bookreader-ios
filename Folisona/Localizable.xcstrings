@@ -194,13 +194,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The document exceeds 25 MB."
+            "value": "The document exceeds 200 MB."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El documento supera 25 MB."
+            "value": "El documento supera 200 MB."
           }
         }
       }
@@ -364,13 +364,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The expanded EPUB exceeds 100 MB."
+            "value": "The expanded EPUB exceeds 200 MB."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El EPUB descomprimido supera 100 MB."
+            "value": "El EPUB descomprimido supera 200 MB."
           }
         }
       }
@@ -1772,6 +1772,230 @@
           "stringUnit": {
             "state": "translated",
             "value": "The speech service is still stopping the previous reading. Wait a moment and try again."
+          }
+        }
+      }
+    },
+    "library.all": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biblioteca"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Library"
+          }
+        }
+      }
+    },
+    "library.search": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar documentos y carpetas"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search documents and folders"
+          }
+        }
+      }
+    },
+    "library.no_results": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay documentos"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No documents found"
+          }
+        }
+      }
+    },
+    "library.folder.new": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva carpeta"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New folder"
+          }
+        }
+      }
+    },
+    "library.folder.rename": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Renombrar carpeta"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rename folder"
+          }
+        }
+      }
+    },
+    "library.folder.name": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre de la carpeta"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Folder name"
+          }
+        }
+      }
+    },
+    "library.folder.save": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        }
+      }
+    },
+    "library.folder.move": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mover a carpeta"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move to folder"
+          }
+        }
+      }
+    },
+    "library.folder.unfiled": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin carpeta"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unfiled"
+          }
+        }
+      }
+    },
+    "library.folder.remove": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar carpeta y conservar documentos"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete folder and keep documents"
+          }
+        }
+      }
+    },
+    "library.folder.name_required": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribe un nombre para la carpeta."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter a folder name."
+          }
+        }
+      }
+    },
+    "library.folder.exists": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya existe una carpeta con ese nombre."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A folder with that name already exists."
+          }
+        }
+      }
+    },
+    "library.duplicate.title": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este documento ya está importado"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This document is already imported"
+          }
+        }
+      }
+    },
+    "library.duplicate.open": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir documento"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open document"
           }
         }
       }

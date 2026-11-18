@@ -5,6 +5,13 @@ struct LibraryView: View {
     @Bindable var coordinator: AppCoordinator
     @State private var showImporter = false
     @State private var compactColumn: NavigationSplitViewColumn = .sidebar
+    @State private var query = ""
+    @State private var selectedFolder: UUID?
+    @State private var showFolderEditor = false
+    @State private var folderName = ""
+    @State private var editingFolder: LibraryFolder?
+    @State private var grouping: [UUID] = []
+    private var library: LibraryViewModel { coordinator.library }
     var body: some View {
         @Bindable var library = coordinator.library
         NavigationSplitView(preferredCompactColumn: $compactColumn) {
@@ -21,15 +28,25 @@ struct LibraryView: View {
                     }.buttonStyle(.borderedProminent).foregroundStyle(FolioPalette.surface).disabled(library.isImporting)
                     Text(verbatim: "EPUB · PDF · TXT · MARKDOWN").font(.caption2.weight(.medium)).tracking(1.5).foregroundStyle(FolioPalette.secondary)
                     if library.isImporting { ProgressView().frame(maxWidth: .infinity) }
+                    if let selectedFolder {
+                        Button { self.selectedFolder = nil; query = "" } label: {
+                            Label(String(localized: "library.all"), systemImage: "chevron.left")
+                        }
+                        Text(library.folders.first { $0.id == selectedFolder }?.name ?? "").font(.title2.bold())
+                    } else {
+                        ForEach(library.folders.filter { query.isEmpty || $0.name.localizedStandardContains(query) }) { folder in
+                            folderRow(folder)
+                        }
+                    }
                     if library.books.isEmpty {
                         Button(String(localized: "library.sample.spanish")) {
                             if let url = Bundle.main.url(forResource: "Bienvenida", withExtension: "txt") {
-                                Task { await coordinator.importDocument(url) }
+                                Task { await coordinator.importDocument(url, folder: selectedFolder) }
                             }
                         }.frame(maxWidth: .infinity)
                         ContentUnavailableView(String(localized: "library.empty.title"), systemImage: "books.vertical", description: Text(String(localized: "library.empty.description")))
                     } else {
-                        ForEach(library.books) { book in
+                        ForEach(library.visibleBooks(folder: selectedFolder, query: query)) { book in
                             Button { coordinator.open(book); compactColumn = .detail } label: {
                                 HStack(spacing: 16) {
                                     ZStack {
@@ -45,10 +62,34 @@ struct LibraryView: View {
                                 }.padding(16).background(FolioPalette.surface, in: RoundedRectangle(cornerRadius: 16))
                                     .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(FolioPalette.border, lineWidth: 0.5))
                             }.buttonStyle(.plain)
-                                .contextMenu { Button(String(localized: "common.delete"), role: .destructive) { coordinator.delete(book) } }
+                                .contextMenu {
+                                    Menu(String(localized: "library.folder.move")) {
+                                        Button(String(localized: "library.folder.unfiled")) { library.move(book.id, to: nil) }
+                                        ForEach(library.folders) { folder in
+                                            Button(folder.name) { library.move(book.id, to: folder.id) }
+                                        }
+                                    }
+                                    Button(String(localized: "common.delete"), role: .destructive) { coordinator.delete(book) }
+                                }
+                                .draggable("folisona-book:\(book.id.uuidString)")
+                                .dropDestination(for: String.self) { items, _ in
+                                    guard let id = droppedBook(items), id != book.id else { return false }
+                                    editFolder(books: [id, book.id]); return true
+                                }
                         }
                     }
+                    if !library.books.isEmpty && library.visibleBooks(folder: selectedFolder, query: query).isEmpty && (selectedFolder != nil || !query.isEmpty) {
+                        ContentUnavailableView(String(localized: "library.no_results"), systemImage: "doc.text.magnifyingglass")
+                    }
                 }.padding(24).frame(maxWidth: 560).frame(maxWidth: .infinity)
+            }
+            .searchable(text: $query, prompt: String(localized: "library.search"))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { editFolder() } label: { Image(systemName: "folder.badge.plus") }
+                        .accessibilityLabel(String(localized: "library.folder.new"))
+                        .accessibilityIdentifier("folder.new")
+                }
             }
             .background(FolioPalette.paper)
             .toolbarBackground(FolioPalette.paper, for: .navigationBar)
@@ -56,11 +97,11 @@ struct LibraryView: View {
             .navigationSplitViewColumnWidth(min: 280, ideal: 350, max: 440)
             .fileImporter(isPresented: $showImporter, allowedContentTypes: [.pdf, .plainText, UTType(filenameExtension: "epub") ?? .data, UTType(filenameExtension: "md") ?? .plainText], allowsMultipleSelection: false) { result in
                 switch result {
-                case .success(let urls): if let url = urls.first { Task { await coordinator.importDocument(url) } }
+                case .success(let urls): if let url = urls.first { Task { await coordinator.importDocument(url, folder: selectedFolder) } }
                 case .failure(let error): library.error = error.localizedDescription
                 }
             }
-            .alert(String(localized: "error.operation.title"), isPresented: Binding(get: { library.error != nil }, set: { if !$0 { library.error = nil } })) {
+            .alert(String(localized: "error.operation.title"), isPresented: Binding(get: { library.error != nil && !showFolderEditor }, set: { if !$0 { library.error = nil } })) {
                 Button(String(localized: "common.ok")) { library.error = nil }
             } message: { Text(library.error ?? "") }
         } detail: {
@@ -73,9 +114,73 @@ struct LibraryView: View {
                     .navigationTitle(String(localized: "reader.title"))
             }
         }
+        .sheet(isPresented: $showFolderEditor) { folderEditor }
+        .alert(String(localized: "library.duplicate.title"), isPresented: Binding(get: { library.duplicateBook != nil }, set: { if !$0 { library.duplicateBook = nil } })) {
+            Button(String(localized: "library.duplicate.open")) {
+                if let book = library.duplicateBook { coordinator.open(book) }
+                library.duplicateBook = nil
+            }
+            Button(String(localized: "common.cancel"), role: .cancel) { library.duplicateBook = nil }
+        } message: { Text(library.duplicateBook?.title ?? "") }
         .navigationSplitViewStyle(.balanced)
         .onChange(of: coordinator.selection) { _, selection in
             if selection != nil { compactColumn = .detail }
         }
+    }
+
+    private func editFolder(_ folder: LibraryFolder? = nil, books: [UUID] = []) {
+        editingFolder = folder; folderName = folder?.name ?? ""; grouping = books
+        showFolderEditor = true
+    }
+    private func droppedBook(_ items: [String]) -> UUID? {
+        guard items.count == 1, let item = items.first, item.hasPrefix("folisona-book:"),
+              let id = UUID(uuidString: String(item.dropFirst("folisona-book:".count))),
+              library.books.contains(where: { $0.id == id }) else { return nil }
+        return id
+    }
+    private func folderRow(_ folder: LibraryFolder) -> some View {
+        Button { selectedFolder = folder.id; query = "" } label: {
+            HStack(spacing: 16) {
+                Image(systemName: "folder.fill").font(.title).foregroundStyle(FolioPalette.forest)
+                Text(folder.name).font(.headline).foregroundStyle(FolioPalette.ink)
+                Spacer()
+                Text(library.books.filter { library.folderID(for: $0) == folder.id }.count.formatted())
+                    .foregroundStyle(FolioPalette.secondary)
+                Image(systemName: "chevron.right").font(.caption)
+            }.padding(20).background(FolioPalette.surface, in: RoundedRectangle(cornerRadius: 16))
+        }.buttonStyle(.plain)
+        .contextMenu {
+            Button(String(localized: "library.folder.rename")) { editFolder(folder) }
+            Button(String(localized: "library.folder.remove"), role: .destructive) { library.removeFolder(folder) }
+        }
+        .dropDestination(for: String.self) { items, _ in
+            guard let id = droppedBook(items) else { return false }
+            return library.move(id, to: folder.id)
+        }
+    }
+    private var folderEditor: some View {
+        NavigationStack {
+            Form {
+                TextField(String(localized: "library.folder.name"), text: $folderName)
+                    .accessibilityIdentifier("folder.name")
+                if let error = library.error { Text(error).foregroundStyle(.red) }
+            }
+            .navigationTitle(editingFolder == nil ? String(localized: "library.folder.new") : String(localized: "library.folder.rename"))
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(String(localized: "common.cancel")) { library.error = nil; showFolderEditor = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(String(localized: "library.folder.save")) {
+                        library.error = nil
+                        let saved: Bool
+                        if let folder = editingFolder { saved = library.renameFolder(folder, name: folderName) }
+                        else { saved = library.createFolder(name: folderName, books: grouping) != nil }
+                        if saved { showFolderEditor = false }
+                    }.disabled(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .accessibilityIdentifier("folder.save")
+                }
+            }
+        }.presentationDetents([.medium, .large])
     }
 }

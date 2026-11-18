@@ -23,3 +23,25 @@ struct LibraryStore {
         if FileManager.default.fileExists(atPath: audio.path) { try FileManager.default.removeItem(at: audio) }
     }
 }
+
+struct LibraryFolder: Codable, Identifiable, Equatable {
+    var id = UUID()
+    var name: String
+}
+
+struct LibraryOrganization: Codable {
+    var folders: [LibraryFolder] = []
+    var membership: [String: UUID] = [:]
+}
+
+extension LibraryStore {
+    private var organizationURL: URL { root.appendingPathComponent("Organization/folders.json") }
+    func loadOrganization() throws -> LibraryOrganization {
+        guard FileManager.default.fileExists(atPath: organizationURL.path) else { return LibraryOrganization() }
+        return try JSONDecoder().decode(LibraryOrganization.self, from: Data(contentsOf: organizationURL))
+    }
+    func saveOrganization(_ organization: LibraryOrganization) throws {
+        try FileManager.default.createDirectory(at: organizationURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try JSONEncoder().encode(organization).write(to: organizationURL, options: .atomic)
+    }
+}

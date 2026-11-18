@@ -2,6 +2,65 @@ import XCTest
 
 final class ReaderUITests: XCTestCase {
     @MainActor
+    func testDraggingDocumentsCreatesFolder() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--store-screenshots", "--disable-animations", "-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
+        app.launch()
+        let first = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "La biblioteca del faro")).firstMatch
+        let second = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Cuaderno de días tranquilos")).firstMatch
+        XCTAssertTrue(first.waitForExistence(timeout: 15))
+        first.press(forDuration: 1.2, thenDragTo: second, withVelocity: .slow, thenHoldForDuration: 1)
+        let name = app.textFields["folder.name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap(); name.typeText("Lecturas")
+        app.buttons["folder.save"].tap()
+        let folder = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Lecturas")).firstMatch
+        XCTAssertTrue(folder.waitForExistence(timeout: 5))
+        folder.tap()
+        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(second.exists)
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "Carpeta de lecturas"; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
+    @MainActor
+    func testFolderCreationMoveRenameAndSearch() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--store-screenshots", "--disable-animations", "-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
+        app.launch()
+        XCTAssertTrue(app.buttons["folder.new"].waitForExistence(timeout: 15))
+        app.buttons["folder.new"].tap()
+        let name = app.textFields["folder.name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap(); name.typeText("Oposiciones")
+        app.buttons["folder.save"].tap()
+        let folder = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Oposiciones")).firstMatch
+        XCTAssertTrue(folder.waitForExistence(timeout: 5))
+        let book = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "La biblioteca del faro")).firstMatch
+        book.press(forDuration: 1)
+        app.buttons["Mover a carpeta"].tap()
+        app.buttons["Oposiciones"].tap()
+        folder.tap()
+        XCTAssertTrue(book.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Senderos del bosque")).firstMatch.exists)
+        app.buttons["Biblioteca"].tap()
+        folder.press(forDuration: 1)
+        app.buttons["Renombrar carpeta"].tap()
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap(); name.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 11) + "Temario")
+        app.buttons["folder.save"].tap()
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Temario")).firstMatch.waitForExistence(timeout: 5))
+        // Root search must also find documents stored inside folders.
+        app.swipeDown()
+        let search = app.searchFields.firstMatch
+        XCTAssertTrue(search.waitForExistence(timeout: 5))
+        search.tap(); search.typeText("faro")
+        XCTAssertTrue(book.waitForExistence(timeout: 5))
+        let screenshot = XCTAttachment(screenshot: app.screenshot())
+        screenshot.name = "Busqueda en carpetas"; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
+    @MainActor
     private func waitForLayout(_ app: XCUIApplication) {
         // Duo can retain its panel coordinate axes across rotations. Verify stable,
         // visible controls rather than imposing a width/height ratio on the device.

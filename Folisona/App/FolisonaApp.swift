@@ -3,6 +3,14 @@ import SwiftUI
 @main
 struct FolisonaApp: App {
     @State private var coordinator = AppCoordinator()
+    init() {
+        #if DEBUG
+        // Keep XCTest independent of simulator context-menu animation completion.
+        if ProcessInfo.processInfo.arguments.contains("--disable-animations") {
+            UIView.setAnimationsEnabled(false)
+        }
+        #endif
+    }
     var body: some Scene {
         WindowGroup {
             LibraryView(coordinator: coordinator)

@@ -67,8 +67,11 @@ final class AppCoordinator {
         #endif
         selection = book.id
     }
-    func importDocument(_ url: URL) async {
-        if let book = await library.importDocument(url) { open(book) }
+    func importDocument(_ url: URL, folder: UUID? = nil) async {
+        if let book = await library.importDocument(url) {
+            if let folder { library.move(book.id, to: folder) }
+            open(book)
+        }
     }
     func delete(_ book: Book) {
         if reader?.book.id == book.id { reader?.close(); reader = nil; selection = nil }

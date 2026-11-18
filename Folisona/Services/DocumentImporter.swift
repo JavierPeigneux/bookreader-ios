@@ -4,7 +4,7 @@ import SwiftSoup
 import ZIPFoundation
 
 struct DocumentImporter {
-    static let maxBytes = 25 * 1024 * 1024
+    static let maxBytes = 200 * 1024 * 1024
     static let maxCharacters = 2_000_000
 
     func read(_ url: URL) throws -> Book {
@@ -149,7 +149,7 @@ struct DocumentImporter {
         var expanded: UInt64 = 0
         for entry in archive {
             expanded += UInt64(entry.uncompressedSize)
-            guard expanded <= 100_000_000 else { throw ReaderError.message(String(localized: "error.epub.expanded_limit")) }
+            guard expanded <= Self.maxBytes else { throw ReaderError.message(String(localized: "error.epub.expanded_limit")) }
         }
         func readEntry(_ path: String) throws -> Data {
             guard let entry = archive[path], entry.type == .file else {
@@ -157,7 +157,7 @@ struct DocumentImporter {
             }
             var result = Data()
             _ = try archive.extract(entry) { chunk in
-                guard result.count + chunk.count <= 100_000_000 else { throw ReaderError.message(String(localized: "error.epub.entry_limit")) }
+                guard result.count + chunk.count <= Self.maxBytes else { throw ReaderError.message(String(localized: "error.epub.entry_limit")) }
                 result.append(chunk)
             }
             return result

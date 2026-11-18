@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23501" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="launch-controller">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies><plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23501"/><capability name="Safe area layout guides" minToolsVersion="9.0"/><capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/></dependencies>
+    <scenes><scene sceneID="launch-scene"><objects>
+        <viewController id="launch-controller" sceneMemberID="viewController">
+            <view key="view" contentMode="scaleToFill" id="launch-root">
+                <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="LaunchArtwork" translatesAutoresizingMaskIntoConstraints="NO" id="launch-image">
+                        <rect key="frame" x="0" y="0" width="393" height="852"/>
+                        <accessibility key="accessibilityConfiguration" identifier="launch.artwork"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Folisona" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="launch-title">
+                        <rect key="frame" x="130" y="85" width="133" height="44"/>
+                        <fontDescription key="fontDescription" name="Georgia" family="Georgia" pointSize="32"/>
+                        <color key="textColor" red="0" green="0.239216" blue="0.168627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </label>
+                </subviews>
+                <viewLayoutGuide key="safeArea" id="launch-safe"/>
+                <color key="backgroundColor" red="0.968627" green="0.945098" blue="0.890196" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                <constraints>
+                    <constraint firstItem="launch-image" firstAttribute="leading" secondItem="launch-root" secondAttribute="leading" id="image-leading"/>
+                    <constraint firstItem="launch-image" firstAttribute="trailing" secondItem="launch-root" secondAttribute="trailing" id="image-trailing"/>
+                    <constraint firstItem="launch-image" firstAttribute="top" secondItem="launch-root" secondAttribute="top" id="image-top"/>
+                    <constraint firstItem="launch-image" firstAttribute="bottom" secondItem="launch-root" secondAttribute="bottom" id="image-bottom"/>
+                    <constraint firstItem="launch-title" firstAttribute="centerX" secondItem="launch-root" secondAttribute="centerX" id="title-center"/>
+                    <constraint firstItem="launch-title" firstAttribute="top" secondItem="launch-safe" secondAttribute="top" constant="28" id="title-top"/>
+                </constraints>
+            </view>
+        </viewController>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="launch-responder" userLabel="First Responder" sceneMemberID="firstResponder"/>
+    </objects></scene></scenes>
+    <resources><image name="LaunchArtwork" width="1024" height="1536"/></resources>
+</document>

@@ -13,7 +13,7 @@ struct FolisonaApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            LibraryView(coordinator: coordinator)
+            rootView
                 .preferredColorScheme(.light)
                 .tint(FolioPalette.forest)
                 .foregroundStyle(FolioPalette.ink)
@@ -23,6 +23,16 @@ struct FolisonaApp: App {
                 .onOpenURL { url in Task { await coordinator.importDocument(url) } }
         }
     }
+    @ViewBuilder private var rootView: some View {
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--launch-preview") {
+            LaunchScreenPreview().ignoresSafeArea()
+        } else { LibraryView(coordinator: coordinator) }
+        #else
+        LibraryView(coordinator: coordinator)
+        #endif
+    }
+
 }
 
 /// Shared palette inspired by the Folio icon: forest green and warm paper.
@@ -36,3 +46,12 @@ enum FolioPalette {
     static let border = Color("FolioBorder")
     static let warning = Color("FolioWarning")
 }
+
+#if DEBUG
+private struct LaunchScreenPreview: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        UIStoryboard(name: "LaunchScreen", bundle: .main).instantiateInitialViewController()!
+    }
+    func updateUIViewController(_ controller: UIViewController, context: Context) {}
+}
+#endif

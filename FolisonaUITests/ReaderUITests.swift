@@ -2,6 +2,68 @@ import XCTest
 
 final class ReaderUITests: XCTestCase {
     @MainActor
+    func testRenameBookAndFindByNewName() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--store-screenshots", "--disable-animations", "-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
+        app.launch()
+        let book = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "La biblioteca del faro")).firstMatch
+        XCTAssertTrue(book.waitForExistence(timeout: 15))
+        book.press(forDuration: 1)
+        app.buttons["Renombrar libro"].tap()
+        let name = app.textFields["book.name"]
+        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        name.tap()
+        name.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: "La biblioteca del faro".count) + "Tema 7 - Literatura")
+        app.buttons["book.save"].tap()
+        let renamed = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Tema 7 - Literatura")).firstMatch
+        XCTAssertTrue(renamed.waitForExistence(timeout: 5))
+        let search = app.searchFields.firstMatch
+        search.tap(); search.typeText("Tema 7")
+        XCTAssertTrue(renamed.waitForExistence(timeout: 5))
+        renamed.tap()
+        XCTAssertTrue(app.staticTexts["Tema 7 - Literatura"].firstMatch.waitForExistence(timeout: 5))
+    }
+
+    @MainActor
+    func testLaunchArtworkAndLocalizedCancel() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--launch-preview", "-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
+        app.launch()
+        XCTAssertTrue(app.images["launch.artwork"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["Folisona"].exists)
+        for orientation in [UIDeviceOrientation.portrait, .landscapeLeft] {
+            XCUIDevice.shared.orientation = orientation
+            var previousFrame = CGRect.zero
+            var stableSamples = 0
+            let settled = NSPredicate { _, _ in
+                let frame = app.frame
+                let correctOrientation = orientation == .portrait ? frame.height > frame.width : frame.width > frame.height
+                let title = app.staticTexts["Folisona"].firstMatch
+                guard correctOrientation, title.exists, frame.contains(title.frame) else { stableSamples = 0; return false }
+                stableSamples = frame == previousFrame ? stableSamples + 1 : 0
+                previousFrame = frame
+                return stableSamples >= 3
+            }
+            XCTAssertEqual(XCTWaiter.wait(for: [XCTNSPredicateExpectation(predicate: settled, object: app)], timeout: 15), .completed)
+            let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            screenshot.name = orientation == .portrait ? "Inicio vertical" : "Inicio horizontal"
+            screenshot.lifetime = .keepAlways; add(screenshot)
+        }
+        XCUIDevice.shared.orientation = .portrait
+        app.terminate()
+        for (language, locale, cancel) in [("es", "es_ES", "Cancelar"), ("en", "en_US", "Cancel")] {
+            app.launchArguments = ["--store-screenshots", "--disable-animations", "-AppleLanguages", "(\(language))", "-AppleLocale", locale]
+            app.launch()
+            XCTAssertTrue(app.buttons["folder.new"].waitForExistence(timeout: 15))
+            app.buttons["folder.new"].tap()
+            XCTAssertTrue(app.buttons[cancel].waitForExistence(timeout: 5))
+            app.buttons[cancel].tap()
+            XCTAssertTrue(app.buttons["folder.new"].exists)
+            app.terminate()
+        }
+    }
+
+    @MainActor
     func testDraggingDocumentsCreatesFolder() throws {
         let app = XCUIApplication()
         app.launchArguments = ["--store-screenshots", "--disable-animations", "-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]

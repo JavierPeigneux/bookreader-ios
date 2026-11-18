@@ -1,3 +1,11 @@
+# Inicio, localización y nombres de libros · 18 noviembre 2026
+
+- Imagen fotográfica generada con la herramienta integrada, guardada en `Folisona/Assets.xcassets/LaunchArtwork.imageset/folisona-launch.png`; prompt completo en `Design/Launch/README.md`. Storyboard nativo de inicio con fondo crema, nombre Folisona y composición sin recortes ni demora artificial. Previsualización DEBUG del mismo storyboard revisada en vertical y horizontal; capturas finales de pantalla completa en `.build/launch-screen-final.xcresult` (se evita el recorte incorrecto de `app.screenshot()` al rotar el simulador).
+- `common.cancel` traducido a Cancelar/Cancel; comprobado en ambos idiomas en la interfaz.
+- Renombrar libros conserva UUID, texto, historial, progreso, carpeta y caché de audio. Nombre actualizado en el lector abierto y reproducción del sistema; los guardados de lectores antiguos no restauran un título anterior. Prueba funcional de persistencia y protección frente a guardados antiguos pasada en `.build/book-rename.xcresult`.
+- Editor presentado mediante un objeto identificable para que el primer renombrado reciba siempre el libro/carpeta correcto. Cuatro pruebas UI pasadas en `.build/release5-ui.xcresult`: agrupación arrastrando, carpetas/movimiento/búsqueda, inicio/localización y renombrado/búsqueda/lector.
+- Build 1.0 (4) subida y procesada VALID, READY_FOR_BETA_TESTING; sin cifrado no exento. Build 1.0 (5) subida con los cambios adicionales de esta sección (`Upload succeeded`, `.build/testflight-build5-upload.log`). No se envía a revisión de App Store.
+
 # Biblioteca, carpetas y límite de importación · 18 noviembre 2026
 
 - Límite de archivo y EPUB expandido: 200 × 1024 × 1024 bytes. Avisos ES/EN actualizados. Se conserva el límite independiente de 2.000.000 de caracteres extraídos; no se ha medido el consumo máximo con un documento real de 200 MB en iPhone físico.

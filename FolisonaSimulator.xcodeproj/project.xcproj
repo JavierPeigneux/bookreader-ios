@@ -40,6 +40,12 @@
           ]
         },
         {
+          "path": "LaunchScreen.storyboard",
+          "target-membership": [
+            "Folisona/resources"
+          ]
+        },
+        {
           "path": "Info.plist"
         },
         {
@@ -384,7 +390,7 @@
     "CODE_SIGNING_ALLOWED": "NO",
     "CODE_SIGN_STYLE": "Automatic",
     "COPY_PHASE_STRIP": "NO",
-    "CURRENT_PROJECT_VERSION": "4",
+    "CURRENT_PROJECT_VERSION": "5",
     "DEBUG_INFORMATION_FORMAT[config=Debug]": "dwarf",
     "DEBUG_INFORMATION_FORMAT[config=Release]": "dwarf-with-dsym",
     "DEVELOPMENT_TEAM": "R8B3FUVAHY",

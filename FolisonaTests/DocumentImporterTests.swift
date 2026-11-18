@@ -82,6 +82,35 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertNotNil(model.error)
     }
 
+    @MainActor func testBookRenamePersistsWithoutLosingProgressOrFolder() throws {
+        let store = LibraryStore(root: directory.appendingPathComponent("Library"))
+        var book = Book(title: "Archivo original", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Uno", text: "Primer tema"), ReadingBlock(id: 1, heading: "Dos", text: "Segundo tema")])
+        book.position = 1
+        book.recordListening(block: 1, sessionID: UUID(), at: Date())
+        try store.save(book)
+        let model = LibraryViewModel(store: store)
+        let folder = try XCTUnwrap(model.createFolder(name: "Estudios", books: [book.id]))
+        XCTAssertFalse(model.renameBook(book.id, name: "  "))
+        XCTAssertTrue(model.renameBook(book.id, name: "  Tema 2 - Constitución  "))
+        // An already-open reader may save an older title after the rename.
+        model.update(book)
+        let restored = LibraryViewModel(store: store)
+        let renamed = try XCTUnwrap(restored.books.first)
+        XCTAssertEqual(renamed.title, "Tema 2 - Constitución")
+        XCTAssertEqual(renamed.id, book.id)
+        XCTAssertEqual(renamed.position, book.position)
+        XCTAssertEqual(renamed.listeningSessions, book.listeningSessions)
+        XCTAssertEqual(renamed.blocks, book.blocks)
+        XCTAssertEqual(restored.folderID(for: renamed), folder.id)
+        XCTAssertEqual(restored.visibleBooks(folder: nil, query: "constitucion").count, 1)
+        XCTAssertEqual(LibraryViewModel.fingerprint(renamed), LibraryViewModel.fingerprint(book))
+        let reader = ReaderViewModel(book: book, service: TestSpeechGenerator(), save: { _ in })
+        reader.updateDisplayTitle(renamed.title)
+        XCTAssertEqual(reader.book.title, renamed.title)
+        XCTAssertEqual(reader.book.position, 1)
+        reader.close()
+    }
+
     func testListeningHistoryPersistsAndKeepsPreviousSessions() throws {
         var book = Book(title: "Horas", format: "TXT", blocks: [ReadingBlock(id: 0, heading: "Texto", text: "Hola")])
         // Simulate a library written before listening history existed.

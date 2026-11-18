@@ -55,6 +55,8 @@ Los textos de interfaz, estados, errores, plurales y accesibilidad viven en `Loc
 
 Puedes crear y renombrar carpetas con el botón de carpeta, mover documentos desde su menú contextual o arrastrarlos a una carpeta. Arrastrar un documento sobre otro abre la creación de una carpeta para ambos. Eliminar una carpeta devuelve sus documentos a la biblioteca, conservando su audio e historial.
 
+El menú contextual de cada documento permite renombrarlo para localizarlo mejor. El nuevo nombre se guarda en la biblioteca y se muestra también en el lector, conservando identidad, audio, carpeta y progreso.
+
 La búsqueda de la biblioteca incluye título y contenido de todos los documentos; dentro de una carpeta se limita a esa carpeta. Al importar una copia con el mismo texto, aunque cambie el nombre, se ofrece abrir el documento existente sin duplicarlo.
 
 El límite por archivo es **200 MB (200 × 1024 × 1024 bytes)**. Para EPUB, el contenido descomprimido también tiene ese límite. Se mantiene el límite independiente de dos millones de caracteres extraídos.

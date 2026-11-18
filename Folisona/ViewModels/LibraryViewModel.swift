@@ -96,7 +96,24 @@ final class LibraryViewModel {
         _ = persist(next) // Documents and their audio remain in the library.
     }
 
+    @discardableResult
+    func renameBook(_ id: UUID, name: String) -> Bool {
+        let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { error = String(localized: "library.book.name_required"); return false }
+        guard let index = books.firstIndex(where: { $0.id == id }) else { return false }
+        var renamed = books[index]
+        renamed.title = name
+        do {
+            try store.save(renamed)
+            books[index] = renamed
+            if duplicateBook?.id == id { duplicateBook = renamed }
+            return true
+        } catch { self.error = error.localizedDescription; return false }
+    }
     func update(_ book: Book) {
+        var book = book
+        // Reader snapshots must never overwrite a more recent library rename.
+        if let current = books.first(where: { $0.id == book.id }) { book.title = current.title }
         do {
             try store.save(book)
             if let index = books.firstIndex(where: { $0.id == book.id }) { books[index] = book }

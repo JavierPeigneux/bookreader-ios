@@ -73,6 +73,14 @@ final class AppCoordinator {
             open(book)
         }
     }
+    @discardableResult
+    func renameBook(_ id: UUID, name: String) -> Bool {
+        guard library.renameBook(id, name: name) else { return false }
+        if reader?.book.id == id, let book = library.books.first(where: { $0.id == id }) {
+            reader?.updateDisplayTitle(book.title)
+        }
+        return true
+    }
     func delete(_ book: Book) {
         if reader?.book.id == book.id { reader?.close(); reader = nil; selection = nil }
         library.delete(book)

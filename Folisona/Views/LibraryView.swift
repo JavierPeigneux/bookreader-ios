@@ -7,10 +7,7 @@ struct LibraryView: View {
     @State private var compactColumn: NavigationSplitViewColumn = .sidebar
     @State private var query = ""
     @State private var selectedFolder: UUID?
-    @State private var showFolderEditor = false
-    @State private var folderName = ""
-    @State private var editingFolder: LibraryFolder?
-    @State private var grouping: [UUID] = []
+    @State private var editor: LibraryNameTarget?
     private var library: LibraryViewModel { coordinator.library }
     var body: some View {
         @Bindable var library = coordinator.library
@@ -63,6 +60,10 @@ struct LibraryView: View {
                                     .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(FolioPalette.border, lineWidth: 0.5))
                             }.buttonStyle(.plain)
                                 .contextMenu {
+                                    Button(String(localized: "library.book.rename")) {
+                                        library.error = nil
+                                        editor = LibraryNameTarget(book: book)
+                                    }
                                     Menu(String(localized: "library.folder.move")) {
                                         Button(String(localized: "library.folder.unfiled")) { library.move(book.id, to: nil) }
                                         ForEach(library.folders) { folder in
@@ -101,7 +102,7 @@ struct LibraryView: View {
                 case .failure(let error): library.error = error.localizedDescription
                 }
             }
-            .alert(String(localized: "error.operation.title"), isPresented: Binding(get: { library.error != nil && !showFolderEditor }, set: { if !$0 { library.error = nil } })) {
+            .alert(String(localized: "error.operation.title"), isPresented: Binding(get: { library.error != nil && editor == nil }, set: { if !$0 { library.error = nil } })) {
                 Button(String(localized: "common.ok")) { library.error = nil }
             } message: { Text(library.error ?? "") }
         } detail: {
@@ -114,7 +115,7 @@ struct LibraryView: View {
                     .navigationTitle(String(localized: "reader.title"))
             }
         }
-        .sheet(isPresented: $showFolderEditor) { folderEditor }
+        .sheet(item: $editor) { target in LibraryNameEditor(coordinator: coordinator, target: target) }
         .alert(String(localized: "library.duplicate.title"), isPresented: Binding(get: { library.duplicateBook != nil }, set: { if !$0 { library.duplicateBook = nil } })) {
             Button(String(localized: "library.duplicate.open")) {
                 if let book = library.duplicateBook { coordinator.open(book) }
@@ -129,8 +130,8 @@ struct LibraryView: View {
     }
 
     private func editFolder(_ folder: LibraryFolder? = nil, books: [UUID] = []) {
-        editingFolder = folder; folderName = folder?.name ?? ""; grouping = books
-        showFolderEditor = true
+        library.error = nil
+        editor = LibraryNameTarget(folder: folder, grouping: books)
     }
     private func droppedBook(_ items: [String]) -> UUID? {
         guard items.count == 1, let item = items.first, item.hasPrefix("folisona-book:"),
@@ -158,27 +159,52 @@ struct LibraryView: View {
             return library.move(id, to: folder.id)
         }
     }
-    private var folderEditor: some View {
+}
+
+private struct LibraryNameTarget: Identifiable {
+    let id = UUID()
+    var book: Book? = nil
+    var folder: LibraryFolder? = nil
+    var grouping: [UUID] = []
+    var name: String { book?.title ?? folder?.name ?? "" }
+    var title: String {
+        if book != nil { return String(localized: "library.book.rename") }
+        return folder == nil ? String(localized: "library.folder.new") : String(localized: "library.folder.rename")
+    }
+}
+
+private struct LibraryNameEditor: View {
+    @Bindable var coordinator: AppCoordinator
+    let target: LibraryNameTarget
+    @Environment(\.dismiss) private var dismiss
+    @State private var name: String
+    private var library: LibraryViewModel { coordinator.library }
+    init(coordinator: AppCoordinator, target: LibraryNameTarget) {
+        self.coordinator = coordinator; self.target = target
+        _name = State(initialValue: target.name)
+    }
+    var body: some View {
         NavigationStack {
             Form {
-                TextField(String(localized: "library.folder.name"), text: $folderName)
-                    .accessibilityIdentifier("folder.name")
+                TextField(target.book == nil ? String(localized: "library.folder.name") : String(localized: "library.book.name"), text: $name)
+                    .accessibilityIdentifier(target.book == nil ? "folder.name" : "book.name")
                 if let error = library.error { Text(error).foregroundStyle(.red) }
             }
-            .navigationTitle(editingFolder == nil ? String(localized: "library.folder.new") : String(localized: "library.folder.rename"))
+            .navigationTitle(target.title)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(String(localized: "common.cancel")) { library.error = nil; showFolderEditor = false }
+                    Button(String(localized: "common.cancel")) { library.error = nil; dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button(String(localized: "library.folder.save")) {
                         library.error = nil
                         let saved: Bool
-                        if let folder = editingFolder { saved = library.renameFolder(folder, name: folderName) }
-                        else { saved = library.createFolder(name: folderName, books: grouping) != nil }
-                        if saved { showFolderEditor = false }
-                    }.disabled(folderName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        .accessibilityIdentifier("folder.save")
+                        if let book = target.book { saved = coordinator.renameBook(book.id, name: name) }
+                        else if let folder = target.folder { saved = library.renameFolder(folder, name: name) }
+                        else { saved = library.createFolder(name: name, books: target.grouping) != nil }
+                        if saved { dismiss() }
+                    }.disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                        .accessibilityIdentifier(target.book == nil ? "folder.save" : "book.save")
                 }
             }
         }.presentationDetents([.medium, .large])

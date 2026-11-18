@@ -350,6 +350,10 @@ final class ReaderViewModel: NSObject, AVAudioPlayerDelegate {
         updateNowPlaying()
     }
     func changeVoice() { cancelGeneration(); pause(); player = nil; refreshCache() }
+    func updateDisplayTitle(_ title: String) {
+        book.title = title
+        if player != nil || wantsPlayback { updateNowPlaying() }
+    }
     func close() {
         cancelGeneration()
         pause()

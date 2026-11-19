@@ -33,36 +33,7 @@ struct DocumentImporter {
             guard let pdf = PDFDocument(data: data), !pdf.isLocked else {
                 throw ReaderError.message(String(localized: "error.pdf.open"))
             }
-            let chapterStarts = Self.pdfChapterStarts(pdf)
-            var pages: [(String, String)] = []
-            var characters = 0
-            var previousChapter: Int?
-            for index in 0..<pdf.pageCount {
-                let text = try autoreleasepool {
-                    guard let page = pdf.page(at: index) else {
-                        throw ReaderError.message(String(localized: "error.pdf.open"))
-                    }
-                    let native = page.string?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                    if !native.isEmpty { return native }
-                    do { return try Self.recognizeText(on: page) }
-                    catch {
-                        throw ReaderError.message(String.localizedStringWithFormat(String(localized: "error.pdf.ocr_failed"), Int64(index + 1)))
-                    }
-                }
-                guard !text.isEmpty else { continue }
-                characters += text.count
-                guard characters <= Self.maxCharacters else {
-                    throw ReaderError.message(String(localized: "error.document.character_limit"))
-                }
-                let chapter = chapterStarts.last(where: { $0.0 <= index })
-                let heading = chapter?.1
-                    ?? String.localizedStringWithFormat(String(localized: "document.heading.page"), Int64(index + 1))
-                if let start = chapter?.0, previousChapter == start {
-                    pages[pages.count - 1].1 += "\n\n" + text
-                } else { pages.append((heading, text)) }
-                previousChapter = chapter?.0
-            }
-            sections = pages
+            sections = try Self.pdfSections(pdf)
         case "epub": sections = try epub(data)
         default: throw ReaderError.message(String(localized: "error.document.unsupported_format"))
         }
@@ -74,6 +45,60 @@ struct DocumentImporter {
         }.enumerated().map { ReadingBlock(id: $0.offset, heading: $0.element.1, text: $0.element.2, chapterID: $0.element.0) }
         guard !blocks.isEmpty else { throw ReaderError.message(String(localized: "error.document.empty")) }
         return Book(title: url.deletingPathExtension().lastPathComponent, format: ext.uppercased(), blocks: blocks)
+    }
+
+    static func pdfSections(_ pdf: PDFDocument) throws -> [(String, String)] {
+        let outline = Self.pdfChapterStarts(pdf)
+        var pages: [(String, String)] = []
+        var characters = 0
+        var extracted: [(index: Int, text: String)] = []
+        for index in 0..<pdf.pageCount {
+            let text = try autoreleasepool {
+                guard let page = pdf.page(at: index) else {
+                    throw ReaderError.message(String(localized: "error.pdf.open"))
+                }
+                let native = page.string?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                if !native.isEmpty { return native }
+                do { return try Self.recognizeText(on: page) }
+                catch {
+                    throw ReaderError.message(String.localizedStringWithFormat(String(localized: "error.pdf.ocr_failed"), Int64(index + 1)))
+                }
+            }
+            guard !text.isEmpty else { continue }
+            characters += text.count
+            guard characters <= Self.maxCharacters else {
+                throw ReaderError.message(String(localized: "error.document.character_limit"))
+            }
+            extracted.append((index, text))
+        }
+        // A lone bookmark is often the document title. Prefer internal chapter
+        // markers or page navigation to treating the entire PDF as one chapter.
+        var starts = outline
+        if starts.count < 2 {
+            let candidates = extracted.compactMap { page -> (Int, String)? in
+                let lines = page.text.split(whereSeparator: \.isNewline).prefix(3)
+                guard let title = lines.first(where: { Self.isChapterHeading(String($0)) }) else { return nil }
+                return (page.index, String(title).trimmingCharacters(in: .whitespaces))
+            }
+            // A repeated running header is not a new chapter on every page.
+            let counts = Dictionary(grouping: candidates, by: { $0.1.lowercased() })
+            starts = candidates.filter { counts[$0.1.lowercased()]?.count == 1 }
+            if starts.count < 2 { starts = [] }
+        }
+        var next = 0
+        var previousChapter: Int?
+        for page in extracted {
+            while next < starts.count, starts[next].0 <= page.index { next += 1 }
+            let chapter = next > 0 ? starts[next - 1] : nil
+            if let start = chapter?.0, previousChapter == start {
+                pages[pages.count - 1].1 += "\n\n" + page.text
+            } else {
+                let heading = chapter?.1 ?? String.localizedStringWithFormat(String(localized: "document.heading.page"), Int64(page.index + 1))
+                pages.append((heading, page.text))
+            }
+            previousChapter = chapter?.0
+        }
+        return pages
     }
 
     private static func recognizeText(on page: PDFPage) throws -> String {
@@ -108,15 +133,18 @@ struct DocumentImporter {
         return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
     }
 
-    /// Top-level usable outline entries define chapters; nested entries are used
-    /// when a container has no destination. Page-level boundaries avoid lost text.
+    static func isChapterHeading(_ line: String) -> Bool {
+        guard line.count <= 100 else { return false }
+        return line.range(of: #"(?i)^\s*(cap[ií]tulo|chapter|tema|unidad|lecci[oó]n|parte|part)\s+(?:[0-9]+|[ivxlcdm]+)\b(?:\s*[:.—–-]\s*.*|\s*)$"#, options: .regularExpression) != nil
+    }
+
     static func pdfChapterStarts(_ pdf: PDFDocument) -> [(Int, String)] {
-        var entries: [(Int, String)] = []
+        var entries: [Int: String] = [:]
         func visit(_ outline: PDFOutline) {
             let destination = outline.destination ?? (outline.action as? PDFActionGoTo)?.destination
             if let page = destination?.page, let title = outline.label, !title.isEmpty {
                 let index = pdf.index(for: page)
-                if index != NSNotFound { entries.append((index, title)); return }
+                if index != NSNotFound { entries[index] = title }
             }
             for index in 0..<outline.numberOfChildren {
                 if let child = outline.child(at: index) { visit(child) }
@@ -127,8 +155,7 @@ struct DocumentImporter {
                 if let child = root.child(at: index) { visit(child) }
             }
         }
-        var seen = Set<Int>()
-        return entries.sorted { $0.0 < $1.0 }.filter { seen.insert($0.0).inserted }
+        return entries.map { ($0.key, $0.value) }.sorted { $0.0 < $1.0 }
     }
 
     private func decode(_ data: Data) throws -> String {

@@ -261,3 +261,15 @@ Texto de la prueba: «¡Buenos días! El niño lee un libro en castellano. Maña
 - Prueba añadida: 12 cambios ES/EN y seis cancelaciones rápidas seguidas de nuevas generaciones. El primer intento detectó motores bloqueados después de stopSpeaking; se eliminó esa interrupción. La siguiente suite pasó 26 pruebas sin fallos (`.build/SpeechLifecycle-regression2.xcresult`). Harness macOS: WAV español e inglés con señal y cancelación/reinicio correctos (`.build/speech-lifecycle-host2.log`).
 - Build final de pruebas para iPhone compilada y firmada correctamente (`.build/phone-lifecycle-final.log`). La primera instalación directa mediante devicectl agotó 45 segundos; no se presenta la compilación como validación física del arreglo.
 - Verificación del código final: 26 pruebas del simulador pasadas en `.build/SpeechLifecycle-final.xcresult`; harness macOS repetido con audio ES/EN y cancelación/reinicio correctos (`.build/speech-lifecycle-host-final.log`). Segunda instalación directa en iPhone agotó 30 segundos (`.build/phone-install-final.log`), por lo que la corrección sigue pendiente de prueba física.
+
+## Escucha con el iPhone bloqueado · 18 noviembre 2026
+
+- Compilación Debug instalada y abierta en el iPhone 17 Pro físico. El usuario confirmó que oía la voz y bloqueó la pantalla. Entre las 10:01 y las 11:02 CET, todos los sondeos disponibles mostraron bloqueo con código y el mismo proceso de Folisona (PID 19882). Algunos sondeos del Mac quedaron separados por varios minutos.
+- El historial guardado por la app después de iniciar cada reproducción contiene 250 fragmentos consecutivos (índices 1505–1754). Entre el inicio del primero y el del último transcurrieron 1 h 00 min 44 s. El intervalo máximo entre dos inicios fue de 18,69 s. Se observaron nuevos WAV guardados tras el bloqueo. Registro local de sondeos en `.build/physical-listen-20261118.log`.
+- El cierre observado anteriormente en TextToSpeech no se reprodujo en esta sesión. Las marcas permiten verificar el avance del reproductor. No se grabó la salida acústica. La interrupción por llamada y la reanudación con auriculares requieren comprobación independiente.
+
+## App Store 1.0.1 (8) · 18 noviembre 2026
+
+- Biblioteca: arrastrar desde la portada y abrir el menú contextual desde el título. Verificados los dos libros dentro de la carpeta creada por arrastre. Las pruebas de búsqueda usan el botón Buscar cuando el Duo presenta el campo contraído. La prueba de rotación comprueba la orientación solicitada y la visibilidad del título y la ilustración.
+- Simulador iPhone Duo: 32 pruebas funcionales y 7 de interfaz pasadas. Las dos pruebas de capturas de tienda se omiten fuera del flujo de capturas. Simulador iPhone 18 Pro: las cuatro pruebas afectadas pasadas. Logs locales en `.build/build8-duo.log` y `.build/build8-pro.log`.
+- 1.0.1 (8) subida y procesada VALID. Verificada la asociación exacta de la build 8 y el estado WAITING_FOR_REVIEW de la versión y del envío. Publicación manual tras aprobación.

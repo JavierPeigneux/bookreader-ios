@@ -17,7 +17,7 @@ final class ReaderUITests: XCTestCase {
         app.buttons["book.save"].tap()
         let renamed = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Tema 7 - Literatura")).firstMatch
         XCTAssertTrue(renamed.waitForExistence(timeout: 5))
-        let search = app.searchFields.firstMatch
+        let search = librarySearch(in: app)
         search.tap(); search.typeText("Tema 7")
         XCTAssertTrue(renamed.waitForExistence(timeout: 5))
         renamed.tap()
@@ -37,9 +37,9 @@ final class ReaderUITests: XCTestCase {
             var stableSamples = 0
             let settled = NSPredicate { _, _ in
                 let frame = app.frame
-                let correctOrientation = orientation == .portrait ? frame.height > frame.width : frame.width > frame.height
+                let artwork = app.images["launch.artwork"]
                 let title = app.staticTexts["Folisona"].firstMatch
-                guard correctOrientation, title.exists, frame.contains(title.frame) else { stableSamples = 0; return false }
+                guard XCUIDevice.shared.orientation == orientation, artwork.exists, frame.intersects(artwork.frame), title.exists, frame.contains(title.frame) else { stableSamples = 0; return false }
                 stableSamples = frame == previousFrame ? stableSamples + 1 : 0
                 previousFrame = frame
                 return stableSamples >= 3
@@ -71,7 +71,14 @@ final class ReaderUITests: XCTestCase {
         let first = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "La biblioteca del faro")).firstMatch
         let second = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Cuaderno de días tranquilos")).firstMatch
         XCTAssertTrue(first.waitForExistence(timeout: 15))
-        first.press(forDuration: 1.2, thenDragTo: second, withVelocity: .slow, thenHoldForDuration: 1)
+        // Keep the drop point clear of the scrolling edge while holding the book.
+        if !second.isHittable || second.frame.midY > app.frame.height * 0.75 {
+            app.scrollViews.firstMatch.swipeUp()
+        }
+        XCTAssertTrue(first.isHittable && second.isHittable)
+        let cover = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH %@ AND label == %@", "book.cover.", "La biblioteca del faro")).firstMatch
+        XCTAssertTrue(cover.isHittable)
+        cover.press(forDuration: 0.7, thenDragTo: second, withVelocity: .slow, thenHoldForDuration: 0.3)
         let name = app.textFields["folder.name"]
         XCTAssertTrue(name.waitForExistence(timeout: 5))
         name.tap(); name.typeText("Lecturas")
@@ -80,7 +87,8 @@ final class ReaderUITests: XCTestCase {
         XCTAssertTrue(folder.waitForExistence(timeout: 5))
         folder.tap()
         XCTAssertTrue(first.waitForExistence(timeout: 5))
-        XCTAssertTrue(second.exists)
+        if !second.isHittable { app.scrollViews.firstMatch.swipeUp() }
+        XCTAssertTrue(second.waitForExistence(timeout: 5))
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = "Carpeta de lecturas"; screenshot.lifetime = .keepAlways; add(screenshot)
     }
@@ -113,13 +121,24 @@ final class ReaderUITests: XCTestCase {
         app.buttons["folder.save"].tap()
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Temario")).firstMatch.waitForExistence(timeout: 5))
         // Root search must also find documents stored inside folders.
-        app.swipeDown()
-        let search = app.searchFields.firstMatch
+        let search = librarySearch(in: app)
         XCTAssertTrue(search.waitForExistence(timeout: 5))
         search.tap(); search.typeText("faro")
         XCTAssertTrue(book.waitForExistence(timeout: 5))
         let screenshot = XCTAttachment(screenshot: app.screenshot())
         screenshot.name = "Busqueda en carpetas"; screenshot.lifetime = .keepAlways; add(screenshot)
+    }
+
+    @MainActor
+    private func librarySearch(in app: XCUIApplication) -> XCUIElement {
+        let field = app.searchFields.firstMatch
+        if !field.isHittable {
+            let searchButton = app.buttons["Buscar"]
+            if searchButton.isHittable { searchButton.tap() }
+            else { app.scrollViews.firstMatch.swipeDown() }
+        }
+        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        return field
     }
 
     @MainActor

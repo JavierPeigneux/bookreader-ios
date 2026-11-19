@@ -67,7 +67,22 @@ extension Book {
                 result[result.count - 1].end = index + 1
             }
         }
-        return result
+        // Older imports retained blocks but discarded physical PDF page boundaries.
+        // Subdivide their oversized index without changing audio or history indices.
+        guard format == "PDF", result.count == 1, blocks.count > 100 else { return result }
+        var starts = [0]
+        for i in blocks.indices.dropFirst() {
+            let line = blocks[i].text.split(whereSeparator: \.isNewline).first
+            if i - starts.last! >= 25 || line.map({ DocumentImporter.isChapterHeading(String($0)) }) == true {
+                starts.append(i)
+            }
+        }
+        return starts.enumerated().map { n, start in
+            let end = n + 1 < starts.count ? starts[n + 1] : blocks.count
+            let line = String(blocks[start].text.prefix(while: { !$0.isNewline }))
+            let title = DocumentImporter.isChapterHeading(line) ? line : String.localizedStringWithFormat(String(localized: "reader.pdf.fragments"), Int64(start + 1), Int64(end))
+            return ReadingChapter(id: n, title: title, start: start, end: end)
+        }
     }
 }
 

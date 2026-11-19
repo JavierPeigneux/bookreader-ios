@@ -212,6 +212,56 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertTrue(sections[1].1.contains("Final."))
     }
 
+    func testNumberedPDFHeadingsWithoutBookmarks() throws {
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 400, height: 240))
+        let data = renderer.pdfData { ctx in
+            for line in ["Capítulo I", "Continúa el relato", "Capítulo II", "Última página"] {
+                ctx.beginPage()
+                (line as NSString).draw(at: CGPoint(x: 20, y: 20), withAttributes: [.font: UIFont.systemFont(ofSize: 18)])
+            }
+        }
+        let book = try DocumentImporter().read(write("cuento.pdf", data))
+        XCTAssertEqual(book.chapters.map(\.title), ["Capítulo I", "Capítulo II"])
+        XCTAssertTrue(book.blocks.last?.text.contains("Última página") == true)
+    }
+
+    func testLongPDFWithSingleBookmarkAndNestedChapters() throws {
+        let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 240, height: 200))
+        let data = renderer.pdfData { ctx in
+            for n in 1...925 {
+                ctx.beginPage()
+                ("Texto de la página \(n)" as NSString).draw(at: CGPoint(x: 12, y: 20), withAttributes: [.font: UIFont.systemFont(ofSize: 12)])
+            }
+        }
+        let pdf = try XCTUnwrap(PDFDocument(data: data))
+        let root = PDFOutline()
+        pdf.outlineRoot = root
+        func bookmark(_ title: String, _ page: Int, in parent: PDFOutline) throws -> PDFOutline {
+            let node = PDFOutline()
+            node.label = title
+            node.destination = PDFDestination(page: try XCTUnwrap(pdf.page(at: page)), at: .zero)
+            parent.insertChild(node, at: parent.numberOfChildren)
+            return node
+        }
+        let cover = try bookmark("Libro", 0, in: root)
+        XCTAssertEqual(try DocumentImporter.pdfSections(pdf).count, 925)
+        let book = try DocumentImporter().read(write("long.pdf", data))
+        XCTAssertEqual(book.chapters.count, 925)
+        XCTAssertTrue(book.blocks.last?.text.contains("925") == true)
+        _ = try bookmark("Primero", 0, in: cover)
+        _ = try bookmark("Segundo", 420, in: cover)
+        XCTAssertEqual(DocumentImporter.pdfChapterStarts(pdf).map { $0.1 }, ["Primero", "Segundo"])
+
+        let nested = try DocumentImporter.pdfSections(pdf)
+        XCTAssertEqual(nested.map { $0.0 }, ["Primero", "Segundo"])
+        XCTAssertTrue(nested.last?.1.hasPrefix("Texto de la página 421") == true)
+
+        var legacy = book
+        for i in legacy.blocks.indices { legacy.blocks[i].chapterID = 0; legacy.blocks[i].heading = "Libro" }
+        XCTAssertEqual(legacy.chapters.flatMap { Array($0.range) }, Array(legacy.blocks.indices))
+        XCTAssertTrue(legacy.chapters.allSatisfy { $0.range.count <= 25 })
+    }
+
     func testPDFPlaylistUsesOutlineOrPages() throws {
         let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 400, height: 600))
         let data = renderer.pdfData { context in

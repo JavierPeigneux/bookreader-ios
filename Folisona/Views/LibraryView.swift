@@ -44,21 +44,29 @@ struct LibraryView: View {
                         ContentUnavailableView(String(localized: "library.empty.title"), systemImage: "books.vertical", description: Text(String(localized: "library.empty.description")))
                     } else {
                         ForEach(library.visibleBooks(folder: selectedFolder, query: query)) { book in
-                            Button { coordinator.open(book); compactColumn = .detail } label: {
-                                HStack(spacing: 16) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 9).fill(FolioPalette.forest).frame(width: 58, height: 76)
-                                        Image(systemName: "book.closed").font(.title2).foregroundStyle(FolioPalette.surface)
-                                    }
-                                    VStack(alignment: .leading, spacing: 6) {
-                                        Text(book.title).font(.system(.headline, design: .serif)).foregroundStyle(FolioPalette.ink).lineLimit(2)
-                                        Text(String.localizedStringWithFormat(String(localized: "library.book.sections"), book.format, Int64(book.blocks.count))).font(.caption).foregroundStyle(FolioPalette.secondary)
-                                        Text(String.localizedStringWithFormat(String(localized: "reader.status.section"), Int64(book.position + 1), Int64(book.blocks.count))).font(.caption2).foregroundStyle(FolioPalette.secondary)
-                                    }
-                                    Image(systemName: "chevron.right").font(.caption)
-                                }.padding(16).background(FolioPalette.surface, in: RoundedRectangle(cornerRadius: 16))
-                                    .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(FolioPalette.border, lineWidth: 0.5))
-                            }.buttonStyle(.plain)
+                            HStack(spacing: 16) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 9).fill(FolioPalette.forest).frame(width: 58, height: 76)
+                                    Image(systemName: "book.closed").font(.title2).foregroundStyle(FolioPalette.surface)
+                                }
+                                .onTapGesture { openBook(book) }
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityAddTraits(.isImage)
+                                .accessibilityLabel(Text(book.title))
+                                .accessibilityIdentifier("book.cover." + book.id.uuidString)
+                                .draggable("folisona-book:\(book.id.uuidString)")
+
+                                Button { openBook(book) } label: {
+                                    HStack {
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text(book.title).font(.system(.headline, design: .serif)).foregroundStyle(FolioPalette.ink).lineLimit(2)
+                                            Text(String.localizedStringWithFormat(String(localized: "library.book.sections"), book.format, Int64(book.blocks.count))).font(.caption).foregroundStyle(FolioPalette.secondary)
+                                            Text(String.localizedStringWithFormat(String(localized: "reader.status.section"), Int64(book.position + 1), Int64(book.blocks.count))).font(.caption2).foregroundStyle(FolioPalette.secondary)
+                                        }
+                                        Spacer(minLength: 0)
+                                        Image(systemName: "chevron.right").font(.caption)
+                                    }.contentShape(Rectangle())
+                                }
                                 .contextMenu {
                                     Button(String(localized: "library.book.rename")) {
                                         library.error = nil
@@ -72,11 +80,15 @@ struct LibraryView: View {
                                     }
                                     Button(String(localized: "common.delete"), role: .destructive) { coordinator.delete(book) }
                                 }
-                                .draggable("folisona-book:\(book.id.uuidString)")
-                                .dropDestination(for: String.self) { items, _ in
-                                    guard let id = droppedBook(items), id != book.id else { return false }
-                                    editFolder(books: [id, book.id]); return true
-                                }
+                            }
+                            .buttonStyle(.plain)
+                            .padding(16).background(FolioPalette.surface, in: RoundedRectangle(cornerRadius: 16))
+                            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(FolioPalette.border, lineWidth: 0.5))
+                            .contentShape(Rectangle())
+                            .dropDestination(for: String.self) { items, _ in
+                                guard let id = droppedBook(items), id != book.id else { return false }
+                                editFolder(books: [id, book.id]); return true
+                            }
                         }
                     }
                     if !library.books.isEmpty && library.visibleBooks(folder: selectedFolder, query: query).isEmpty && (selectedFolder != nil || !query.isEmpty) {
@@ -127,6 +139,11 @@ struct LibraryView: View {
         .onChange(of: coordinator.selection) { _, selection in
             if selection != nil { compactColumn = .detail }
         }
+    }
+
+    private func openBook(_ book: Book) {
+        coordinator.open(book)
+        compactColumn = .detail
     }
 
     private func editFolder(_ folder: LibraryFolder? = nil, books: [UUID] = []) {

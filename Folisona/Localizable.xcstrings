@@ -1,567 +1,669 @@
 {
-  "sourceLanguage": "es",
-  "strings": {
-    "app.name": {
-      "extractionState": "stale",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Folisona"
+  "sourceLanguage" : "es",
+  "strings" : {
+    "app.name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folisona"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Folisona"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folisona"
           }
         }
       }
     },
-    "common.delete": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete"
+    "common.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eliminar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
     },
-    "common.done": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Done"
+    "common.delete" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar"
           }
         }
       }
     },
-    "common.ok": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "OK"
+    "common.done" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aceptar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo"
           }
         }
       }
     },
-    "document.heading.chapter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chapter %lld"
+    "common.ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Capítulo %lld"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aceptar"
           }
         }
       }
     },
-    "document.heading.page": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Page %lld"
+    "document.heading.chapter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapter %lld"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Página %lld"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capítulo %lld"
           }
         }
       }
     },
-    "document.heading.text": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Text"
+    "document.heading.page" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Page %lld"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Texto"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Página %lld"
           }
         }
       }
     },
-    "error.audio.interrupted": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Playback was interrupted."
+    "document.heading.text" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La reproducción se ha interrumpido."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texto"
           }
         }
       }
     },
-    "error.audio.missing_section": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio for this section is missing. Tap Prepare and listen."
+    "error.audio.interrupted" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback was interrupted."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Falta el audio de este fragmento. Pulsa Preparar audio."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La reproducción se ha interrumpido."
           }
         }
       }
     },
-    "error.audio.play": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unable to play the audio."
+    "error.audio.missing_section" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio for this section is missing. Tap Prepare and listen."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se ha podido reproducir el audio."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta el audio de este fragmento. Pulsa Preparar audio."
           }
         }
       }
     },
-    "error.audio.prepare": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unable to prepare the audio."
+    "error.audio.play" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to play the audio."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se ha podido preparar el audio."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido reproducir el audio."
           }
         }
       }
     },
-    "error.document.byte_limit": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The document exceeds 200 MB."
+    "error.audio.prepare" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to prepare the audio."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El documento supera 200 MB."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido preparar el audio."
           }
         }
       }
     },
-    "error.document.character_limit": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The document exceeds two million characters."
+    "error.document.byte_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The document exceeds 200 MB."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El documento supera dos millones de caracteres."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El documento supera 200 MB."
           }
         }
       }
     },
-    "error.document.empty": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The document contains no readable text."
+    "error.document.character_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The document exceeds two million characters."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El documento no contiene texto legible."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El documento supera dos millones de caracteres."
           }
         }
       }
     },
-    "error.document.encoding": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save the text using UTF-8 encoding."
+    "error.document.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The document contains no readable text."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guarda el texto con codificación UTF-8."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El documento no contiene texto legible."
           }
         }
       }
     },
-    "error.document.unsupported_format": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unsupported format. Choose EPUB, PDF, TXT or Markdown."
+    "error.document.encoding" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save the text using UTF-8 encoding."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Formato no compatible. Elige EPUB, PDF, TXT o Markdown."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guarda el texto con codificación UTF-8."
           }
         }
       }
     },
-    "error.epub.chapter_missing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The EPUB index references a missing chapter."
+    "error.document.unsupported_format" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported format. Choose EPUB, PDF, TXT or Markdown."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El índice EPUB referencia un capítulo inexistente."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formato no compatible. Elige EPUB, PDF, TXT o Markdown."
           }
         }
       }
     },
-    "error.epub.chapter_reference": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The EPUB contains an invalid chapter reference."
+    "error.epub.chapter_missing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The EPUB index references a missing chapter."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El EPUB contiene una referencia de capítulo no válida."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El índice EPUB referencia un capítulo inexistente."
           }
         }
       }
     },
-    "error.epub.drm": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This EPUB has DRM. An unprotected copy is required."
+    "error.epub.chapter_reference" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The EPUB contains an invalid chapter reference."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El EPUB tiene DRM. Se necesita una copia sin protección."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El EPUB contiene una referencia de capítulo no válida."
           }
         }
       }
     },
-    "error.epub.entry_limit": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The EPUB content is too large."
+    "error.epub.drm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This EPUB has DRM. An unprotected copy is required."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Contenido EPUB demasiado grande."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El EPUB tiene DRM. Se necesita una copia sin protección."
           }
         }
       }
     },
-    "error.epub.entry_missing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Incomplete EPUB: %@ is missing."
+    "error.epub.entry_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The EPUB content is too large."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "EPUB incompleto: falta %@."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contenido EPUB demasiado grande."
           }
         }
       }
     },
-    "error.epub.expanded_limit": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The expanded EPUB exceeds 200 MB."
+    "error.epub.entry_missing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Incomplete EPUB: %@ is missing."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El EPUB descomprimido supera 200 MB."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "EPUB incompleto: falta %@."
           }
         }
       }
     },
-    "error.epub.index_missing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The EPUB does not contain a valid index."
+    "error.epub.expanded_limit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The expanded EPUB exceeds 200 MB."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El EPUB no contiene un índice válido."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El EPUB descomprimido supera 200 MB."
           }
         }
       }
     },
-    "error.epub.xml_invalid": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The EPUB XML index is damaged."
+    "error.epub.index_missing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The EPUB does not contain a valid index."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El índice XML del EPUB está dañado."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El EPUB no contiene un índice válido."
           }
         }
       }
     },
-    "error.generation.requires_foreground": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reopen the app to continue generating audio."
+    "error.epub.xml_invalid" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The EPUB XML index is damaged."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Vuelve a abrir la app para continuar la generación."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El índice XML del EPUB está dañado."
           }
         }
       }
     },
-    "error.operation.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unable to complete"
+    "error.generation.requires_foreground" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reopen the app to continue generating audio."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se ha podido completar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vuelve a abrir la app para continuar la generación."
           }
         }
       }
     },
-    "error.pdf.ocr_failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Text recognition failed on page %lld."
+    "error.operation.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to complete"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se pudo reconocer el texto de la página %lld."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido completar"
           }
         }
       }
     },
-    "error.pdf.open": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unable to open this PDF. It may be password-protected."
+    "error.pdf.ocr_failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text recognition failed on page %lld."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se puede abrir este PDF. Puede estar protegido con contraseña."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo reconocer el texto de la página %lld."
           }
         }
       }
     },
-    "error.speech.invalid_audio": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The voice did not produce valid audio for this section. Try another voice."
+    "error.pdf.open" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to open this PDF. It may be password-protected."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La voz no ha producido audio válido para este fragmento. Prueba con otra voz."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se puede abrir este PDF. Puede estar protegido con contraseña."
           }
         }
       }
     },
-    "error.speech.timeout": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The voice did not respond. Try again or select another installed voice."
+    "error.speech.busy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The speech service is still stopping the previous reading. Wait a moment and try again."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La voz no ha respondido. Vuelve a intentarlo o selecciona otra voz instalada."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El servicio de voz sigue deteniendo la lectura anterior. Espera un momento y vuelve a intentarlo."
           }
         }
       }
     },
-    "error.speech.voice_missing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This voice is not installed. Select another voice or download it in Settings > Accessibility."
+    "error.speech.invalid_audio" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The voice did not produce valid audio for this section. Try another voice."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esta voz no está instalada. Selecciona otra voz o descárgala en Ajustes > Accesibilidad."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La voz no ha producido audio válido para este fragmento. Prueba con otra voz."
           }
         }
       }
     },
-    "library.book.sections": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$@ · %2$lld section"
+    "error.speech.timeout" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The voice did not respond. Try again or select another installed voice."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La voz no ha respondido. Vuelve a intentarlo o selecciona otra voz instalada."
+          }
+        }
+      }
+    },
+    "error.speech.voice_missing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This voice is not installed. Select another voice or download it in Settings > Accessibility."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta voz no está instalada. Selecciona otra voz o descárgala en Ajustes > Accesibilidad."
+          }
+        }
+      }
+    },
+    "library.all" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Library"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Biblioteca"
+          }
+        }
+      }
+    },
+    "library.book.name" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Book name"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre del libro"
+          }
+        }
+      }
+    },
+    "library.book.name_required" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a book name."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe un nombre para el libro."
+          }
+        }
+      }
+    },
+    "library.book.rename" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename book"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar libro"
+          }
+        }
+      }
+    },
+    "library.book.sections" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$@ · %2$lld section"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$@ · %2$lld sections"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$@ · %2$lld sections"
                 }
               }
             }
           }
         },
-        "es": {
-          "variations": {
-            "plural": {
-              "one": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$@ · %2$lld fragmento"
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$@ · %2$lld fragmento"
                 }
               },
-              "other": {
-                "stringUnit": {
-                  "state": "translated",
-                  "value": "%1$@ · %2$lld fragmentos"
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%1$@ · %2$lld fragmentos"
                 }
               }
             }
@@ -569,1505 +671,1424 @@
         }
       }
     },
-    "library.empty.description": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import a document from Files. Its contents stay on your device."
+    "library.duplicate.open" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open document"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importa un documento desde Archivos. El contenido se queda en tu dispositivo."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir documento"
           }
         }
       }
     },
-    "library.empty.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your next read starts here"
+    "library.duplicate.title" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This document is already imported"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tu próxima lectura empieza aquí"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Este documento ya está importado"
           }
         }
       }
     },
-    "library.import": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Import document"
+    "library.empty.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import a document from Files. Its contents stay on your device."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importar documento"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importa un documento desde Archivos. El contenido se queda en tu dispositivo."
           }
         }
       }
     },
-    "library.importing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importing…"
+    "library.empty.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your next read starts here"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Importando…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu próxima lectura empieza aquí"
           }
         }
       }
     },
-    "library.sample.spanish": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Try a Spanish sample"
+    "library.folder.exists" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A folder with that name already exists."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Probar con un texto en castellano"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya existe una carpeta con ese nombre."
           }
         }
       }
     },
-    "library.selection.description": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open a book from your library or import a document."
+    "library.folder.move" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move to folder"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abre un libro de la biblioteca o importa un documento."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a carpeta"
           }
         }
       }
     },
-    "library.selection.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose your next read"
+    "library.folder.name" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Folder name"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Elige tu próxima lectura"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nombre de la carpeta"
           }
         }
       }
     },
-    "library.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Read and listen to your documents on your device."
+    "library.folder.name_required" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter a folder name."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lee y escucha tus documentos en tu dispositivo."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe un nombre para la carpeta."
           }
         }
       }
     },
-    "library.tagline": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A MOMENT FOR YOURSELF"
+    "library.folder.new" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New folder"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "UN RATO PARA TI"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nueva carpeta"
           }
         }
       }
     },
-    "library.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Your books,\nat your pace."
+    "library.folder.remove" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete folder and keep documents"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tus libros,\na tu ritmo."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar carpeta y conservar documentos"
           }
         }
       }
     },
-    "preparation.background.active": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparation can continue with the screen locked while iOS keeps the task active."
+    "library.folder.rename" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rename folder"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La preparación puede continuar con la pantalla bloqueada mientras iOS mantenga la tarea activa."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Renombrar carpeta"
           }
         }
       }
     },
-    "preparation.background.unavailable": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Background generation is unavailable right now. Keep the app open to prepare audio; saved audio can play with the screen locked."
+    "library.folder.save" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La generación en segundo plano no está disponible ahora. Mantén la app abierta para preparar audio; lo guardado se puede escuchar con la pantalla bloqueada."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar"
           }
         }
       }
     },
-    "preparation.book": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prepare entire book"
+    "library.folder.unfiled" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unfiled"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparar libro completo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin carpeta"
           }
         }
       }
     },
-    "preparation.chapter": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Prepare this chapter"
+    "library.import" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import document"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparar este capítulo"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importar documento"
           }
         }
       }
     },
-    "preparation.interrupted": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparation stopped. Saved audio is kept and you can resume later."
+    "library.importing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importing…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparación detenida. El audio guardado se conserva y puedes continuar después."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importando…"
           }
         }
       }
     },
-    "preparation.menu": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Offline listening"
+    "library.no_results" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No documents found"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escuchar sin conexión"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay documentos"
           }
         }
       }
     },
-    "preparation.progress.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing audio"
+    "library.sample.spanish" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try a Spanish sample"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando audio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Probar con un texto en castellano"
           }
         }
       }
     },
-    "preparation.ready": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio saved for offline listening"
+    "library.search" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search documents and folders"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio guardado para escuchar sin conexión"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buscar documentos y carpetas"
           }
         }
       }
     },
-    "preparation.reopen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You can listen to saved audio. Open the app and resume preparation to generate more."
+    "library.selection.description" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open a book from your library or import a document."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Puedes escuchar el audio guardado. Abre la app y continúa la preparación para generar más."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre un libro de la biblioteca o importa un documento."
           }
         }
       }
     },
-    "preparation.resume": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Resume preparation"
+    "library.selection.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose your next read"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Continuar preparación"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Elige tu próxima lectura"
           }
         }
       }
     },
-    "preparation.system.subtitle": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing audio for offline listening"
+    "library.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read and listen to your documents on your device."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando audio para escuchar sin conexión"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lee y escucha tus documentos en tu dispositivo."
           }
         }
       }
     },
-    "preparation.time.calculating": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Estimating time remaining…"
+    "library.tagline" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A MOMENT FOR YOURSELF"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calculando tiempo restante…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "UN RATO PARA TI"
           }
         }
       }
     },
-    "preparation.time.less_than_minute": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About less than 1 min remaining"
+    "library.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your books,\nat your pace."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Queda menos de 1 min aprox."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus libros,\na tu ritmo."
           }
         }
       }
     },
-    "preparation.time.remaining": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "About %@ remaining"
+    "preparation.background.active" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparation can continue with the screen locked while iOS keeps the task active."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Quedan %@ aprox."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La preparación puede continuar con la pantalla bloqueada mientras iOS mantenga la tarea activa."
           }
         }
       }
     },
-    "reader.audio.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio"
+    "preparation.background.unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background generation is unavailable right now. Keep the app open to prepare audio; saved audio can play with the screen locked."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La generación en segundo plano no está disponible ahora. Mantén la app abierta para preparar audio; lo guardado se puede escuchar con la pantalla bloqueada."
           }
         }
       }
     },
-    "reader.chapters.cached": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio ready: %lld / %lld"
+    "preparation.book" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prepare entire book"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio preparado: %lld / %lld"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparar libro completo"
           }
         }
       }
     },
-    "reader.chapters.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Chapter playlist"
+    "preparation.chapter" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prepare this chapter"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lista de capítulos"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparar este capítulo"
           }
         }
       }
     },
-    "reader.generation.foreground_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generating the current or next section. Keep the app open to prepare more audio."
+    "preparation.interrupted" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparation stopped. Saved audio is kept and you can resume later."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generando el fragmento actual o el siguiente. Mantén la app abierta para preparar más audio."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparación detenida. El audio guardado se conserva y puedes continuar después."
           }
         }
       }
     },
-    "reader.generation.loading": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing voice…"
+    "preparation.menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offline listening"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando voz…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuchar sin conexión"
           }
         }
       }
     },
-    "reader.generation.saving": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saving audio…"
+    "preparation.progress.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing audio"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardando audio…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando audio"
           }
         }
       }
     },
-    "reader.generation.stop": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop generating"
+    "preparation.ready" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio saved for offline listening"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detener generación"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio guardado para escuchar sin conexión"
           }
         }
       }
     },
-    "reader.generation.synthesizing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generating audio…"
+    "preparation.reopen" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can listen to saved audio. Open the app and resume preparation to generate more."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generando audio…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Puedes escuchar el audio guardado. Abre la app y continúa la preparación para generar más."
           }
         }
       }
     },
-    "reader.history.empty": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Times will appear once you listen to the book."
+    "preparation.resume" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resume preparation"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Las horas aparecerán cuando escuches el libro."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Continuar preparación"
           }
         }
       }
     },
-    "reader.history.heard_at": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listened on %@"
+    "preparation.system.subtitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing audio for offline listening"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escuchado el %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando audio para escuchar sin conexión"
           }
         }
       }
     },
-    "reader.history.latest": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Last listen for each section"
+    "preparation.time.calculating" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimating time remaining…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Última escucha de cada fragmento"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calculando tiempo restante…"
           }
         }
       }
     },
-    "reader.history.resume_hint": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Play from this section."
+    "preparation.time.less_than_minute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About less than 1 min remaining"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reproduce desde este fragmento."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queda menos de 1 min aprox."
           }
         }
       }
     },
-    "reader.history.return": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Return to previous position"
+    "preparation.time.remaining" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About %@ remaining"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Volver a la posición anterior"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quedan %@ aprox."
           }
         }
       }
     },
-    "reader.history.session": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listening session"
+    "reader.audio.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sesión de escucha"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
           }
         }
       }
     },
-    "reader.history.show": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Show listening times"
+    "reader.audio.failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio could not be prepared. Try again."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostrar horas de escucha"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se ha podido preparar el audio. Vuelve a intentarlo."
           }
         }
       }
     },
-    "reader.history.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listening times"
+    "reader.audio.playing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playing"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Horas de escucha"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduciendo"
           }
         }
       }
     },
-    "reader.pause": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pause"
+    "reader.audio.preparing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving audio for offline listening…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pausar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardando audio para escuchar sin conexión…"
           }
         }
       }
     },
-    "reader.play": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listen"
+    "reader.audio.saved" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved %lld of %lld sections"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escuchar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardados %lld de %lld fragmentos"
           }
         }
       }
     },
-    "reader.section.next": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Next section"
+    "reader.audio.starting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing audio to start…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fragmento siguiente"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando audio para empezar…"
           }
         }
       }
     },
-    "reader.section.previous": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Previous section"
+    "reader.audio.stop_preparing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop preparing"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fragmento anterior"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener preparación"
           }
         }
       }
     },
-    "reader.status.finished": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reading finished"
+    "reader.audio.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lectura terminada"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio"
           }
         }
       }
     },
-    "reader.status.generation_stopped": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generation stopped. You can resume without repeating saved sections."
+    "reader.chapters.cached" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio ready: %lld / %lld"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generación detenida. Puedes continuar sin repetir los fragmentos guardados."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Audio preparado: %lld / %lld"
           }
         }
       }
     },
-    "reader.status.paused": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paused"
+    "reader.chapters.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chapter playlist"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "En pausa"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lista de capítulos"
           }
         }
       }
     },
-    "reader.status.playing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listening · %@"
+    "reader.generation.foreground_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generating the current or next section. Keep the app open to prepare more audio."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escuchando · %@"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generando el fragmento actual o el siguiente. Mantén la app abierta para preparar más audio."
           }
         }
       }
     },
-    "reader.status.preparing": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing section %lld of %lld…"
+    "reader.generation.loading" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing voice…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando fragmento %lld de %lld…"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando voz…"
           }
         }
       }
     },
-    "reader.status.ready": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ready to listen"
+    "reader.generation.saving" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saving audio…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Listo para escuchar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardando audio…"
           }
         }
       }
     },
-    "reader.status.section": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Section %lld of %lld"
+    "reader.generation.stop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop generating"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fragmento %lld de %lld"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detener generación"
           }
         }
       }
     },
-    "reader.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reading"
+    "reader.generation.synthesizing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generating audio…"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lectura"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generando audio…"
           }
         }
       }
     },
-    "reader.voice": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apple voice"
+    "reader.history.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Times will appear once you listen to the book."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voz de Apple"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las horas aparecerán cuando escuches el libro."
           }
         }
       }
     },
-    "voice.enhanced": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enhanced"
+    "reader.history.heard_at" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listened on %@"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calidad mejorada"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuchado el %@"
           }
         }
       }
     },
-    "voice.help": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Installed Apple voices. Download more voices in Settings > Accessibility."
+    "reader.history.latest" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last listen for each section"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voces de Apple instaladas. Descarga más voces en Ajustes > Accesibilidad."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Última escucha de cada fragmento"
           }
         }
       }
     },
-    "voice.premium": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premium"
+    "reader.history.resume_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Play from this section."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Calidad premium"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduce desde este fragmento."
           }
         }
       }
     },
-    "voice.unavailable": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voice unavailable"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Voz no disponible"
-          }
-        }
-      }
-    },
-    "reader.audio.starting": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparando audio para empezar…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preparing audio to start…"
-          }
-        }
-      }
-    },
-    "reader.audio.playing": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Reproduciendo"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Playing"
-          }
-        }
-      }
-    },
-    "reader.audio.preparing": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardando audio para escuchar sin conexión…"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saving audio for offline listening…"
-          }
-        }
-      }
-    },
-    "reader.audio.failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se ha podido preparar el audio. Vuelve a intentarlo."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Audio could not be prepared. Try again."
-          }
-        }
-      }
-    },
-    "reader.audio.cancel": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
-          }
-        }
+    "reader.pdf.fragments" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Fragments %lld–%lld" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Fragmentos %lld–%lld" } }
       }
     },
-    "reader.audio.saved": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardados %lld de %lld fragmentos"
+    "reader.history.return" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Return to previous position"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Saved %lld of %lld sections"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volver a la posición anterior"
           }
         }
       }
     },
-    "reader.audio.stop_preparing": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Detener preparación"
+    "reader.history.session" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listening session"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stop preparing"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesión de escucha"
           }
         }
       }
     },
-    "voice.missing.title": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esta voz no está disponible en tu dispositivo."
+    "reader.history.show" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show listening times"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This voice is not available on your device."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostrar horas de escucha"
           }
         }
       }
     },
-    "voice.download": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Descargar voces"
+    "reader.history.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listening times"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Download voices"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Horas de escucha"
           }
         }
       }
     },
-    "voice.settings.route": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accesibilidad → Lectura y voz → Voces"
+    "reader.pause" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pause"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Accessibility → Read & Speak → Voices"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pausar"
           }
         }
       }
     },
-    "voice.settings.instructions": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abre Ajustes y vuelve a su pantalla principal. Sigue esta ruta, elige español o inglés y descarga una voz. Al volver a Folisona, selecciónala en el menú de voces."
+    "reader.play" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listen"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Settings and return to its main screen. Follow this path, choose Spanish or English and download a voice. Return to Folisona and select it from the voice menu."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuchar"
           }
         }
       }
     },
-    "voice.settings.open": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir Ajustes"
+    "reader.section.next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next section"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open Settings"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragmento siguiente"
           }
         }
       }
     },
-    "voice.settings.failed": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No se han podido abrir los ajustes. Abre la app Ajustes manualmente y sigue la ruta indicada."
+    "reader.section.previous" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Previous section"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Settings could not be opened. Open the Settings app manually and follow the path above."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragmento anterior"
           }
         }
       }
     },
-    "error.speech.busy": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "El servicio de voz sigue deteniendo la lectura anterior. Espera un momento y vuelve a intentarlo."
+    "reader.status.finished" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading finished"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The speech service is still stopping the previous reading. Wait a moment and try again."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lectura terminada"
           }
         }
       }
     },
-    "library.all": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Biblioteca"
+    "reader.status.generation_stopped" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generation stopped. You can resume without repeating saved sections."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Library"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Generación detenida. Puedes continuar sin repetir los fragmentos guardados."
           }
         }
       }
     },
-    "library.search": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Buscar documentos y carpetas"
+    "reader.status.paused" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Paused"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Search documents and folders"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En pausa"
           }
         }
       }
     },
-    "library.no_results": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No hay documentos"
+    "reader.status.playing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listening · %@"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "No documents found"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escuchando · %@"
           }
         }
       }
     },
-    "library.folder.new": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nueva carpeta"
+    "reader.status.preparing" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparing section %lld of %lld…"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "New folder"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparando fragmento %lld de %lld…"
           }
         }
       }
     },
-    "library.folder.rename": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Renombrar carpeta"
+    "reader.status.ready" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready to listen"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rename folder"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Listo para escuchar"
           }
         }
       }
     },
-    "library.folder.name": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre de la carpeta"
+    "reader.status.section" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Section %lld of %lld"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Folder name"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fragmento %lld de %lld"
           }
         }
       }
     },
-    "library.folder.save": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Guardar"
+    "reader.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Save"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lectura"
           }
         }
       }
     },
-    "library.folder.move": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mover a carpeta"
+    "reader.voice" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple voice"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Move to folder"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voz de Apple"
           }
         }
       }
     },
-    "library.folder.unfiled": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sin carpeta"
+    "voice.download" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download voices"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Unfiled"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Descargar voces"
           }
         }
       }
     },
-    "library.folder.remove": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eliminar carpeta y conservar documentos"
+    "voice.enhanced" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enhanced"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Delete folder and keep documents"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calidad mejorada"
           }
         }
       }
     },
-    "library.folder.name_required": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escribe un nombre para la carpeta."
+    "voice.help" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Installed Apple voices. Download more voices in Settings > Accessibility."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter a folder name."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voces de Apple instaladas. Descarga más voces en Ajustes > Accesibilidad."
           }
         }
       }
     },
-    "library.folder.exists": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Ya existe una carpeta con ese nombre."
+    "voice.missing.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This voice is not available on your device."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A folder with that name already exists."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta voz no está disponible en tu dispositivo."
           }
         }
       }
     },
-    "library.duplicate.title": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Este documento ya está importado"
+    "voice.premium" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Premium"
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "This document is already imported"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calidad premium"
           }
         }
       }
     },
-    "library.duplicate.open": {
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Abrir documento"
+    "voice.settings.failed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings could not be opened. Open the Settings app manually and follow the path above."
           }
         },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Open document"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se han podido abrir los ajustes. Abre la app Ajustes manualmente y sigue la ruta indicada."
           }
         }
       }
     },
-    "common.cancel": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancel"
+    "voice.settings.instructions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings and return to its main screen. Follow this path, choose Spanish or English and download a voice. Return to Folisona and select it from the voice menu."
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cancelar"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre Ajustes y vuelve a su pantalla principal. Sigue esta ruta, elige español o inglés y descarga una voz. Al volver a Folisona, selecciónala en el menú de voces."
           }
         }
       }
     },
-    "library.book.name": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Book name"
+    "voice.settings.open" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Settings"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Nombre del libro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abrir Ajustes"
           }
         }
       }
     },
-    "library.book.name_required": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Enter a book name."
+    "voice.settings.route" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accessibility → Read & Speak → Voices"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Escribe un nombre para el libro."
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accesibilidad → Lectura y voz → Voces"
           }
         }
       }
     },
-    "library.book.rename": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Rename book"
+    "voice.unavailable" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voice unavailable"
           }
         },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Renombrar libro"
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voz no disponible"
           }
         }
       }
     }
   },
-  "version": "1.0"
+  "version" : "1.0"
 }

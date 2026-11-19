@@ -443,19 +443,19 @@
         }
       }
     },
-    "error.pdf.ocr_required": {
+    "error.pdf.ocr_failed": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Page %lld contains no text. This PDF requires OCR, which is not yet included."
+            "value": "Text recognition failed on page %lld."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La página %lld no contiene texto. Este PDF necesita OCR, todavía no incluido."
+            "value": "No se pudo reconocer el texto de la página %lld."
           }
         }
       }

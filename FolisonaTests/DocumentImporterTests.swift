@@ -157,7 +157,7 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertFalse(text.contains("https://"))
         XCTAssertFalse(text.contains("**"))
     }
-    func testPDFTextAndScannedRejection() throws {
+    func testPDFTextAndBlankRejection() throws {
         let renderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 400, height: 600))
         let data = renderer.pdfData { context in
             context.beginPage()
@@ -168,6 +168,19 @@ final class DocumentImporterTests: XCTestCase {
         let blank = renderer.pdfData { $0.beginPage() }
         XCTAssertThrowsError(try DocumentImporter().read(write("escaneado.pdf", blank)))
     }
+    func testPDFScanAndMixedPages() throws {
+        let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "scanned", withExtension: "pdf"))
+        let book = try DocumentImporter().read(url)
+        XCTAssertEqual(book.blocks.map(\.text), ["Texto original", "La montaña de papel"])
+        XCTAssertTrue(book.blocks.last?.heading.contains("3") == true)
+
+        let pdf = try XCTUnwrap(PDFDocument(url: url))
+        pdf.removePage(at: 0)
+        pdf.removePage(at: 0)
+        let scan = try DocumentImporter().read(write("scan.pdf", try XCTUnwrap(pdf.dataRepresentation())))
+        XCTAssertEqual(scan.blocks.map(\.text), ["La montaña de papel"])
+    }
+
     func testEPUBSpineOrderAndHTMLEntities() throws {
         let url = try XCTUnwrap(Bundle(for: Self.self).url(forResource: "ordered", withExtension: "epub"))
         let book = try DocumentImporter().read(url)

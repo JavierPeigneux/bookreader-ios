@@ -1,6 +1,6 @@
 # Folisona iOS · versión 1.0
 
-Lector SwiftUI para iOS 27.2 o posterior. Importa EPUB sin DRM, PDF con texto, TXT UTF-8 y Markdown, y los lee con las **voces de Apple instaladas en el dispositivo**. Interfaz en castellano e inglés. No traduce los documentos.
+Lector SwiftUI para iOS 27.2 o posterior. Importa EPUB sin DRM, PDF con texto o escaneados (OCR local en español e inglés), TXT UTF-8 y Markdown, y los lee con las **voces de Apple instaladas en el dispositivo**. Interfaz en castellano e inglés. No traduce los documentos.
 
 Bundle ID: `com.javierpeigneux.Folisona`.
 

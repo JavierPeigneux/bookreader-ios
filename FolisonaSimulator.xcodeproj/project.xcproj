@@ -203,6 +203,12 @@
               ]
             },
             {
+              "path": "scanned.pdf",
+              "target-membership": [
+                "FolisonaTests/resources"
+              ]
+            },
+            {
               "path": "chapters.pdf",
               "target-membership": [
                 "FolisonaTests/resources"

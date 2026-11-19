@@ -1,5 +1,6 @@
 import Foundation
 import PDFKit
+import Vision
 import SwiftSoup
 import ZIPFoundation
 
@@ -34,17 +35,32 @@ struct DocumentImporter {
             }
             let chapterStarts = Self.pdfChapterStarts(pdf)
             var pages: [(String, String)] = []
+            var characters = 0
+            var previousChapter: Int?
             for index in 0..<pdf.pageCount {
-                let text = pdf.page(at: index)?.string?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-                guard !text.isEmpty else {
-                    throw ReaderError.message(String.localizedStringWithFormat(String(localized: "error.pdf.ocr_required"), Int64(index + 1)))
+                let text = try autoreleasepool {
+                    guard let page = pdf.page(at: index) else {
+                        throw ReaderError.message(String(localized: "error.pdf.open"))
+                    }
+                    let native = page.string?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                    if !native.isEmpty { return native }
+                    do { return try Self.recognizeText(on: page) }
+                    catch {
+                        throw ReaderError.message(String.localizedStringWithFormat(String(localized: "error.pdf.ocr_failed"), Int64(index + 1)))
+                    }
                 }
-                let heading = chapterStarts.last(where: { $0.0 <= index })?.1
+                guard !text.isEmpty else { continue }
+                characters += text.count
+                guard characters <= Self.maxCharacters else {
+                    throw ReaderError.message(String(localized: "error.document.character_limit"))
+                }
+                let chapter = chapterStarts.last(where: { $0.0 <= index })
+                let heading = chapter?.1
                     ?? String.localizedStringWithFormat(String(localized: "document.heading.page"), Int64(index + 1))
-                if let last = pages.last, !chapterStarts.isEmpty, last.0 == heading,
-                   !chapterStarts.contains(where: { $0.0 == index }) {
+                if let start = chapter?.0, previousChapter == start {
                     pages[pages.count - 1].1 += "\n\n" + text
                 } else { pages.append((heading, text)) }
+                previousChapter = chapter?.0
             }
             sections = pages
         case "epub": sections = try epub(data)
@@ -58,6 +74,38 @@ struct DocumentImporter {
         }.enumerated().map { ReadingBlock(id: $0.offset, heading: $0.element.1, text: $0.element.2, chapterID: $0.element.0) }
         guard !blocks.isEmpty else { throw ReaderError.message(String(localized: "error.document.empty")) }
         return Book(title: url.deletingPathExtension().lastPathComponent, format: ext.uppercased(), blocks: blocks)
+    }
+
+    private static func recognizeText(on page: PDFPage) throws -> String {
+        guard let source = page.pageRef else { throw ReaderError.message(String(localized: "error.pdf.open")) }
+        let box = source.getBoxRect(.cropBox)
+        let rotated = source.rotationAngle % 180 != 0
+        let width = rotated ? box.height : box.width
+        let height = rotated ? box.width : box.height
+        guard width.isFinite, height.isFinite, width > 0, height > 0 else {
+            throw ReaderError.message(String(localized: "error.pdf.open"))
+        }
+        // Limit the temporary raster independently of the PDF's physical page size.
+        let longest = max(width, height)
+        let pixelsWide = max(1, Int((width / longest * 2600).rounded()))
+        let pixelsHigh = max(1, Int((height / longest * 2600).rounded()))
+        guard let context = CGContext(data: nil, width: pixelsWide, height: pixelsHigh,
+                                      bitsPerComponent: 8, bytesPerRow: 0,
+                                      space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue) else {
+            throw ReaderError.message(String(localized: "error.pdf.open"))
+        }
+        let bounds = CGRect(x: 0, y: 0, width: pixelsWide, height: pixelsHigh)
+        context.setFillColor(gray: 1, alpha: 1)
+        context.fill(bounds)
+        context.concatenate(source.getDrawingTransform(.cropBox, rect: bounds, rotate: 0, preserveAspectRatio: true))
+        context.drawPDFPage(source)
+        guard let image = context.makeImage() else { throw ReaderError.message(String(localized: "error.pdf.open")) }
+        let request = VNRecognizeTextRequest()
+        request.recognitionLevel = .accurate
+        request.recognitionLanguages = ["es-ES", "en-US"]
+        request.usesLanguageCorrection = true
+        try VNImageRequestHandler(cgImage: image).perform([request])
+        return (request.results ?? []).compactMap { $0.topCandidates(1).first?.string }.joined(separator: "\n")
     }
 
     /// Top-level usable outline entries define chapters; nested entries are used

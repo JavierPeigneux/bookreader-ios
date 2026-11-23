@@ -147,6 +147,17 @@ final class DocumentImporterTests: XCTestCase {
         XCTAssertEqual(progress.remainingSeconds(elapsed: 30), 0)
     }
 
+    func testTutorialScheduleAndVoiceQuality() {
+        let now = Date()
+        XCTAssertTrue(TutorialSchedule.isDue(lastUse: 0, now: now))
+        let threshold = now.timeIntervalSince1970 - 20 * 86400
+        XCTAssertFalse(TutorialSchedule.isDue(lastUse: threshold + 1, now: now))
+        XCTAssertTrue(TutorialSchedule.isDue(lastUse: threshold, now: now))
+        XCTAssertFalse(TutorialSchedule.hasBothLanguages([("es-ES", .premium), ("en-US", .default)]))
+        XCTAssertFalse(TutorialSchedule.hasBothLanguages([("en-GB", .enhanced)]))
+        XCTAssertTrue(TutorialSchedule.hasBothLanguages([("es-MX", .enhanced), ("en-GB", .premium)]))
+    }
+
     func testTXTAccentsAndMarkdown() throws {
         let txt = try DocumentImporter().read(write("cuento.txt", Data("¡Buenos días! El pingüino tomó café en España.".utf8)))
         XCTAssertEqual(txt.blocks.first?.text, "¡Buenos días! El pingüino tomó café en España.")

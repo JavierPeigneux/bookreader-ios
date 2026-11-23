@@ -1,6 +1,329 @@
 {
   "sourceLanguage" : "es",
   "strings" : {
+  "tutorial.welcome.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Te damos la bienvenida a Folisona"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Welcome to Folisona"
+        }
+      }
+    }
+  },
+  "tutorial.welcome.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tus libros también se pueden escuchar. Elige una voz que te guste y descubre cómo organizar tu biblioteca."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Your books are for listening, too. Find a voice you love and learn how to organize your library."
+        }
+      }
+    }
+  },
+  "tutorial.start": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Empezar"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Get started"
+        }
+      }
+    }
+  },
+  "tutorial.settings.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Empieza en Ajustes"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Start in Settings"
+        }
+      }
+    }
+  },
+  "tutorial.settings.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Abre Ajustes en tu iPhone o iPad y busca Accesibilidad. Puedes volver a esta guía al cambiar de app."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Open Settings on your iPhone or iPad and find Accessibility. Switch back to Folisona whenever you need this guide."
+        }
+      }
+    }
+  },
+  "tutorial.access.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Entra en Lectura y voz"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Open Read & Speak"
+        }
+      }
+    }
+  },
+  "tutorial.access.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Dentro de Accesibilidad, toca Lectura y voz. En algunas versiones aparece como Leer y hablar o Contenido leído."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "In Accessibility, tap Read & Speak. On some versions it is called Spoken Content."
+        }
+      }
+    }
+  },
+  "tutorial.language.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Elige el idioma de la voz"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Choose a voice language"
+        }
+      }
+    }
+  },
+  "tutorial.language.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Toca Voces y elige el idioma en el que quieras escuchar tu libro. Toca el nombre de una voz para ver sus variantes."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tap Voices and choose the language you want to listen in. Tap a voice name to see its available versions."
+        }
+      }
+    }
+  },
+  "tutorial.download.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Descarga una voz de mayor calidad"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Download a higher-quality voice"
+        }
+      }
+    }
+  },
+  "tutorial.download.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Junto a la variante mejorada o premium, toca el icono de descarga. Cuando termine, vuelve al lector de Folisona y elige esa voz."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Tap the download icon beside an Enhanced or Premium voice. When the download finishes, return to the Folisona reader and choose that voice."
+        }
+      }
+    }
+  },
+  "tutorial.group.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Junta dos libros en una carpeta"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Group books in a folder"
+        }
+      }
+    }
+  },
+  "tutorial.group.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "En la biblioteca, mantén pulsada la portada de un libro y arrástrala sobre otro. Escribe un nombre para la carpeta y guarda. Para añadir otro libro, arrastra su portada hasta la carpeta."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "In the library, touch and hold a book cover and drag it onto another book. Name the folder and save. To add another book, drag its cover onto the folder."
+        }
+      }
+    }
+  },
+  "tutorial.rename.title": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Ponle tu propio título"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Give a book your own title"
+        }
+      }
+    }
+  },
+  "tutorial.rename.body": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Mantén pulsado el título del libro en la biblioteca, toca Renombrar libro, escribe el nuevo nombre y guarda. Conservarás tu posición de lectura y el audio preparado."
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Touch and hold the book title in your library, tap Rename Book, enter the new name and save. Your reading position and prepared audio stay with the book."
+        }
+      }
+    }
+  },
+  "tutorial.skip": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Omitir"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Skip"
+        }
+      }
+    }
+  },
+  "tutorial.next": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Siguiente"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Next"
+        }
+      }
+    }
+  },
+  "tutorial.back": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Atrás"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Back"
+        }
+      }
+    }
+  },
+  "tutorial.finish": {
+    "extractionState": "manual",
+    "localizations": {
+      "es": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Ir a la biblioteca"
+        }
+      },
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Go to library"
+        }
+      }
+    }
+  },
     "app.name" : {
       "extractionState" : "stale",
       "localizations" : {

@@ -2,6 +2,27 @@ import XCTest
 
 final class ReaderUITests: XCTestCase {
     @MainActor
+    func testFirstRunTutorial() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
+        app.launch()
+        let next = app.buttons["tutorial.next"]
+        XCTAssertTrue(next.waitForExistence(timeout: 15))
+        XCTAssertEqual(next.label, "Empezar")
+        next.tap()
+        app.buttons["tutorial.back"].tap()
+        for step in 1...7 {
+            XCTAssertTrue(app.staticTexts["\(step) / 7"].exists)
+            next.tap()
+        }
+        XCTAssertFalse(next.exists)
+        XCTAssertTrue(app.buttons["folder.new"].waitForExistence(timeout: 5))
+        app.terminate()
+        app.launch()
+        XCTAssertTrue(app.staticTexts["1 / 7"].waitForExistence(timeout: 10))
+    }
+
+    @MainActor
     func testRenameBookAndFindByNewName() throws {
         let app = XCUIApplication()
         app.launchArguments = ["--store-screenshots", "--disable-animations", "-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
@@ -169,6 +190,7 @@ final class ReaderUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-AppleLanguages", "(es)", "-AppleLocale", "es_ES"]
         app.launch()
+        if app.buttons["tutorial.skip"].exists { app.buttons["tutorial.skip"].tap() }
         XCTAssertTrue(app.navigationBars["Folisona"].waitForExistence(timeout: 15))
         let library = XCTAttachment(screenshot: app.screenshot())
         library.name = "Biblioteca"
@@ -196,6 +218,7 @@ final class ReaderUITests: XCTestCase {
         waitForLayout(app)
         app.terminate()
         app.launch()
+        if app.buttons["tutorial.skip"].exists { app.buttons["tutorial.skip"].tap() }
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Bienvenida")).firstMatch.waitForExistence(timeout: 10))
     }
     @MainActor
@@ -203,6 +226,7 @@ final class ReaderUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
+        if app.buttons["tutorial.skip"].exists { app.buttons["tutorial.skip"].tap() }
         XCTAssertTrue(app.buttons["Import document"].waitForExistence(timeout: 15))
         let sample = app.buttons["Try a Spanish sample"]
         if sample.exists {
@@ -279,6 +303,7 @@ final class ReaderUITests: XCTestCase {
         app.launchArguments = ["--store-screenshots", "-AppleLanguages", "(\(language))",
                                "-AppleLocale", language == "es" ? "es_ES" : "en_US"]
         app.launch()
+        if app.buttons["tutorial.skip"].exists { app.buttons["tutorial.skip"].tap() }
         let title = language == "es" ? "La biblioteca del faro" : "The Lighthouse Library"
         let book = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", title)).firstMatch
         XCTAssertTrue(book.waitForExistence(timeout: 15))

@@ -166,6 +166,12 @@
           "path": "Views",
           "children": [
             {
+              "path": "TutorialView.swift",
+              "target-membership": [
+                "Folisona/compile-sources"
+              ]
+            },
+            {
               "path": "LibraryView.swift",
               "target-membership": [
                 "Folisona/compile-sources"

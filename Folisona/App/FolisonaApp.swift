@@ -1,8 +1,17 @@
 import SwiftUI
+import AVFoundation
 
 @main
 struct FolisonaApp: App {
     @State private var coordinator = AppCoordinator()
+    @Environment(\.scenePhase) private var scenePhase
+    @AppStorage("tutorial.lastUse") private var lastUse = 0.0
+    @State private var showTutorial = false
+
+    #if targetEnvironment(simulator)
+    @State private var presentedOnLaunch = false
+    #endif
+
     init() {
         #if DEBUG
         // Keep XCTest independent of simulator context-menu animation completion.
@@ -17,6 +26,30 @@ struct FolisonaApp: App {
                 .preferredColorScheme(.light)
                 .tint(FolioPalette.forest)
                 .foregroundStyle(FolioPalette.ink)
+                .sheet(isPresented: $showTutorial) { TutorialView().tint(FolioPalette.forest) }
+                .onChange(of: scenePhase, initial: true) { old, phase in
+                    #if DEBUG
+                    let arguments = ProcessInfo.processInfo.arguments
+                    if arguments.contains("--store-screenshots") || arguments.contains("--launch-preview") { return }
+                    #endif
+                    let now = Date()
+                    if phase == .active {
+                        #if targetEnvironment(simulator)
+                        if !presentedOnLaunch {
+                            presentedOnLaunch = true
+                            showTutorial = true
+                        }
+                        #else
+                        if TutorialSchedule.isDue(lastUse: lastUse, now: now) {
+                            let voices = ReaderVoice.available.compactMap(\.systemVoice)
+                            showTutorial = !TutorialSchedule.hasBothLanguages(voices.map { ($0.language, $0.quality) })
+                        }
+                        #endif
+                        lastUse = now.timeIntervalSince1970
+                    } else if old == .active {
+                        lastUse = now.timeIntervalSince1970
+                    }
+                }
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didReceiveMemoryWarningNotification)) { _ in
                     coordinator.handleMemoryWarning()
                 }
